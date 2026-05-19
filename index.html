@@ -74,6 +74,53 @@
   position: relative;
 }
 
+.badge-link {
+  position: relative;
+}
+
+.badge {
+  display: none;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #d93025;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  align-items: center;
+  justify-content: center;
+  line-height: 22px;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.report-btn {
+  position: relative;
+  text-align: center;
+  padding: 16px 12px;
+  border-radius: 14px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.report-btn.brown {
+  background: #8b572a;
+  color: #fff;
+}
+
+.report-btn.beige {
+  background: #f1e7d8;
+  color: #2b1b10;
+}
+
 .badge-wrap {
   position: relative;
 }
@@ -520,7 +567,13 @@
             <a href="https://docs.google.com/spreadsheets/d/1h0QX4dF2HIawjqJB2spoaeyHUdvUjG3tL-TUe30fQiI/edit?gid=905748662#gid=905748662" target="_blank">출퇴근 관리 <span>›</span></a>
             <a href="https://docs.google.com/spreadsheets/d/1MwvDyZ9fIYIy_RKbocAx5f0yAc62t9-rvupPtME4cSY/edit?gid=619407694#gid=619407694" target="_blank">연월차 관리 <span>›</span></a>
             <a href="https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=777698556#gid=777698556" target="_blank">주간 스케줄표 <span>›</span></a>
-            <a href="daily-worker.html" target="_blank">일용직 근무내역 <span>›</span></a>
+            <a class="quick-link" href="daily-worker.html" target="_blank"> 일용직 근무내역 입력  <span>›</span></a>
+
+            <a class="quick-link badge-link" href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=192417844#gid=192417844" target="_blank">
+               일용직 근무내역 원장조회
+             <span id="dailyUnpaidBadgeTop" class="badge">0</span>
+             <span>›</span>
+            </a>
           </div>
         </div>
       </aside>
@@ -605,19 +658,24 @@
           <div class="icon">👥</div>
           <h3>영업실적보고서</h3>
           <p>영업실적 보고서 조회, 입력, 지급 상태를 관리합니다.</p>
-          <div class="buttons">
-            <a class="btn primary" href="https://docs.google.com/spreadsheets/d/1VXAFKtm7IaK6Ns_QbrRzpP8XnzBHau6e49GXhNe0uQg/edit?gid=949326317#gid=949326317" target="_blank">한국의집 영업실적보고서 조회</a>
-            <a class="btn" href="https://script.google.com/macros/s/AKfycbx-QNqhusp57z6cxhKLcTymf0z5gx7mHkt9kOrcLEGIfxN9b-kgNlk8qtZ_VLWv57dA/exec" target="_blank">영업실적보고서 입력</a>
-            <div class="quick-two-buttons">
-              <a class="quick-small badge-wrap" href="daily-worker.html" target="_blank">
-                일용직 근무내역 입력
-                <span id="dailyUnpaidBadgeTop" class="badge-new">0</span>
-              </a>
+          <div class="report-grid">
+            <a class="report-btn brown" href="sales-report.html" target="_blank">
+               한국의집 영업실적보고서 조회
+           </a>
 
-              <a class="quick-small" href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=192417844#gid=192417844" target="_blank">
-                일용직 원장조회
-            </a>
-          </div>
+          <a class="report-btn beige" href="sales-input.html" target="_blank">
+             영업실적보고서 입력
+          </a>
+
+          <a class="report-btn beige" href="daily-worker.html" target="_blank">
+            일용직 근무내역 입력
+          </a>
+
+         <a class="report-btn beige badge-link" href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=192417844#gid=192417844" target="_blank">
+            일용직 근무내역 원장조회
+           <span id="dailyUnpaidBadgeReport" class="badge">0</span>
+         </a>
+        </div>
             <a class="btn full" href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=192417844#gid=192417844" target="_blank">일용직 근무내역 조회</a>
           </div>
         </article>
@@ -719,6 +777,39 @@ async function loadDailyUnpaidBadge() {
     } else {
       badge.style.display = "none";
     }
+  } catch (e) {
+    console.log("미지급 배지 조회 실패", e);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadDailyUnpaidBadge);
+</script>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbz_NF1MRhx_mP_0maccpd62iWNHGMVo-pAZCHg7s8-tM26QvK1IVrPL6TmE1RgM6XIS/exec";
+
+async function loadDailyUnpaidBadge() {
+  try {
+    const res = await fetch(API_URL + "?action=getDailyUnpaidCount");
+    const data = await res.json();
+    const count = Number(data.count || 0);
+
+    const badges = [
+      document.getElementById("dailyUnpaidBadgeTop"),
+      document.getElementById("dailyUnpaidBadgeReport")
+    ];
+
+    badges.forEach(badge => {
+      if (!badge) return;
+
+      if (count > 0) {
+        badge.textContent = count > 99 ? "99+" : count;
+        badge.style.display = "flex";
+      } else {
+        badge.style.display = "none";
+      }
+    });
+
   } catch (e) {
     console.log("미지급 배지 조회 실패", e);
   }
