@@ -61,6 +61,41 @@
       min-width:210px;
     }
 
+    .quick-two-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.quick-list .quick-small {
+  justify-content: center;
+  font-size: 15px;
+  padding: 14px 12px;
+  position: relative;
+}
+
+.badge-wrap {
+  position: relative;
+}
+
+.badge-new {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #e53935;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,.25);
+}
+
     .logo-mark {
       width:42px;
       height:42px;
@@ -573,7 +608,16 @@
           <div class="buttons">
             <a class="btn primary" href="https://docs.google.com/spreadsheets/d/1VXAFKtm7IaK6Ns_QbrRzpP8XnzBHau6e49GXhNe0uQg/edit?gid=949326317#gid=949326317" target="_blank">한국의집 영업실적보고서 조회</a>
             <a class="btn" href="https://script.google.com/macros/s/AKfycbx-QNqhusp57z6cxhKLcTymf0z5gx7mHkt9kOrcLEGIfxN9b-kgNlk8qtZ_VLWv57dA/exec" target="_blank">영업실적보고서 입력</a>
-            <a class="btn full" href="daily-worker.html" target="_blank">일용직 근무내역 입력</a>
+            <div class="quick-two-buttons">
+              <a class="quick-small badge-wrap" href="daily-worker.html" target="_blank">
+                일용직 근무내역 입력
+                <span id="dailyUnpaidBadgeTop" class="badge-new">0</span>
+              </a>
+
+              <a class="quick-small" href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=192417844#gid=192417844" target="_blank">
+                일용직 원장조회
+            </a>
+          </div>
             <a class="btn full" href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=192417844#gid=192417844" target="_blank">일용직 근무내역 조회</a>
           </div>
         </article>
@@ -656,5 +700,32 @@
     내부 직원 업무 편의를 위한 인트라넷입니다. 외부 공개용 홈페이지와 분리하여 운영하는 것을 권장합니다.<br />
     © THE BIG KOREA / KOREA HOUSE INTERNAL SYSTEM
   </footer>
+
+  <script>
+const API_URL = "https://script.google.com/macros/s/AKfycbz_NF1MRhx_mP_0maccpd62iWNHGMVo-pAZCHg7s8-tM26QvK1IVrPL6TmE1RgM6XIS/exec";
+
+async function loadDailyUnpaidBadge() {
+  try {
+    const res = await fetch(API_URL + "?action=getDailyUnpaidCount");
+    const data = await res.json();
+    const count = Number(data.count || 0);
+
+    const badge = document.getElementById("dailyUnpaidBadgeTop");
+    if (!badge) return;
+
+    if (count > 0) {
+      badge.textContent = count > 99 ? "99+" : count;
+      badge.style.display = "flex";
+    } else {
+      badge.style.display = "none";
+    }
+  } catch (e) {
+    console.log("미지급 배지 조회 실패", e);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadDailyUnpaidBadge);
+</script>
+
 </body>
 </html>
