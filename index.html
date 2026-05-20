@@ -78,23 +78,33 @@
   position: relative;
 }
 
-.badge {
+.badge,
+.unpaid-badge {
   display: none;
   position: absolute;
-  top: -8px;
-  right: -8px;
-  min-width: 22px;
-  height: 22px;
-  padding: 0 7px;
+  top: -10px;
+  right: -10px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 8px;
   border-radius: 999px;
   background: #d93025;
   color: #fff;
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 13px !important;
+  font-weight: 900;
   align-items: center;
   justify-content: center;
-  line-height: 22px;
-  z-index: 20;
+  line-height: 26px;
+  z-index: 999;
+  box-shadow: 0 4px 10px rgba(0,0,0,.25);
+}
+
+.quick-list a .badge,
+.quick-list a .unpaid-badge,
+.report-btn .badge,
+.report-btn .unpaid-badge {
+  font-size: 13px !important;
+  line-height: 26px !important;
 }
 
 .report-grid {
@@ -570,9 +580,9 @@
             <a href="https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=777698556#gid=777698556" target="_blank">주간 스케줄표 <span>›</span></a>
             <a class="quick-link" href="daily-worker.html" target="_blank"> 일용직 근무내역 입력  <span>›</span></a>
 
-            <a class="quick-link badge-link" href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=192417844#gid=192417844" target="_blank">
+            <a class="quick-link badge-link" href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=0#gid=0" target="_blank">
                일용직 근무내역 원장조회
-             <span id="dailyUnpaidBadgeTop" class="badge">0</span>
+             <span id="dailyUnpaidBadgeTop" class="badge unpaid-badge">0</span>
              <span>›</span>
             </a>
           </div>
@@ -672,9 +682,9 @@
             일용직 근무내역 입력
           </a>
 
-         <a class="report-btn beige badge-link" href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=192417844#gid=192417844" target="_blank">
+         <a class="report-btn beige badge-link" href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=0#gid=0" target="_blank">
             일용직 근무내역 원장조회
-           <span id="dailyUnpaidBadgeReport" class="badge">0</span>
+           <span id="dailyUnpaidBadgeReport" class="badge unpaid-badge">0</span>
          </a>
         </div>
             
@@ -761,37 +771,50 @@
   </footer>
 
   <script>
+/*
+  일용직 미지급 배지 표시
+  - dailyUnpaidBadgeTop: 상단 자주 쓰는 업무 원장조회 버튼
+  - dailyUnpaidBadgeReport: 영업실적보고서 카드 원장조회 버튼
+*/
 const DAILY_WORKER_API_URL =
   "https://script.google.com/macros/s/AKfycbz_NF1MRhx_mP_0maccpd62iWNHGMVo-pAZCHg7s8-tM26QvK1IVrPL6TmE1RgM6XIS/exec";
 
 async function loadDailyUnpaidBadge() {
+  const badgeIds = ["dailyUnpaidBadgeTop", "dailyUnpaidBadgeReport"];
+
   try {
-    const res = await fetch(DAILY_WORKER_API_URL + "?action=getDailyUnpaidCount");
+    const url = DAILY_WORKER_API_URL + "?action=getDailyUnpaidCount&t=" + Date.now();
+    const res = await fetch(url, { cache: "no-store" });
     const data = await res.json();
-    const count = Number(data.count || 0);
 
-    const badges = [
-      document.getElementById("dailyUnpaidBadgeTop"),
-      document.getElementById("dailyUnpaidBadgeReport")
-    ];
+    const count = Number(data.count || data.unpaidCount || 0);
 
-    badges.forEach(function (badge) {
+    badgeIds.forEach(function(id) {
+      const badge = document.getElementById(id);
       if (!badge) return;
 
       if (count > 0) {
-        badge.textContent = count > 99 ? "99+" : count;
-        badge.style.display = "flex";
+        badge.textContent = count > 99 ? "99+" : String(count);
+        badge.style.setProperty("display", "flex", "important");
       } else {
-        badge.style.display = "none";
+        badge.textContent = "0";
+        badge.style.setProperty("display", "none", "important");
       }
     });
 
+    console.log("일용직 미지급 건수:", count, data);
+
   } catch (e) {
     console.log("미지급 배지 조회 실패", e);
+
+    badgeIds.forEach(function(id) {
+      const badge = document.getElementById(id);
+      if (badge) badge.style.setProperty("display", "none", "important");
+    });
   }
 }
 
-document.addEventListener("DOMContentLoaded", loadDailyUnpaidBadge);
+window.addEventListener("load", loadDailyUnpaidBadge);
 </script>
 
 </body>
