@@ -94,6 +94,7 @@
   align-items: center;
   justify-content: center;
   line-height: 22px;
+  z-index: 20;
 }
 
 .report-grid {
@@ -760,37 +761,12 @@
   </footer>
 
   <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbz_NF1MRhx_mP_0maccpd62iWNHGMVo-pAZCHg7s8-tM26QvK1IVrPL6TmE1RgM6XIS/exec";
+const DAILY_WORKER_API_URL =
+  "https://script.google.com/macros/s/AKfycbz_NF1MRhx_mP_0maccpd62iWNHGMVo-pAZCHg7s8-tM26QvK1IVrPL6TmE1RgM6XIS/exec";
 
 async function loadDailyUnpaidBadge() {
   try {
-    const res = await fetch(API_URL + "?action=getDailyUnpaidCount");
-    const data = await res.json();
-    const count = Number(data.count || 0);
-
-    const badge = document.getElementById("dailyUnpaidBadgeTop");
-    if (!badge) return;
-
-    if (count > 0) {
-      badge.textContent = count > 99 ? "99+" : count;
-      badge.style.display = "flex";
-    } else {
-      badge.style.display = "none";
-    }
-  } catch (e) {
-    console.log("미지급 배지 조회 실패", e);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", loadDailyUnpaidBadge);
-</script>
-
-<script>
-const API_URL = "https://script.google.com/macros/s/AKfycbz_NF1MRhx_mP_0maccpd62iWNHGMVo-pAZCHg7s8-tM26QvK1IVrPL6TmE1RgM6XIS/exec";
-
-async function loadDailyUnpaidBadge() {
-  try {
-    const res = await fetch(API_URL + "?action=getDailyUnpaidCount");
+    const res = await fetch(DAILY_WORKER_API_URL + "?action=getDailyUnpaidCount");
     const data = await res.json();
     const count = Number(data.count || 0);
 
@@ -799,7 +775,7 @@ async function loadDailyUnpaidBadge() {
       document.getElementById("dailyUnpaidBadgeReport")
     ];
 
-    badges.forEach(badge => {
+    badges.forEach(function (badge) {
       if (!badge) return;
 
       if (count > 0) {
