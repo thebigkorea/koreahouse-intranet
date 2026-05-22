@@ -514,24 +514,226 @@
       line-height:1.7;
     }
 
-    @media (max-width:900px) {
-      .nav { align-items:flex-start; flex-direction:column; }
-      .menu { justify-content:flex-start; }
-      .hero { grid-template-columns:1fr; padding-top:28px; }
-      .hero-card { padding:34px 26px; min-height:330px; }
-      .hero h1 { font-size:40px; }
-      .grid { grid-template-columns:1fr; }
-      .contract-box { grid-template-columns:1fr; }
-      .contract-buttons { grid-template-columns:1fr; }
-    }
+    /* =========================
+   태블릿
+========================= */
+@media (max-width: 1024px){
 
-    @media (max-width:520px) {
-      .menu a { font-size:13px; padding:9px 10px; }
-      .hero h1 { font-size:34px; }
-      .hero-card, .notice-card, .contract-box { border-radius:24px; }
-      .buttons { grid-template-columns:1fr; }
-      .section-head { display:block; }
-    }
+  .hero{
+    flex-direction:column;
+    align-items:stretch;
+    padding:90px 24px 40px;
+    min-height:auto;
+    gap:24px;
+  }
+
+  .hero-card{
+    max-width:100%;
+  }
+
+  .notice-card{
+    width:100%;
+  }
+
+  .hero h1{
+    font-size:56px;
+  }
+
+  .hero p{
+    font-size:18px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .contract-box{
+    grid-template-columns:1fr;
+  }
+
+  .contract-buttons{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+/* =========================
+   모바일
+========================= */
+@media (max-width: 768px){
+
+  body{
+    overflow-x:hidden;
+  }
+
+  .topbar{
+    position:relative;
+  }
+
+  .nav{
+    padding:16px;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:14px;
+  }
+
+  .logo{
+    min-width:auto;
+  }
+
+  .logo-text strong{
+    font-size:18px;
+  }
+
+  .logo-text span{
+    font-size:10px;
+  }
+
+  .menu{
+    width:100%;
+    justify-content:flex-start;
+    gap:6px;
+  }
+
+  .menu a{
+    font-size:14px;
+    padding:8px 10px;
+  }
+
+  .hero{
+    padding:0;
+    min-height:auto;
+    flex-direction:column;
+    gap:0;
+    border-radius:0;
+  }
+
+  .hero-card{
+    width:100%;
+    padding:28px 22px;
+  }
+
+  .hero h1{
+    font-size:42px;
+    line-height:1.15;
+    margin-bottom:18px;
+  }
+
+  .hero p{
+    font-size:15px;
+    line-height:1.7;
+  }
+
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.18em;
+  }
+
+  .notice-card{
+    width:100%;
+    border-radius:28px 28px 0 0;
+    margin-top:-10px;
+    padding:26px 20px;
+  }
+
+  .notice-card h2{
+    font-size:34px;
+  }
+
+  .quick-list{
+    gap:12px;
+  }
+
+  .quick-list a{
+    padding:18px 16px;
+    font-size:17px;
+    border-radius:18px;
+  }
+
+  .quick-list a span{
+    font-size:22px;
+  }
+
+  section{
+    padding:24px 16px;
+  }
+
+  .section-head h2{
+    font-size:26px;
+  }
+
+  .card{
+    padding:20px;
+    border-radius:22px;
+  }
+
+  .card h3{
+    font-size:20px;
+  }
+
+  .buttons{
+    grid-template-columns:1fr;
+  }
+
+  .btn{
+    width:100%;
+    font-size:15px;
+    padding:14px;
+  }
+
+  .report-grid{
+    grid-template-columns:1fr;
+  }
+
+  .report-btn{
+    width:100%;
+    font-size:15px;
+    padding:16px;
+  }
+
+  .contract-box{
+    padding:24px 20px;
+    border-radius:24px;
+  }
+
+  .contract-box h2{
+    font-size:28px;
+  }
+
+  .contract-buttons{
+    grid-template-columns:1fr;
+  }
+
+  footer{
+    padding:30px 18px 50px;
+    font-size:12px;
+  }
+}
+
+/* =========================
+   작은 휴대폰
+========================= */
+@media (max-width: 480px){
+
+  .hero h1{
+    font-size:34px;
+  }
+
+  .notice-card h2{
+    font-size:28px;
+  }
+
+  .quick-list a{
+    font-size:15px;
+  }
+
+  .menu{
+    flex-wrap:wrap;
+  }
+
+  .menu a{
+    font-size:13px;
+  }
+}
   </style>
 </head>
 
