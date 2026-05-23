@@ -12,8 +12,6 @@
       --card:#fffaf2;
       --text:#241812;
       --muted:#7b6a5c;
-      --brown:#8b5b2b;
-      --brown-dark:#3a2517;
       --line:rgba(70,45,25,.14);
     }
 
@@ -29,23 +27,23 @@
     }
 
     .wrap{
-      max-width:980px;
+      max-width:1100px;
       margin:0 auto;
-      padding:28px 18px 50px;
+      padding:28px 18px 60px;
     }
 
     .header{
-      background:var(--card);
+      background:#fffaf2;
       border:1px solid var(--line);
-      border-radius:30px;
-      padding:32px;
+      border-radius:32px;
+      padding:34px;
       margin-bottom:22px;
       box-shadow:0 10px 24px rgba(60,38,20,.08);
     }
 
     .header h1{
       margin:0;
-      font-size:36px;
+      font-size:38px;
       letter-spacing:-1px;
     }
 
@@ -59,92 +57,151 @@
     .grid{
       display:grid;
       grid-template-columns:repeat(2,1fr);
-      gap:16px;
+      gap:18px;
     }
 
     .card{
       background:var(--card);
-      border:1px solid var(--line);
-      border-radius:26px;
-      padding:24px;
-      min-height:170px;
+      border-radius:28px;
+      padding:28px;
+      min-height:220px;
       display:flex;
       flex-direction:column;
       justify-content:space-between;
       box-shadow:0 10px 24px rgba(60,38,20,.08);
+      border:1px solid rgba(70,45,25,.08);
+      transition:.2s;
+    }
+
+    .card:hover{
+      transform:translateY(-3px);
+    }
+
+    .card.full{
+      grid-column:1 / -1;
     }
 
     .icon{
-      width:52px;
-      height:52px;
-      border-radius:17px;
-      background:var(--brown-dark);
-      color:#fff;
+      width:58px;
+      height:58px;
+      border-radius:18px;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:24px;
+      color:#fff;
+      font-size:28px;
       font-weight:900;
-      margin-bottom:16px;
+      margin-bottom:20px;
     }
 
     .card h2{
-      margin:0 0 8px;
-      font-size:24px;
-      letter-spacing:-.5px;
+      margin:0 0 10px;
+      font-size:32px;
+      letter-spacing:-1px;
     }
 
     .card p{
       margin:0;
       color:var(--muted);
-      font-size:14px;
-      line-height:1.55;
+      line-height:1.6;
+      font-size:16px;
     }
 
     .go{
-      margin-top:18px;
+      margin-top:24px;
       display:flex;
       align-items:center;
       justify-content:center;
-      background:var(--brown-dark);
-      color:#fff;
       text-decoration:none;
-      border-radius:15px;
-      padding:15px;
-      font-weight:900;
-      font-size:15px;
+      color:#fff;
+      border-radius:18px;
+      padding:18px;
+      font-size:18px;
+      font-weight:800;
+      transition:.15s;
     }
 
     .go:active{
       transform:scale(.98);
     }
 
-    .full{
-      grid-column:1 / -1;
+    /* 맥 */
+    .mac{
+      border-left:10px solid #7a4b20;
+    }
+
+    .mac .icon,
+    .mac .go{
+      background:#7a4b20;
+    }
+
+    /* 서울명성 */
+    .seoul{
+      border-left:10px solid #1f5f8b;
+    }
+
+    .seoul .icon,
+    .seoul .go{
+      background:#1f5f8b;
+    }
+
+    /* 마미팜 */
+    .mami{
+      border-left:10px solid #2f7d43;
+    }
+
+    .mami .icon,
+    .mami .go{
+      background:#2f7d43;
+    }
+
+    /* 롯데칠성 */
+    .lotte{
+      border-left:10px solid #c0392b;
+    }
+
+    .lotte .icon,
+    .lotte .go{
+      background:#c0392b;
+    }
+
+    /* 동부주류 */
+    .dongbu{
+      border-left:10px solid #6d3f8f;
+    }
+
+    .dongbu .icon,
+    .dongbu .go{
+      background:#6d3f8f;
     }
 
     .footer{
-      margin-top:24px;
+      margin-top:28px;
       text-align:center;
-      color:var(--muted);
+      color:#8a7767;
       font-size:13px;
     }
 
-    @media(max-width:700px){
+    @media(max-width:760px){
+
       .grid{
         grid-template-columns:1fr;
       }
 
-      .full{
+      .card.full{
         grid-column:auto;
       }
 
       .header h1{
-        font-size:29px;
+        font-size:30px;
       }
 
-      .header{
-        padding:26px 22px;
+      .card h2{
+        font-size:28px;
+      }
+
+      .go{
+        font-size:17px;
       }
     }
   </style>
@@ -156,19 +213,26 @@
 
     <section class="header">
       <h1>한국의집 통합 발주</h1>
+
       <p>
         맥, 서울명성, 마미팜, 롯데칠성, 동부주류 발주를
-        한 화면에서 선택하여 진행합니다.
+        하나의 화면에서 빠르게 진행합니다.
       </p>
     </section>
 
     <section class="grid">
 
-      <div class="card">
+      <!-- 맥 -->
+      <div class="card mac">
+
         <div>
           <div class="icon">麥</div>
+
           <h2>맥 발주</h2>
-          <p>식자재 및 관련 품목 발주 화면으로 이동합니다.</p>
+
+          <p>
+            식자재 및 관련 품목 발주 화면으로 이동합니다.
+          </p>
         </div>
 
         <a class="go"
@@ -176,13 +240,20 @@
            target="_blank">
            발주하기
         </a>
+
       </div>
 
-      <div class="card">
+      <!-- 서울명성 -->
+      <div class="card seoul">
+
         <div>
           <div class="icon">名</div>
+
           <h2>서울명성 발주</h2>
-          <p>서울명성 거래처 발주 화면으로 이동합니다.</p>
+
+          <p>
+            서울명성 거래처 발주 화면으로 이동합니다.
+          </p>
         </div>
 
         <a class="go"
@@ -190,13 +261,20 @@
            target="_blank">
            발주하기
         </a>
+
       </div>
 
-      <div class="card">
+      <!-- 마미팜 -->
+      <div class="card mami">
+
         <div>
           <div class="icon">農</div>
+
           <h2>마미팜 발주</h2>
-          <p>농산물 및 식재 품목 발주 화면으로 이동합니다.</p>
+
+          <p>
+            농산물 및 식재 품목 발주 화면으로 이동합니다.
+          </p>
         </div>
 
         <a class="go"
@@ -204,13 +282,20 @@
            target="_blank">
            발주하기
         </a>
+
       </div>
 
-      <div class="card">
+      <!-- 롯데칠성 -->
+      <div class="card lotte">
+
         <div>
           <div class="icon">七</div>
+
           <h2>롯데칠성 발주</h2>
-          <p>음료 및 관련 품목 발주 화면으로 이동합니다.</p>
+
+          <p>
+            음료 및 관련 품목 발주 화면으로 이동합니다.
+          </p>
         </div>
 
         <a class="go"
@@ -218,13 +303,20 @@
            target="_blank">
            발주하기
         </a>
+
       </div>
 
-      <div class="card full">
+      <!-- 동부주류 -->
+      <div class="card dongbu full">
+
         <div>
           <div class="icon">酒</div>
+
           <h2>동부주류 발주</h2>
-          <p>주류 품목 발주 화면으로 이동합니다.</p>
+
+          <p>
+            주류 품목 발주 화면으로 이동합니다.
+          </p>
         </div>
 
         <a class="go"
@@ -232,12 +324,13 @@
            target="_blank">
            발주하기
         </a>
+
       </div>
 
     </section>
 
     <div class="footer">
-      한국의집 통합 발주 · KOREA HOUSE ORDER SYSTEM
+      한국의집 통합 발주 시스템 · KOREA HOUSE ORDER SYSTEM
     </div>
 
   </main>
