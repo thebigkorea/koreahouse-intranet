@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>한국의집 직원정보 입력</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+      background: #f3f5f9;
+      color: #111;
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      color: #173b72;
+      text-align: center;
+    }
+
+    .desc {
+      text-align: center;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 8px;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      height: 56px;
+      border: 1px solid #cfd6df;
+      border-radius: 14px;
+      padding: 0 16px;
+      font-size: 18px;
+      background: #fff;
+    }
+
+    textarea {
+      height: 90px;
+      padding-top: 14px;
+      resize: vertical;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 28px;
+      height: 64px;
+      border: 0;
+      border-radius: 18px;
+      background: #173b72;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .msg {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .notice {
+      margin-top: 22px;
+      padding: 16px;
+      border-radius: 14px;
+      background: #fff7e8;
+      color: #5c4025;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    @media (max-width:520px) {
+      h1 { font-size: 27px; }
+      .card { padding: 22px; }
+      .row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>한국의집 직원정보 입력</h1>
+
+      <p class="desc">
+        한국의집 직원 정보를 출퇴근·인사관리대장에 저장하기 위한 입력 화면입니다.
+      </p>
+
+      <label>소속</label>
+      <select id="workplace">
+        <option value="한국의집 롯데월드몰점" selected>한국의집 롯데월드몰점</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <label>이름</label>
+          <input id="name" type="text" placeholder="홍길동" />
+        </div>
+
+        <div>
+          <label>연락처</label>
+          <input id="phone" type="tel" placeholder="01012345678" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>주민번호 앞자리</label>
+          <input id="ssnFront" type="tel" maxlength="6" placeholder="예: 900101" />
+        </div>
+
+        <div>
+          <label>주민번호 뒤 7자리</label>
+          <input id="ssnBack" type="password" maxlength="7" placeholder="예: 1234567" />
+        </div>
+      </div>
+
+      <label>주소</label>
+      <input id="address" type="text" placeholder="주소 입력" />
+
+      <div class="row">
+        <div>
+          <label>직위</label>
+          <input id="position" type="text" placeholder="예: 직원, 조리, 매니저" />
+        </div>
+
+        <div>
+          <label>고용형태</label>
+          <select id="employmentType">
+            <option value="">선택</option>
+            <option value="정규직 근로계약서">정규직 근로계약서</option>
+            <option value="계약직(아르바이트)">계약직(아르바이트)</option>
+            <option value="사업소득자 용역계약서">사업소득자 용역계약서</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>입사일</label>
+          <input id="joinDate" type="date" />
+        </div>
+
+        <div>
+          <label>퇴사일</label>
+          <input id="leaveDate" type="date" />
+        </div>
+      </div>
+
+      <label>비고</label>
+      <textarea id="memo" placeholder="추가로 전달할 내용이 있으면 입력"></textarea>
+
+      <button id="saveBtn" type="button" onclick="saveEmployeeInfo()">
+        직원정보 저장
+      </button>
+
+      <div id="message" class="msg"></div>
+
+      <div class="notice">
+        ※ 입력한 정보는 한국의집 출퇴근·인사관리대장에 저장되며, 근태관리 및 인사관리 목적으로 사용됩니다.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbz6rYVTUixqPOhHhethQcRI4ziwNukl8EcZx9nVvFLw0rV5o4kLD_BExlONS7WPGE54sQ/exec";
+
+    const saveBtn = document.getElementById("saveBtn");
+    const message = document.getElementById("message");
+
+    function val(id) {
+      return document.getElementById(id).value.trim();
+    }
+
+    function normalizePhone(phone) {
+      return String(phone || "").replace(/[^0-9]/g, "");
+    }
+
+    async function saveEmployeeInfo() {
+      const workplace = val("workplace");
+      const name = val("name");
+      const phone = normalizePhone(val("phone"));
+      const ssnFront = val("ssnFront");
+      const ssnBack = val("ssnBack");
+
+      if (!workplace || !name || !phone || !ssnFront || !ssnBack) {
+        message.style.color = "red";
+        message.innerText = "소속, 이름, 연락처, 주민번호 앞자리/뒤자리는 필수입니다.";
+        return;
+      }
+
+      const data = {
+        action: "saveEmployeeFromContract",
+
+        empName: name,
+        name: name,
+        phone: phone,
+        residentNo: ssnFront + "-" + ssnBack,
+        birth: ssnFront,
+        address: val("address"),
+
+        workPlace: workplace,
+        storeName: workplace,
+        brand: "한국의집",
+
+        position: val("position"),
+        contractType: val("employmentType"),
+        employmentType: val("employmentType"),
+
+        joinDate: val("joinDate"),
+        startDate: val("joinDate"),
+        leaveDate: val("leaveDate"),
+        endDate: val("leaveDate"),
+
+        jobDuty: val("memo"),
+        memo: val("memo")
+      };
+
+      try {
+        saveBtn.disabled = true;
+        saveBtn.innerText = "저장 중...";
+        message.style.color = "#173b72";
+        message.innerText = "직원정보를 저장하고 있습니다.";
+
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (!result.success) {
+          message.style.color = "red";
+          message.innerText = result.message || "저장에 실패했습니다.";
+          return;
+        }
+
+        message.style.color = "green";
+        message.innerText = result.message || "직원정보가 저장되었습니다.";
+
+        document.getElementById("name").value = "";
+        document.getElementById("phone").value = "";
+        document.getElementById("ssnFront").value = "";
+        document.getElementById("ssnBack").value = "";
+        document.getElementById("address").value = "";
+        document.getElementById("position").value = "";
+        document.getElementById("employmentType").value = "";
+        document.getElementById("joinDate").value = "";
+        document.getElementById("leaveDate").value = "";
+        document.getElementById("memo").value = "";
+
+      } catch (err) {
+        console.error(err);
+        message.style.color = "red";
+        message.innerText = "저장 중 오류가 발생했습니다: " + err.message;
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerText = "직원정보 저장";
+      }
+    }
+  </script>
+</body>
+</html>
