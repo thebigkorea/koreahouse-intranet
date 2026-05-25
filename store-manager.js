@@ -1,4 +1,8 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbz-7McT7Z63Z5isCCAAO3VK-kQk2AIOKOMyL9x1SaLtd-hVcyjLIpBOUpm6DUvazoCExw/exec";
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbz-7McT7Z63Z5isCCAAO3VK-kQk2AIOKOMyL9x1SaLtd-hVcyjLIpBOUpm6DUvazoCExw/exec";
+
+const HQ_API_URL =
+  "https://script.google.com/macros/s/AKfycby1RoQvXt51KjoasIG-_MmD7SiMau10eRWAYiq4Vk1k2s9yRVsuEBrBVEFvmW7aX765/exec";
 
 document.addEventListener("DOMContentLoaded", function () {
   setDefaultDates();
