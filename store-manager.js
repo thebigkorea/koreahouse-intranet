@@ -76,10 +76,34 @@ function setDefaultDates() {
 }
 
 async function saveLog(payload) {
+  // 1. 한국의집 기존 원장 저장
   const data = await api({
     action: "saveStoreDailyLog",
     ...payload
   });
+
+  // 2. 본사 매장점검_통합원장에도 저장
+  try {
+    await fetch(HQ_API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        storeName: payload.store || "",
+        brand: "한국의집",
+        writer: payload.writer || "",
+        category: payload.type || payload.category || "",
+        priority: payload.urgency || "일반",
+        content:
+          "[구분] " + (payload.category || "") + "\n" +
+          "[제목] " + (payload.title || "") + "\n" +
+          "[내용] " + (payload.content || "") + "\n" +
+          "[요청/전달] " + (payload.request || "") + "\n" +
+          "[추가사항] " + (payload.extra || ""),
+        photo: ""
+      })
+    });
+  } catch (e) {
+    console.log("본사 통합원장 저장 실패", e);
+  }
 
   alert(data.message || "저장되었습니다.");
 
