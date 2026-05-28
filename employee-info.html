@@ -237,8 +237,6 @@ button:disabled{
 const KOREAHOUSE_API_URL =
   "https://script.google.com/macros/s/AKfycbzCO4TLMRGgt_OY-3T92mw58AAKcOwquq0ubepUEJgPO9YPeMV-hNeP7AHy7lvOPog7oQ/exec";
 
-const HQ_API_URL =
-  "https://script.google.com/macros/s/AKfycbzCO4TLMRGgt_OY-3T92mw58AAKcOwquq0ubepUEJgPO9YPeMV-hNeP7AHy7lvOPog7oQ/exec";
 
 const phoneInput = document.getElementById("phone");
 const rrnInput = document.getElementById("rrn");
@@ -411,13 +409,7 @@ async function saveEmployee(){
       return;
     }
 
-    const hqResult = await postJson(HQ_API_URL,hqData);
-
-    if(!hqResult.success){
-      showNotice("err",hqResult.message || "본사 인사관리대장 저장 실패");
-      resetButton();
-      return;
-    }
+    
 
     showNotice("ok","한국의집 직원정보와 본사 인사관리대장에 모두 저장되었습니다.");
     clearForm();
