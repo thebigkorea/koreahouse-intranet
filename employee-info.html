@@ -1,302 +1,483 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>한국의집 직원정보 입력</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <style>
-    * { box-sizing: border-box; }
+<title>한국의집 직원정보 입력</title>
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
-      background: #f3f5f9;
-      color: #111;
-    }
+<style>
+*{box-sizing:border-box}
 
-    .wrap {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 28px 18px 60px;
-    }
+body{
+  margin:0;
+  background:#f4f6f9;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Malgun Gothic",Arial,sans-serif;
+  color:#222;
+}
 
-    .card {
-      background: #fff;
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.08);
-    }
+.header{
+  background:linear-gradient(135deg,#173b72,#0f2344);
+  color:#fff;
+  padding:28px 18px;
+  border-bottom-left-radius:28px;
+  border-bottom-right-radius:28px;
+  box-shadow:0 5px 22px rgba(0,0,0,.18);
+}
 
-    h1 {
-      margin: 0 0 10px;
-      font-size: 32px;
-      color: #173b72;
-      text-align: center;
-    }
+.header h1{
+  margin:0;
+  font-size:26px;
+}
 
-    .desc {
-      text-align: center;
-      color: #666;
-      line-height: 1.6;
-      margin-bottom: 28px;
-    }
+.header p{
+  margin:8px 0 0;
+  font-size:13px;
+  opacity:.85;
+}
 
-    label {
-      display: block;
-      margin: 18px 0 8px;
-      font-size: 17px;
-      font-weight: 800;
-    }
+.container{
+  width:100%;
+  max-width:820px;
+  margin:0 auto;
+  padding:18px;
+}
 
-    input, select, textarea {
-      width: 100%;
-      height: 56px;
-      border: 1px solid #cfd6df;
-      border-radius: 14px;
-      padding: 0 16px;
-      font-size: 18px;
-      background: #fff;
-    }
+.card{
+  background:#fff;
+  border-radius:22px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+}
 
-    textarea {
-      height: 90px;
-      padding-top: 14px;
-      resize: vertical;
-    }
+h2{
+  margin:0 0 16px;
+  font-size:22px;
+}
 
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
 
-    button {
-      width: 100%;
-      margin-top: 28px;
-      height: 64px;
-      border: 0;
-      border-radius: 18px;
-      background: #173b72;
-      color: #fff;
-      font-size: 22px;
-      font-weight: 900;
-      cursor: pointer;
-    }
+label{
+  display:block;
+  font-size:14px;
+  font-weight:bold;
+}
 
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
+input,select,textarea{
+  width:100%;
+  margin-top:6px;
+  border:1px solid #d7dce5;
+  border-radius:13px;
+  padding:13px;
+  font-size:15px;
+  background:#fff;
+}
 
-    .msg {
-      margin-top: 18px;
-      text-align: center;
-      font-size: 17px;
-      font-weight: 800;
-      line-height: 1.5;
-    }
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
 
-    .notice {
-      margin-top: 22px;
-      padding: 16px;
-      border-radius: 14px;
-      background: #fff7e8;
-      color: #5c4025;
-      line-height: 1.6;
-      font-size: 14px;
-    }
+.full{
+  grid-column:1/-1;
+}
 
-    @media (max-width:520px) {
-      h1 { font-size: 27px; }
-      .card { padding: 22px; }
-      .row { grid-template-columns: 1fr; }
-    }
-  </style>
+button{
+  width:100%;
+  border:none;
+  border-radius:15px;
+  padding:15px;
+  margin-top:16px;
+  background:#173b72;
+  color:#fff;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.notice{
+  display:none;
+  margin-top:14px;
+  padding:13px;
+  border-radius:13px;
+  font-size:14px;
+}
+
+.notice.ok{
+  display:block;
+  background:#dcfce7;
+  color:#166534;
+}
+
+.notice.err{
+  display:block;
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.info{
+  margin-top:14px;
+  padding:14px;
+  border-radius:13px;
+  background:#fff7e8;
+  color:#5c4025;
+  font-size:13px;
+  line-height:1.6;
+}
+
+@media(max-width:760px){
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .header h1{
+    font-size:23px;
+  }
+}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>한국의집 직원정보 입력</h1>
 
-      <p class="desc">
-        한국의집 직원 정보를 출퇴근·인사관리대장에 저장하기 위한 입력 화면입니다.
-      </p>
+<header class="header">
+  <h1>한국의집 직원정보 입력</h1>
+  <p>입력한 직원정보는 한국의집 출퇴근·인사관리대장에 저장됩니다.</p>
+</header>
 
-      <label>소속</label>
-      <select id="workplace">
-        <option value="한국의집 롯데월드몰점" selected>한국의집 롯데월드몰점</option>
-      </select>
+<main class="container">
 
-      <div class="row">
-        <div>
-          <label>이름</label>
-          <input id="name" type="text" placeholder="홍길동" />
-        </div>
+  <section class="card">
+    <h2>직원정보 입력</h2>
 
-        <div>
-          <label>연락처</label>
-          <input id="phone" type="tel" placeholder="01012345678" />
-        </div>
-      </div>
+    <div class="form-grid">
 
-      <div class="row">
-        <div>
-          <label>주민번호 앞자리</label>
-          <input id="ssnFront" type="tel" maxlength="6" placeholder="예: 900101" />
-        </div>
+      <label>
+        소속
+        <input id="workplace" type="text" value="한국의집 롯데월드몰점" readonly>
+      </label>
 
-        <div>
-          <label>주민번호 뒤 7자리</label>
-          <input id="ssnBack" type="password" maxlength="7" placeholder="예: 1234567" />
-        </div>
-      </div>
+      <label>
+        직원명
+        <input id="name" type="text" placeholder="직원명">
+      </label>
 
-      <label>주소</label>
-      <input id="address" type="text" placeholder="주소 입력" />
+      <label>
+        휴대폰
+        <input id="phone" type="tel" inputmode="numeric" maxlength="13" placeholder="010-0000-0000">
+      </label>
 
-      <div class="row">
-        <div>
-          <label>직위</label>
-          <input id="position" type="text" placeholder="예: 직원, 조리, 매니저" />
-        </div>
+      <label>
+        주민번호
+        <input id="rrn" type="text" inputmode="numeric" maxlength="14" placeholder="000000-0000000">
+      </label>
 
-        <div>
-          <label>고용형태</label>
-          <select id="employmentType">
-            <option value="">선택</option>
-            <option value="정규직 근로계약서">정규직 근로계약서</option>
-            <option value="계약직(아르바이트)">계약직(아르바이트)</option>
-            <option value="사업소득자 용역계약서">사업소득자 용역계약서</option>
-          </select>
-        </div>
-      </div>
+      <label>
+        생년월일
+        <input id="birth" type="date">
+      </label>
 
-      <div class="row">
-        <div>
-          <label>입사일</label>
-          <input id="joinDate" type="date" />
-        </div>
+      <label>
+        입사일
+        <input id="joinDate" type="date">
+      </label>
 
-        <div>
-          <label>퇴사일</label>
-          <input id="leaveDate" type="date" />
-        </div>
-      </div>
+      <label>
+        퇴사일
+        <input id="leaveDate" type="date">
+      </label>
 
-      <label>비고</label>
-      <textarea id="memo" placeholder="추가로 전달할 내용이 있으면 입력"></textarea>
+      <label>
+        직위
+        <input id="position" type="text" placeholder="예: 직원, 조리, 매니저">
+      </label>
 
-      <button id="saveBtn" type="button" onclick="saveEmployeeInfo()">
-        직원정보 저장
-      </button>
+      <label>
+        고용형태
+        <select id="employmentType">
+          <option value="">선택</option>
+          <option value="정규직 근로계약서">정규직 근로계약서</option>
+          <option value="계약직(아르바이트)">계약직(아르바이트)</option>
+          <option value="사업소득자 용역계약서">사업소득자 용역계약서</option>
+          <option value="일용직">일용직</option>
+        </select>
+      </label>
 
-      <div id="message" class="msg"></div>
+      <label>
+        부서
+        <select id="department">
+          <option value="">선택</option>
+          <option>홀</option>
+          <option>주방</option>
+          <option>설거지</option>
+          <option>전처리</option>
+          <option>관리</option>
+        </select>
+      </label>
 
-      <div class="notice">
-        ※ 입력한 정보는 한국의집 출퇴근·인사관리대장에 저장되며, 근태관리 및 인사관리 목적으로 사용됩니다.
-      </div>
+      <label>
+        상태
+        <select id="status">
+          <option>재직</option>
+          <option>퇴사</option>
+          <option>휴직</option>
+        </select>
+      </label>
+
+      <label>
+        은행명
+        <input id="bank" type="text" placeholder="예: 국민은행">
+      </label>
+
+      <label>
+        계좌번호
+        <input id="account" type="text" placeholder="계좌번호">
+      </label>
+
+      <label class="full">
+        주소
+        <input id="address" type="text" placeholder="주소">
+      </label>
+
+      <label class="full">
+        비고
+        <textarea id="memo" placeholder="특이사항"></textarea>
+      </label>
+
     </div>
-  </div>
 
-  <script>
-    const API_URL =
-      "https://script.google.com/macros/s/AKfycbz6rYVTUixqPOhHhethQcRI4ziwNukl8EcZx9nVvFLw0rV5o4kLD_BExlONS7WPGE54sQ/exec";
+    <button id="saveBtn" onclick="saveEmployee()">직원정보 저장</button>
 
-    const saveBtn = document.getElementById("saveBtn");
-    const message = document.getElementById("message");
+    <div id="saveNotice" class="notice"></div>
 
-    function val(id) {
-      return document.getElementById(id).value.trim();
+    <div class="info">
+      ※ 입력한 정보는 한국의집 출퇴근·인사관리대장에 저장되며, 근태관리 및 인사관리 목적으로 사용됩니다.
+    </div>
+  </section>
+
+</main>
+
+<script>
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbz6rYVTUixqPOhHhethQcRI4ziwNukl8EcZx9nVvFLw0rV5o4kLD_BExlONS7WPGE54sQ/exec";
+
+const phoneInput = document.getElementById("phone");
+const rrnInput = document.getElementById("rrn");
+const birthInput = document.getElementById("birth");
+
+phoneInput.addEventListener("input", function(){
+  this.value = formatPhone(this.value);
+});
+
+rrnInput.addEventListener("input", function(){
+  this.value = formatRRN(this.value);
+  setBirthFromRRN(this.value);
+});
+
+function val(id){
+  return document.getElementById(id).value.trim();
+}
+
+function onlyNumber(value){
+  return String(value || "").replace(/[^0-9]/g, "");
+}
+
+function formatPhone(value){
+  const num = onlyNumber(value).slice(0,11);
+
+  if(num.length <= 3){
+    return num;
+  }
+
+  if(num.length <= 7){
+    return num.replace(/(\d{3})(\d+)/, "$1-$2");
+  }
+
+  return num.replace(/(\d{3})(\d{4})(\d{0,4})/, "$1-$2-$3");
+}
+
+function formatRRN(value){
+  const num = onlyNumber(value).slice(0,13);
+
+  if(num.length <= 6){
+    return num;
+  }
+
+  return num.replace(/(\d{6})(\d{0,7})/, "$1-$2");
+}
+
+function setBirthFromRRN(rrn){
+  const num = onlyNumber(rrn);
+
+  if(num.length < 6){
+    birthInput.value = "";
+    return;
+  }
+
+  const yy = Number(num.slice(0,2));
+  const mm = num.slice(2,4);
+  const dd = num.slice(4,6);
+  const genderCode = num.slice(6,7);
+
+  let century = "19";
+
+  if(genderCode === "3" || genderCode === "4" || genderCode === "7" || genderCode === "8"){
+    century = "20";
+  }
+
+  if(!genderCode){
+    const currentYY = Number(String(new Date().getFullYear()).slice(2));
+    century = yy <= currentYY ? "20" : "19";
+  }
+
+  const yyyy = century + String(yy).padStart(2,"0");
+  const birth = `${yyyy}-${mm}-${dd}`;
+
+  const d = new Date(birth);
+
+  if(
+    d instanceof Date &&
+    !isNaN(d) &&
+    String(d.getFullYear()) === yyyy &&
+    String(d.getMonth() + 1).padStart(2,"0") === mm &&
+    String(d.getDate()).padStart(2,"0") === dd
+  ){
+    birthInput.value = birth;
+  }
+}
+
+function showNotice(type,msg){
+  const el = document.getElementById("saveNotice");
+  el.className = "notice " + type;
+  el.textContent = msg;
+}
+
+function clearNotice(){
+  const el = document.getElementById("saveNotice");
+  el.className = "notice";
+  el.textContent = "";
+}
+
+async function saveEmployee(){
+  clearNotice();
+
+  const btn = document.getElementById("saveBtn");
+  btn.disabled = true;
+  btn.textContent = "저장 중...";
+
+  const workplace = val("workplace");
+  const name = val("name");
+  const phone = formatPhone(val("phone"));
+  const rrn = formatRRN(val("rrn"));
+  const rrnNumber = onlyNumber(rrn);
+
+  if(!name){
+    showNotice("err","직원명을 입력해주세요.");
+    resetButton();
+    return;
+  }
+
+  if(onlyNumber(phone).length < 10){
+    showNotice("err","휴대폰 번호를 정확히 입력해주세요.");
+    resetButton();
+    return;
+  }
+
+  if(rrnNumber.length !== 13){
+    showNotice("err","주민번호 13자리를 정확히 입력해주세요.");
+    resetButton();
+    return;
+  }
+
+  const commonData = {
+    action:"saveEmployeeFromContract",
+
+    workplace: workplace,
+    workPlace: workplace,
+    storeName: workplace,
+    brand: "한국의집",
+
+    name: name,
+    empName: name,
+    phone: phone,
+
+    rrn: rrn,
+    residentNo: rrn,
+    birth: val("birth"),
+
+    address: val("address"),
+    bank: val("bank"),
+    account: val("account"),
+
+    position: val("position"),
+    employmentType: val("employmentType"),
+    contractType: val("employmentType"),
+
+    department: val("department"),
+    status: val("status"),
+
+    joinDate: val("joinDate"),
+    startDate: val("joinDate"),
+    leaveDate: val("leaveDate"),
+    endDate: val("leaveDate"),
+
+    memo: val("memo"),
+    jobDuty: val("memo")
+  };
+
+  try{
+    const res = await fetch(API_URL,{
+      method:"POST",
+      body:JSON.stringify(commonData)
+    });
+
+    const result = await res.json();
+
+    if(!result.success){
+      showNotice("err",result.message || "저장 실패");
+      resetButton();
+      return;
     }
 
-    function normalizePhone(phone) {
-      return String(phone || "").replace(/[^0-9]/g, "");
-    }
+    showNotice("ok",result.message || "직원정보가 저장되었습니다.");
+    clearForm();
 
-    async function saveEmployeeInfo() {
-      const workplace = val("workplace");
-      const name = val("name");
-      const phone = normalizePhone(val("phone"));
-      const ssnFront = val("ssnFront");
-      const ssnBack = val("ssnBack");
+  }catch(e){
+    console.error(e);
+    showNotice("err","저장 중 오류가 발생했습니다.");
+  }
 
-      if (!workplace || !name || !phone || !ssnFront || !ssnBack) {
-        message.style.color = "red";
-        message.innerText = "소속, 이름, 연락처, 주민번호 앞자리/뒤자리는 필수입니다.";
-        return;
-      }
+  resetButton();
+}
 
-      const data = {
-        action: "saveEmployeeFromContract",
+function resetButton(){
+  const btn = document.getElementById("saveBtn");
+  btn.disabled = false;
+  btn.textContent = "직원정보 저장";
+}
 
-        empName: name,
-        name: name,
-        phone: phone,
-        residentNo: ssnFront + "-" + ssnBack,
-        birth: ssnFront,
-        address: val("address"),
+function clearForm(){
+  [
+    "name","phone","rrn","birth","address","bank","account",
+    "position","joinDate","leaveDate","memo"
+  ].forEach(id => {
+    document.getElementById(id).value = "";
+  });
 
-        workPlace: workplace,
-        storeName: workplace,
-        brand: "한국의집",
+  document.getElementById("employmentType").value = "";
+  document.getElementById("department").value = "";
+  document.getElementById("status").value = "재직";
+}
+</script>
 
-        position: val("position"),
-        contractType: val("employmentType"),
-        employmentType: val("employmentType"),
-
-        joinDate: val("joinDate"),
-        startDate: val("joinDate"),
-        leaveDate: val("leaveDate"),
-        endDate: val("leaveDate"),
-
-        jobDuty: val("memo"),
-        memo: val("memo")
-      };
-
-      try {
-        saveBtn.disabled = true;
-        saveBtn.innerText = "저장 중...";
-        message.style.color = "#173b72";
-        message.innerText = "직원정보를 저장하고 있습니다.";
-
-        const res = await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-
-        if (!result.success) {
-          message.style.color = "red";
-          message.innerText = result.message || "저장에 실패했습니다.";
-          return;
-        }
-
-        message.style.color = "green";
-        message.innerText = result.message || "직원정보가 저장되었습니다.";
-
-        document.getElementById("name").value = "";
-        document.getElementById("phone").value = "";
-        document.getElementById("ssnFront").value = "";
-        document.getElementById("ssnBack").value = "";
-        document.getElementById("address").value = "";
-        document.getElementById("position").value = "";
-        document.getElementById("employmentType").value = "";
-        document.getElementById("joinDate").value = "";
-        document.getElementById("leaveDate").value = "";
-        document.getElementById("memo").value = "";
-
-      } catch (err) {
-        console.error(err);
-        message.style.color = "red";
-        message.innerText = "저장 중 오류가 발생했습니다: " + err.message;
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.innerText = "직원정보 저장";
-      }
-    }
-  </script>
 </body>
 </html>
