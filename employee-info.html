@@ -8,14 +8,12 @@
 
 <style>
 *{box-sizing:border-box}
-
 body{
   margin:0;
   background:#f4f6f9;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Malgun Gothic",Arial,sans-serif;
+  font-family:'Malgun Gothic',Arial,sans-serif;
   color:#222;
 }
-
 .header{
   background:linear-gradient(135deg,#173b72,#0f2344);
   color:#fff;
@@ -24,25 +22,14 @@ body{
   border-bottom-right-radius:28px;
   box-shadow:0 5px 22px rgba(0,0,0,.18);
 }
-
-.header h1{
-  margin:0;
-  font-size:26px;
-}
-
-.header p{
-  margin:8px 0 0;
-  font-size:13px;
-  opacity:.85;
-}
-
+.header h1{margin:0;font-size:26px}
+.header p{margin:8px 0 0;font-size:13px;opacity:.85}
 .container{
   width:100%;
   max-width:820px;
   margin:0 auto;
   padding:18px;
 }
-
 .card{
   background:#fff;
   border-radius:22px;
@@ -50,24 +37,17 @@ body{
   margin-bottom:18px;
   box-shadow:0 4px 16px rgba(0,0,0,.08);
 }
-
-h2{
-  margin:0 0 16px;
-  font-size:22px;
-}
-
+h2{margin:0 0 16px;font-size:22px}
 .form-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:12px;
 }
-
 label{
   display:block;
   font-size:14px;
   font-weight:bold;
 }
-
 input,select,textarea{
   width:100%;
   margin-top:6px;
@@ -77,16 +57,11 @@ input,select,textarea{
   font-size:15px;
   background:#fff;
 }
-
 textarea{
   min-height:90px;
   resize:vertical;
 }
-
-.full{
-  grid-column:1/-1;
-}
-
+.full{grid-column:1/-1}
 button{
   width:100%;
   border:none;
@@ -99,12 +74,10 @@ button{
   font-weight:bold;
   cursor:pointer;
 }
-
 button:disabled{
   opacity:.6;
   cursor:not-allowed;
 }
-
 .notice{
   display:none;
   margin-top:14px;
@@ -112,37 +85,19 @@ button:disabled{
   border-radius:13px;
   font-size:14px;
 }
-
 .notice.ok{
   display:block;
   background:#dcfce7;
   color:#166534;
 }
-
 .notice.err{
   display:block;
   background:#fee2e2;
   color:#991b1b;
 }
-
-.info{
-  margin-top:14px;
-  padding:14px;
-  border-radius:13px;
-  background:#fff7e8;
-  color:#5c4025;
-  font-size:13px;
-  line-height:1.6;
-}
-
 @media(max-width:760px){
-  .form-grid{
-    grid-template-columns:1fr;
-  }
-
-  .header h1{
-    font-size:23px;
-  }
+  .form-grid{grid-template-columns:1fr}
+  .header h1{font-size:23px}
 }
 </style>
 </head>
@@ -151,7 +106,7 @@ button:disabled{
 
 <header class="header">
   <h1>한국의집 직원정보 입력</h1>
-  <p>입력한 직원정보는 한국의집 출퇴근·인사관리대장에 저장됩니다.</p>
+  <p>입력한 직원정보는 한국의집 직원정보 시트와 본사 인사관리대장에 함께 저장됩니다.</p>
 </header>
 
 <main class="container">
@@ -256,19 +211,17 @@ button:disabled{
     </div>
 
     <button id="saveBtn" onclick="saveEmployee()">직원정보 저장</button>
-
     <div id="saveNotice" class="notice"></div>
-
-    <div class="info">
-      ※ 입력한 정보는 한국의집 출퇴근·인사관리대장에 저장되며, 근태관리 및 인사관리 목적으로 사용됩니다.
-    </div>
   </section>
 
 </main>
 
 <script>
-const API_URL =
+const KOREAHOUSE_API_URL =
   "https://script.google.com/macros/s/AKfycbz6rYVTUixqPOhHhethQcRI4ziwNukl8EcZx9nVvFLw0rV5o4kLD_BExlONS7WPGE54sQ/exec";
+
+const HQ_API_URL =
+  "https://script.google.com/macros/s/AKfycbzCO4TLMRGgt_OY-3T92mw58AAKcOwquq0ubepUEJgPO9YPeMV-hNeP7AHy7lvOPog7oQ/exec";
 
 const phoneInput = document.getElementById("phone");
 const rrnInput = document.getElementById("rrn");
@@ -294,13 +247,8 @@ function onlyNumber(value){
 function formatPhone(value){
   const num = onlyNumber(value).slice(0,11);
 
-  if(num.length <= 3){
-    return num;
-  }
-
-  if(num.length <= 7){
-    return num.replace(/(\d{3})(\d+)/, "$1-$2");
-  }
+  if(num.length <= 3) return num;
+  if(num.length <= 7) return num.replace(/(\d{3})(\d+)/, "$1-$2");
 
   return num.replace(/(\d{3})(\d{4})(\d{0,4})/, "$1-$2-$3");
 }
@@ -308,9 +256,7 @@ function formatPhone(value){
 function formatRRN(value){
   const num = onlyNumber(value).slice(0,13);
 
-  if(num.length <= 6){
-    return num;
-  }
+  if(num.length <= 6) return num;
 
   return num.replace(/(\d{6})(\d{0,7})/, "$1-$2");
 }
@@ -341,7 +287,6 @@ function setBirthFromRRN(rrn){
 
   const yyyy = century + String(yy).padStart(2,"0");
   const birth = `${yyyy}-${mm}-${dd}`;
-
   const d = new Date(birth);
 
   if(
@@ -365,6 +310,14 @@ function clearNotice(){
   const el = document.getElementById("saveNotice");
   el.className = "notice";
   el.textContent = "";
+}
+
+async function postJson(url,data){
+  const res = await fetch(url,{
+    method:"POST",
+    body:JSON.stringify(data)
+  });
+  return await res.json();
 }
 
 async function saveEmployee(){
@@ -399,10 +352,9 @@ async function saveEmployee(){
   }
 
   const commonData = {
-    action:"saveEmployeeFromContract",
-
     workplace: workplace,
     workPlace: workplace,
+    store: workplace,
     storeName: workplace,
     brand: "한국의집",
 
@@ -435,20 +387,33 @@ async function saveEmployee(){
   };
 
   try{
-    const res = await fetch(API_URL,{
-      method:"POST",
-      body:JSON.stringify(commonData)
-    });
+    const koreahouseData = {
+      action:"saveEmployeeFromContract",
+      ...commonData
+    };
 
-    const result = await res.json();
+    const hqData = {
+      action:"saveEmployeeFromContract",
+      ...commonData
+    };
 
-    if(!result.success){
-      showNotice("err",result.message || "저장 실패");
+    const khResult = await postJson(KOREAHOUSE_API_URL,koreahouseData);
+
+    if(!khResult.success){
+      showNotice("err",khResult.message || "한국의집 직원정보 저장 실패");
       resetButton();
       return;
     }
 
-    showNotice("ok",result.message || "직원정보가 저장되었습니다.");
+    const hqResult = await postJson(HQ_API_URL,hqData);
+
+    if(!hqResult.success){
+      showNotice("err",hqResult.message || "본사 인사관리대장 저장 실패");
+      resetButton();
+      return;
+    }
+
+    showNotice("ok","한국의집 직원정보와 본사 인사관리대장에 모두 저장되었습니다.");
     clearForm();
 
   }catch(e){
