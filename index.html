@@ -1167,41 +1167,7 @@ window.addEventListener(
   loadDailyUnpaidBadges
 );
 
-</script>
 
-  try {
-    const url = DAILY_WORKER_API_URL + "?action=getDailyUnpaidCount&t=" + Date.now();
-    const res = await fetch(url, { cache: "no-store" });
-    const data = await res.json();
-
-    const count = Number(data.count || data.unpaidCount || 0);
-
-    badgeIds.forEach(function(id) {
-      const badge = document.getElementById(id);
-      if (!badge) return;
-
-      if (count > 0) {
-        badge.textContent = count > 99 ? "99+" : String(count);
-        badge.style.setProperty("display", "flex", "important");
-      } else {
-        badge.textContent = "0";
-        badge.style.setProperty("display", "none", "important");
-      }
-    });
-
-    console.log("일용직 미지급 건수:", count, data);
-
-  } catch (e) {
-    console.log("미지급 배지 조회 실패", e);
-
-    badgeIds.forEach(function(id) {
-      const badge = document.getElementById(id);
-      if (badge) badge.style.setProperty("display", "none", "important");
-    });
-  }
-}
-
-window.addEventListener("load", loadDailyUnpaidBadge);
 </script>
 
 </body>
