@@ -212,8 +212,71 @@
 
       .go{
         font-size:17px;
-      }
+      }      
     }
+
+    .hall-box{
+  background:#fffaf2;
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:24px;
+  margin-bottom:22px;
+  box-shadow:0 10px 24px rgba(60,38,20,.08);
+}
+
+.hall-box h2{
+  margin:0 0 14px;
+  font-size:26px;
+}
+
+.hall-form{
+  display:grid;
+  grid-template-columns:160px 1fr 120px;
+  gap:10px;
+}
+
+.hall-form input{
+  padding:14px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  font-size:15px;
+}
+
+.hall-form button{
+  border:0;
+  border-radius:14px;
+  background:#241812;
+  color:#fff;
+  font-weight:800;
+  font-size:15px;
+}
+
+.hall-list{
+  margin-top:16px;
+}
+
+.hall-item{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 0;
+  border-top:1px solid var(--line);
+  font-size:15px;
+}
+
+.hall-item button{
+  border:0;
+  border-radius:10px;
+  padding:6px 10px;
+  background:#c0392b;
+  color:#fff;
+}
+
+@media(max-width:760px){
+  .hall-form{
+    grid-template-columns:1fr;
+  }
+}
   </style>
 </head>
 
@@ -230,6 +293,18 @@
       </p>
     </section>
 
+    <section class="hall-box">
+      <h2>홀 필요물품</h2>
+
+      <div class="hall-form">
+        <input type="date" id="hallDate">
+        <input type="text" id="hallItem" placeholder="예: 물티슈, 종이컵, 앞치마">
+        <button onclick="addHallItem()">등록</button>
+      </div>
+
+      <div id="hallList" class="hall-list"></div>
+</section>
+    
     <section class="grid">
 
       <!-- 맥 -->
@@ -365,6 +440,92 @@
     </div>
 
   </main>
+
+  <script>
+  const STORAGE_KEY = "koreahouse_hall_items";
+
+  function todayStr(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function getItems(){
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  }
+
+  function saveItems(items){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  }
+
+  function cleanOldItems(){
+    const today = todayStr();
+    const items = getItems().filter(item => item.date >= today);
+    saveItems(items);
+  }
+
+  function addHallItem(){
+    const date = document.getElementById("hallDate").value;
+    const text = document.getElementById("hallItem").value.trim();
+
+    if(!date){
+      alert("필요 날짜를 선택해주세요.");
+      return;
+    }
+
+    if(!text){
+      alert("필요물품을 입력해주세요.");
+      return;
+    }
+
+    const items = getItems();
+    items.push({
+      id: Date.now(),
+      date,
+      text
+    });
+
+    saveItems(items);
+
+    document.getElementById("hallItem").value = "";
+    renderHallItems();
+  }
+
+  function deleteHallItem(id){
+    const items = getItems().filter(item => item.id !== id);
+    saveItems(items);
+    renderHallItems();
+  }
+
+  function renderHallItems(){
+    cleanOldItems();
+
+    const list = document.getElementById("hallList");
+    const items = getItems().sort((a,b) => a.date.localeCompare(b.date));
+
+    if(items.length === 0){
+      list.innerHTML = `<p style="color:#7b6a5c;">등록된 홀 필요물품이 없습니다.</p>`;
+      return;
+    }
+
+    list.innerHTML = items.map(item => `
+      <div class="hall-item">
+        <div>
+          <strong>${item.date}</strong><br>
+          ${item.text}
+        </div>
+        <button onclick="deleteHallItem(${item.id})">삭제</button>
+      </div>
+    `).join("");
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("hallDate").value = todayStr();
+    renderHallItems();
+  });
+</script>
 
 </body>
 </html>
