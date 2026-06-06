@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>면접관리</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
+  background:#f5efe6;
+  color:#24170f;
+}
+
+.wrap{
+  max-width:1400px;
+  margin:0 auto;
+  padding:20px;
+}
+
+.header{
+  background:linear-gradient(135deg,#3b2414,#8a5a2b);
+  color:#fff;
+  padding:28px;
+  border-radius:24px;
+  margin-bottom:20px;
+}
+
+.header h1{
+  margin:0 0 8px;
+  font-size:34px;
+}
+
+.header p{
+  margin:0;
+  opacity:.85;
+}
+
+.topbar{
+  display:grid;
+  grid-template-columns:1fr 220px;
+  gap:14px;
+  margin-bottom:18px;
+}
+
+input,select,textarea{
+  width:100%;
+  border:1px solid #d8c8b4;
+  border-radius:12px;
+  padding:12px;
+  font-size:14px;
+}
+
+.table-wrap{
+  overflow:auto;
+  background:#fff;
+  border-radius:22px;
+  border:1px solid #e4d7c7;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1300px;
+}
+
+th{
+  background:#f1e5d6;
+  color:#3b2414;
+  padding:14px;
+  font-size:14px;
+  text-align:center;
+  position:sticky;
+  top:0;
+}
+
+td{
+  padding:12px;
+  border-top:1px solid #eee3d6;
+  font-size:14px;
+  vertical-align:top;
+}
+
+tr:hover{
+  background:#faf6f1;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+}
+
+.badge.schedule{background:#dbeeff;color:#0f6b8f}
+.badge.done{background:#dff4e7;color:#197857}
+.badge.no{background:#ffe2df;color:#c0392b}
+.badge.hold{background:#fff3cd;color:#8a5a00}
+.badge.pass{background:#e4f8ec;color:#157347}
+.badge.fail{background:#f1dada;color:#842029}
+
+.btn{
+  border:0;
+  border-radius:10px;
+  padding:9px 12px;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.btn.save{
+  background:#7a4a22;
+  color:white;
+}
+
+.btn.save:hover{
+  background:#3b2414;
+}
+
+.warn{
+  color:#d93025;
+  font-weight:900;
+}
+
+.memo{
+  min-width:220px;
+}
+
+@media(max-width:900px){
+
+  .topbar{
+    grid-template-columns:1fr;
+  }
+
+  .wrap{
+    padding:12px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <div class="header">
+    <h1>면접관리 시스템</h1>
+    <p>
+      지원자 검색, 면접기록, 불참자 관리, 채용상태를 관리합니다.
+    </p>
+  </div>
+
+  <div class="topbar">
+
+    <input
+      id="search"
+      placeholder="이름 / 연락처 / 직무 / 상태 검색"
+      onkeyup="searchApplicants()">
+
+    <select id="statusFilter" onchange="searchApplicants()">
+      <option value="">전체 상태</option>
+      <option value="예정">예정</option>
+      <option value="완료">완료</option>
+      <option value="불참">불참</option>
+      <option value="보류">보류</option>
+      <option value="채용">채용</option>
+      <option value="불합격">불합격</option>
+    </select>
+
+  </div>
+
+  <div class="table-wrap">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>지원자</th>
+          <th>연락처</th>
+          <th>매장</th>
+          <th>직무</th>
+          <th>면접일정</th>
+          <th>면접담당</th>
+          <th>상태</th>
+          <th>면접내용</th>
+          <th>최종의견</th>
+          <th>불참</th>
+          <th>저장</th>
+        </tr>
+      </thead>
+
+      <tbody id="tbody"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwNqmreZsa_YpzlTQxL4HzkklxxI1wie-ujq-BLeLgtUqPt-_ti4_W1MdbJ0Qf-eIaWJA/exec";
+
+let ALL_LIST = [];
+
+window.addEventListener("load", loadApplicants);
+
+async function loadApplicants(){
+
+  try{
+
+    const res =
+      await fetch(API_URL + "?action=list&t=" + Date.now());
+
+    const data =
+      await res.json();
+
+    ALL_LIST = data.list || [];
+
+    render(ALL_LIST);
+
+  }catch(e){
+
+    alert("지원자 조회 실패");
+
+  }
+
+}
+
+function searchApplicants(){
+
+  const keyword =
+    document.getElementById("search").value.trim();
+
+  const status =
+    document.getElementById("statusFilter").value;
+
+  let list =
+    [...ALL_LIST];
+
+  if(keyword){
+
+    list =
+      list.filter(item => {
+
+        const text = [
+          item.name,
+          item.phone,
+          item.store,
+          item.position,
+          item.status,
+          item.memo
+        ].join(" ");
+
+        return text.indexOf(keyword) > -1;
+
+      });
+
+  }
+
+  if(status){
+
+    list =
+      list.filter(item => item.status === status);
+
+  }
+
+  render(list);
+
+}
+
+function render(list){
+
+  const tbody =
+    document.getElementById("tbody");
+
+  if(!list.length){
+
+    tbody.innerHTML =
+      `<tr>
+        <td colspan="11" style="text-align:center;padding:40px;">
+          지원자가 없습니다.
+        </td>
+      </tr>`;
+
+    return;
+
+  }
+
+  tbody.innerHTML =
+    list.map(item => {
+
+      const badgeClass =
+        getBadgeClass(item.status);
+
+      return `
+      <tr>
+
+        <td>
+          <strong>${item.name}</strong><br>
+          <small>${item.createdAt}</small>
+        </td>
+
+        <td>${item.phone}</td>
+
+        <td>${item.store}</td>
+
+        <td>${item.position}</td>
+
+        <td>
+          <input
+            type="date"
+            id="date_${item.applicantId}"
+            value="${item.interviewDate || ""}">
+          <br><br>
+
+          <input
+            type="time"
+            id="time_${item.applicantId}"
+            value="${item.interviewTime || ""}">
+        </td>
+
+        <td>
+          <input
+            id="interviewer_${item.applicantId}"
+            value="${item.interviewer || ""}">
+        </td>
+
+        <td>
+
+          <span class="badge ${badgeClass}">
+            ${item.status}
+          </span>
+
+          <br><br>
+
+          <select id="status_${item.applicantId}">
+            <option ${selected(item.status,"예정")}>예정</option>
+            <option ${selected(item.status,"완료")}>완료</option>
+            <option ${selected(item.status,"불참")}>불참</option>
+            <option ${selected(item.status,"보류")}>보류</option>
+            <option ${selected(item.status,"채용")}>채용</option>
+            <option ${selected(item.status,"불합격")}>불합격</option>
+          </select>
+
+        </td>
+
+        <td class="memo">
+          <textarea
+            id="note_${item.applicantId}">${item.interviewNote || ""}</textarea>
+        </td>
+
+        <td class="memo">
+          <textarea
+            id="opinion_${item.applicantId}">${item.finalOpinion || ""}</textarea>
+        </td>
+
+        <td>
+
+          ${
+            item.noShow === "Y"
+            ? `<span class="warn">불참자</span>`
+            : "-"
+          }
+
+          <br><br>
+
+          ${
+            item.reInterviewBlock === "Y"
+            ? `<span class="warn">재면접 차단</span>`
+            : ""
+          }
+
+        </td>
+
+        <td>
+
+          <button
+            class="btn save"
+            onclick="saveInterview('${item.applicantId}')">
+
+            저장
+
+          </button>
+
+        </td>
+
+      </tr>
+      `;
+
+    }).join("");
+
+}
+
+function selected(a,b){
+  return a === b ? "selected" : "";
+}
+
+function getBadgeClass(status){
+
+  if(status === "예정") return "schedule";
+  if(status === "완료") return "done";
+  if(status === "불참") return "no";
+  if(status === "보류") return "hold";
+  if(status === "채용") return "pass";
+  if(status === "불합격") return "fail";
+
+  return "";
+
+}
+
+async function saveInterview(applicantId){
+
+  const payload = {
+
+    action:"updateInterview",
+
+    applicantId:applicantId,
+
+    interviewDate:
+      document.getElementById(
+        "date_" + applicantId
+      ).value,
+
+    interviewTime:
+      document.getElementById(
+        "time_" + applicantId
+      ).value,
+
+    interviewer:
+      document.getElementById(
+        "interviewer_" + applicantId
+      ).value,
+
+    status:
+      document.getElementById(
+        "status_" + applicantId
+      ).value,
+
+    interviewNote:
+      document.getElementById(
+        "note_" + applicantId
+      ).value,
+
+    finalOpinion:
+      document.getElementById(
+        "opinion_" + applicantId
+      ).value
+
+  };
+
+  try{
+
+    const res =
+      await fetch(API_URL, {
+        method:"POST",
+        body:JSON.stringify(payload)
+      });
+
+    const data =
+      await res.json();
+
+    if(data.success){
+
+      alert("저장되었습니다.");
+
+      loadApplicants();
+
+    }else{
+
+      alert(data.message || "저장 실패");
+
+    }
+
+  }catch(e){
+
+    alert("저장 중 오류");
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>

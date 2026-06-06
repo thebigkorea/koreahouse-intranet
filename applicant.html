@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>채용지원자 등록</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;
+  background:#f7f1e8;
+  color:#24170f;
+}
+.wrap{
+  max-width:900px;
+  margin:0 auto;
+  padding:24px;
+}
+.header{
+  background:linear-gradient(135deg,#3b2414,#8a5a2b);
+  color:white;
+  padding:28px;
+  border-radius:24px;
+  margin-bottom:20px;
+}
+.header h1{
+  margin:0 0 8px;
+  font-size:30px;
+}
+.header p{
+  margin:0;
+  opacity:.85;
+}
+.card{
+  background:white;
+  border:1px solid #e8dccb;
+  border-radius:22px;
+  padding:24px;
+  box-shadow:0 10px 25px rgba(52,32,16,.08);
+}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.full{grid-column:1/-1}
+label{
+  font-weight:800;
+  font-size:14px;
+  margin-bottom:6px;
+  display:block;
+}
+input,select,textarea{
+  width:100%;
+  padding:13px;
+  border:1px solid #ddd0bf;
+  border-radius:12px;
+  font-size:15px;
+}
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+button{
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:16px;
+  background:#7a4a22;
+  color:white;
+  font-size:17px;
+  font-weight:900;
+  cursor:pointer;
+}
+button:hover{background:#3b2414}
+.msg{
+  margin-top:16px;
+  padding:14px;
+  border-radius:12px;
+  display:none;
+  font-weight:800;
+}
+.msg.ok{
+  display:block;
+  background:#e8f5ee;
+  color:#197857;
+}
+.msg.warn{
+  display:block;
+  background:#fff3cd;
+  color:#8a5a00;
+}
+@media(max-width:700px){
+  .grid{grid-template-columns:1fr}
+  .wrap{padding:14px}
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <h1>채용지원자 등록</h1>
+    <p>지원자 정보와 면접일정을 등록합니다.</p>
+  </div>
+
+  <div class="card">
+    <div class="grid">
+
+      <div>
+        <label>지원자명</label>
+        <input id="name" placeholder="예: 홍길동">
+      </div>
+
+      <div>
+        <label>연락처</label>
+        <input id="phone" placeholder="예: 01012345678">
+      </div>
+
+      <div>
+        <label>지원매장</label>
+        <select id="store">
+          <option value="">선택</option>
+          <option>한국의집 롯데월드몰점</option>
+          <option>길채정 압구정점</option>
+          <option>소바공방 평촌점</option>
+          <option>고궁 롯데부여아울렛점</option>
+          <option>더큰코리아 본사</option>
+        </select>
+      </div>
+
+      <div>
+        <label>지원직무</label>
+        <select id="position">
+          <option value="">선택</option>
+          <option>홀 직원</option>
+          <option>주방 직원</option>
+          <option>전처리</option>
+          <option>설거지</option>
+          <option>매니저</option>
+          <option>일용직</option>
+          <option>기타</option>
+        </select>
+      </div>
+
+      <div>
+        <label>지원경로</label>
+        <select id="source">
+          <option value="">선택</option>
+          <option>알바몬</option>
+          <option>알바천국</option>
+          <option>잡코리아</option>
+          <option>사람인</option>
+          <option>지인소개</option>
+          <option>매장방문</option>
+          <option>기타</option>
+        </select>
+      </div>
+
+      <div>
+        <label>지원일</label>
+        <input id="applyDate" type="date">
+      </div>
+
+      <div>
+        <label>면접일자</label>
+        <input id="interviewDate" type="date">
+      </div>
+
+      <div>
+        <label>면접시간</label>
+        <input id="interviewTime" type="time">
+      </div>
+
+      <div>
+        <label>면접담당자</label>
+        <input id="interviewer" placeholder="예: 한경란 부장">
+      </div>
+
+      <div>
+        <label>면접상태</label>
+        <select id="status">
+          <option>예정</option>
+          <option>완료</option>
+          <option>불참</option>
+          <option>보류</option>
+          <option>채용</option>
+          <option>불합격</option>
+        </select>
+      </div>
+
+      <div class="full">
+        <label>비고</label>
+        <textarea id="memo" placeholder="지원자 특이사항, 통화내용 등을 입력하세요."></textarea>
+      </div>
+
+      <div class="full">
+        <button onclick="saveApplicant()">지원자 등록하기</button>
+      </div>
+
+    </div>
+
+    <div id="msg" class="msg"></div>
+  </div>
+</div>
+
+<script>
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbwNqmreZsa_YpzlTQxL4HzkklxxI1wie-ujq-BLeLgtUqPt-_ti4_W1MdbJ0Qf-eIaWJA/exec";
+
+function val(id){
+  return document.getElementById(id).value.trim();
+}
+
+function today(){
+  const d = new Date();
+  return d.toISOString().slice(0,10);
+}
+
+document.getElementById("applyDate").value = today();
+
+async function saveApplicant(){
+
+  const msg = document.getElementById("msg");
+  msg.className = "msg";
+  msg.style.display = "none";
+
+  if(!val("name")){
+    showMsg("지원자명을 입력하세요.", "warn");
+    return;
+  }
+
+  if(!val("phone")){
+    showMsg("연락처를 입력하세요.", "warn");
+    return;
+  }
+
+  const payload = {
+    action:"saveApplicant",
+    name:val("name"),
+    phone:val("phone"),
+    store:val("store"),
+    position:val("position"),
+    source:val("source"),
+    applyDate:val("applyDate"),
+    interviewDate:val("interviewDate"),
+    interviewTime:val("interviewTime"),
+    interviewer:val("interviewer"),
+    status:val("status"),
+    memo:val("memo")
+  };
+
+  try{
+    const res = await fetch(API_URL, {
+      method:"POST",
+      body:JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if(data.success){
+      showMsg(data.message || "저장되었습니다.", data.blocked === "Y" ? "warn" : "ok");
+      clearForm();
+    }else{
+      showMsg(data.message || "저장 실패", "warn");
+    }
+
+  }catch(e){
+    showMsg("저장 중 오류가 발생했습니다.", "warn");
+  }
+}
+
+function showMsg(text, type){
+  const msg = document.getElementById("msg");
+  msg.textContent = text;
+  msg.className = "msg " + type;
+}
+
+function clearForm(){
+  [
+    "name","phone","store","position","source",
+    "interviewDate","interviewTime","interviewer","memo"
+  ].forEach(id=>{
+    document.getElementById(id).value = "";
+  });
+
+  document.getElementById("applyDate").value = today();
+  document.getElementById("status").value = "예정";
+}
+</script>
+
+</body>
+</html>
