@@ -55,6 +55,11 @@ input,select,textarea{
   font-size:14px;
 }
 
+textarea{
+  min-height:80px;
+  resize:vertical;
+}
+
 .table-wrap{
   overflow:auto;
   background:#fff;
@@ -130,11 +135,60 @@ tr:hover{
 }
 
 .memo{
-  min-width:220px;
+  min-width:240px;
+}
+
+.note-box{
+  min-width:250px;
+}
+
+.note-toggle{
+  background:#f1e5d6;
+  color:#3b2414;
+  width:100%;
+  margin-bottom:8px;
+}
+
+.note-options{
+  display:none;
+  border:1px solid #d8c8b4;
+  border-radius:12px;
+  padding:10px;
+  background:#fffaf4;
+}
+
+.note-options.open{
+  display:block;
+}
+
+.note-options label{
+  display:block;
+  font-size:13px;
+  margin-bottom:8px;
+  line-height:1.4;
+}
+
+.note-options input{
+  width:auto;
+  margin-right:6px;
+}
+
+.note-options textarea{
+  margin-top:8px;
+  min-height:70px;
+}
+
+.saved-note{
+  margin-top:8px;
+  padding:8px;
+  background:#f7efe5;
+  border-radius:10px;
+  font-size:12px;
+  line-height:1.5;
+  color:#5c4025;
 }
 
 @media(max-width:900px){
-
   .topbar{
     grid-template-columns:1fr;
   }
@@ -142,7 +196,6 @@ tr:hover{
   .wrap{
     padding:12px;
   }
-
 }
 </style>
 </head>
@@ -159,7 +212,6 @@ tr:hover{
   </div>
 
   <div class="topbar">
-
     <input
       id="search"
       placeholder="이름 / 연락처 / 직무 / 상태 검색"
@@ -174,13 +226,10 @@ tr:hover{
       <option value="채용">채용</option>
       <option value="불합격">불합격</option>
     </select>
-
   </div>
 
   <div class="table-wrap">
-
     <table>
-
       <thead>
         <tr>
           <th>지원자</th>
@@ -198,15 +247,12 @@ tr:hover{
       </thead>
 
       <tbody id="tbody"></tbody>
-
     </table>
-
   </div>
 
 </div>
 
 <script>
-
 const API_URL =
 "https://script.google.com/macros/s/AKfycbwNqmreZsa_YpzlTQxL4HzkklxxI1wie-ujq-BLeLgtUqPt-_ti4_W1MdbJ0Qf-eIaWJA/exec";
 
@@ -233,7 +279,6 @@ async function loadApplicants(){
     alert("지원자 조회 실패");
 
   }
-
 }
 
 function searchApplicants(){
@@ -258,24 +303,22 @@ function searchApplicants(){
           item.store,
           item.position,
           item.status,
-          item.memo
+          item.memo,
+          item.interviewNote,
+          item.finalOpinion
         ].join(" ");
 
         return text.indexOf(keyword) > -1;
 
       });
-
   }
 
   if(status){
-
     list =
       list.filter(item => item.status === status);
-
   }
 
   render(list);
-
 }
 
 function render(list){
@@ -293,7 +336,6 @@ function render(list){
       </tr>`;
 
     return;
-
   }
 
   tbody.innerHTML =
@@ -306,21 +348,22 @@ function render(list){
       <tr>
 
         <td>
-          <strong>${item.name}</strong><br>
-          <small>${item.createdAt}</small>
+          <strong>${safe(item.name)}</strong><br>
+          <small>${safe(item.createdAt)}</small>
         </td>
 
-        <td>${item.phone}</td>
+        <td>${safe(item.phone)}</td>
 
-        <td>${item.store}</td>
+        <td>${safe(item.store)}</td>
 
-        <td>${item.position}</td>
+        <td>${safe(item.position)}</td>
 
         <td>
           <input
             type="date"
             id="date_${item.applicantId}"
             value="${item.interviewDate || ""}">
+
           <br><br>
 
           <input
@@ -332,13 +375,12 @@ function render(list){
         <td>
           <input
             id="interviewer_${item.applicantId}"
-            value="${item.interviewer || ""}">
+            value="${safeAttr(item.interviewer)}">
         </td>
 
         <td>
-
           <span class="badge ${badgeClass}">
-            ${item.status}
+            ${safe(item.status)}
           </span>
 
           <br><br>
@@ -351,42 +393,98 @@ function render(list){
             <option ${selected(item.status,"채용")}>채용</option>
             <option ${selected(item.status,"불합격")}>불합격</option>
           </select>
-
         </td>
 
         <td class="memo">
-          <select
-           id="noteSelect_${item.applicantId}"
-           multiple
-           size="6">
 
-           <option>시간 약속을 잘 지킴</option>
-           <option>태도가 밝고 적극적임</option>
-           <option>말투가 정중하고 응대가 좋음</option>
-           <option>근무 가능 시간이 적합함</option>
-           <option>경력이 있어 즉시 투입 가능</option>
-           <option>초보이나 배우려는 의지가 있음</option>
-           <option>급여 조건 협의 필요</option>
-           <option>근무 가능 요일이 제한적임</option>
-           <option>장기근무 가능성 있음</option>
-           <option>채용 보류 필요</option>
+          <div class="note-box">
 
-         </select>
+            <button
+              type="button"
+              class="btn note-toggle"
+              onclick="toggleNoteBox('${item.applicantId}')">
+              면접내용 선택 / 입력
+            </button>
 
-         <br><br>
+            <div
+              id="noteBox_${item.applicantId}"
+              class="note-options">
 
-         <textarea
-          id="note_${item.applicantId}"
-           placeholder="기타 면접내용을 직접 입력하세요.">${item.interviewNote || ""}</textarea>
-                </td>
+              <label>
+                <input type="checkbox" value="시간 약속을 잘 지킴">
+                시간 약속을 잘 지킴
+              </label>
+
+              <label>
+                <input type="checkbox" value="태도가 밝고 적극적임">
+                태도가 밝고 적극적임
+              </label>
+
+              <label>
+                <input type="checkbox" value="말투가 정중하고 응대가 좋음">
+                말투가 정중하고 응대가 좋음
+              </label>
+
+              <label>
+                <input type="checkbox" value="근무 가능 시간이 적합함">
+                근무 가능 시간이 적합함
+              </label>
+
+              <label>
+                <input type="checkbox" value="경력이 있어 즉시 투입 가능">
+                경력이 있어 즉시 투입 가능
+              </label>
+
+              <label>
+                <input type="checkbox" value="초보이나 배우려는 의지가 있음">
+                초보이나 배우려는 의지가 있음
+              </label>
+
+              <label>
+                <input type="checkbox" value="급여 조건 협의 필요">
+                급여 조건 협의 필요
+              </label>
+
+              <label>
+                <input type="checkbox" value="근무 가능 요일이 제한적임">
+                근무 가능 요일이 제한적임
+              </label>
+
+              <label>
+                <input type="checkbox" value="장기근무 가능성 있음">
+                장기근무 가능성 있음
+              </label>
+
+              <label>
+                <input type="checkbox" value="채용 보류 필요">
+                채용 보류 필요
+              </label>
+
+              <textarea
+                id="note_${item.applicantId}"
+                placeholder="기타 면접내용을 직접 입력하세요."></textarea>
+
+            </div>
+
+            ${
+              item.interviewNote
+              ? `<div class="saved-note">
+                   <strong>저장된 면접내용</strong><br>
+                   ${safe(item.interviewNote)}
+                 </div>`
+              : ""
+            }
+
+          </div>
+
+        </td>
 
         <td class="memo">
           <textarea
-            id="opinion_${item.applicantId}">${item.finalOpinion || ""}</textarea>
+            id="opinion_${item.applicantId}">${safe(item.finalOpinion)}</textarea>
         </td>
 
         <td>
-
           ${
             item.noShow === "Y"
             ? `<span class="warn">불참자</span>`
@@ -400,26 +498,20 @@ function render(list){
             ? `<span class="warn">재면접 차단</span>`
             : ""
           }
-
         </td>
 
         <td>
-
           <button
             class="btn save"
             onclick="saveInterview('${item.applicantId}')">
-
             저장
-
           </button>
-
         </td>
 
       </tr>
       `;
 
     }).join("");
-
 }
 
 function selected(a,b){
@@ -436,10 +528,52 @@ function getBadgeClass(status){
   if(status === "불합격") return "fail";
 
   return "";
+}
 
+function toggleNoteBox(applicantId){
+
+  const box =
+    document.getElementById(
+      "noteBox_" + applicantId
+    );
+
+  if(!box) return;
+
+  box.classList.toggle("open");
+}
+
+function getInterviewNote(applicantId){
+
+  const box =
+    document.getElementById(
+      "noteBox_" + applicantId
+    );
+
+  if(!box) return "";
+
+  const checked =
+    Array.from(
+      box.querySelectorAll(
+        "input[type='checkbox']:checked"
+      )
+    ).map(input => input.value);
+
+  const etc =
+    document.getElementById(
+      "note_" + applicantId
+    ).value.trim();
+
+  if(etc){
+    checked.push("기타: " + etc);
+  }
+
+  return checked.join(" / ");
 }
 
 async function saveInterview(applicantId){
+
+  const newNote =
+    getInterviewNote(applicantId);
 
   const payload = {
 
@@ -468,14 +602,20 @@ async function saveInterview(applicantId){
       ).value,
 
     interviewNote:
-       getInterviewNote(applicantId),
+      newNote,
 
     finalOpinion:
       document.getElementById(
         "opinion_" + applicantId
       ).value
-
   };
+
+  if(!newNote){
+    const ok =
+      confirm("면접내용이 비어 있습니다. 그대로 저장할까요?");
+
+    if(!ok) return;
+  }
 
   try{
 
@@ -505,33 +645,24 @@ async function saveInterview(applicantId){
     alert("저장 중 오류");
 
   }
-
 }
 
+function safe(value){
 
-function getInterviewNote(applicantId){
-
-  const select =
-    document.getElementById(
-      "noteSelect_" + applicantId
-    );
-
-  const selectedTexts =
-    Array.from(select.selectedOptions)
-      .map(option => option.value);
-
-  const etc =
-    document.getElementById(
-      "note_" + applicantId
-    ).value.trim();
-
-  if(etc){
-    selectedTexts.push("기타: " + etc);
-  }
-
-  return selectedTexts.join(" / ");
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
 }
 
+function safeAttr(value){
+
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/"/g,"&quot;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+}
 </script>
 
 </body>
