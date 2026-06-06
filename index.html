@@ -813,6 +813,7 @@
         영업실적보고서 입력
         <span>›</span>
       </a>
+      
 
       <div class="quick-two-buttons">
 
@@ -847,6 +848,14 @@
         </a>
 
       </div>
+
+      <a class="quick-link badge-link"
+        href="applicant-admin.html"
+        target="_blank">
+         면접관리
+        <span id="todayInterviewBadgeTop" class="badge">0</span>
+       <span>›</span>
+      </a>
 
       <a class="quick-btn" href="https://thebigkorea.github.io/koreahouse-intranet/koreahouse-order.html" target="_blank">
        한국의집 통합 발주
@@ -1306,10 +1315,24 @@ async function loadTodayInterviewBadge(){
     const count =
       Number(data.count || 0);
 
-    const badge =
-      document.getElementById(
-        "todayInterviewBadge"
-      );
+    const badges =
+  [
+    document.getElementById("todayInterviewBadge"),
+    document.getElementById("todayInterviewBadgeTop")
+  ];
+
+badges.forEach(function(badge){
+
+  if(!badge) return;
+
+  if(count > 0){
+    badge.textContent = count > 99 ? "99+" : String(count);
+    badge.style.setProperty("display", "flex", "important");
+  }else{
+    badge.style.setProperty("display", "none", "important");
+  }
+
+});
 
     if(!badge) return;
 
