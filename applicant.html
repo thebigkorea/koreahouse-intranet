@@ -117,7 +117,12 @@ button:hover{background:#3b2414}
 
       <div>
         <label>연락처</label>
-        <input id="phone" placeholder="예: 01012345678">
+        <input
+         id="phone"
+         inputmode="numeric"
+         maxlength="13"
+         placeholder="예: 01012345678"
+         oninput="formatPhone(this)">
       </div>
 
       <div>
@@ -290,6 +295,20 @@ function clearForm(){
   document.getElementById("applyDate").value = today();
   document.getElementById("status").value = "예정";
 }
+
+function formatPhone(input){
+
+  let v = input.value.replace(/[^0-9]/g, "");
+
+  if(v.length < 4){
+    input.value = v;
+  }else if(v.length < 8){
+    input.value = v.replace(/(\d{3})(\d+)/, "$1-$2");
+  }else{
+    input.value = v.replace(/(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
+  }
+}
+
 </script>
 
 </body>

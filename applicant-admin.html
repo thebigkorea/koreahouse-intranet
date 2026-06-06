@@ -355,9 +355,30 @@ function render(list){
         </td>
 
         <td class="memo">
-          <textarea
-            id="note_${item.applicantId}">${item.interviewNote || ""}</textarea>
-        </td>
+          <select
+           id="noteSelect_${item.applicantId}"
+           multiple
+           size="6">
+
+           <option>시간 약속을 잘 지킴</option>
+           <option>태도가 밝고 적극적임</option>
+           <option>말투가 정중하고 응대가 좋음</option>
+           <option>근무 가능 시간이 적합함</option>
+           <option>경력이 있어 즉시 투입 가능</option>
+           <option>초보이나 배우려는 의지가 있음</option>
+           <option>급여 조건 협의 필요</option>
+           <option>근무 가능 요일이 제한적임</option>
+           <option>장기근무 가능성 있음</option>
+           <option>채용 보류 필요</option>
+
+         </select>
+
+         <br><br>
+
+         <textarea
+          id="note_${item.applicantId}"
+           placeholder="기타 면접내용을 직접 입력하세요.">${item.interviewNote || ""}</textarea>
+                </td>
 
         <td class="memo">
           <textarea
@@ -447,9 +468,7 @@ async function saveInterview(applicantId){
       ).value,
 
     interviewNote:
-      document.getElementById(
-        "note_" + applicantId
-      ).value,
+       getInterviewNote(applicantId),
 
     finalOpinion:
       document.getElementById(
@@ -487,6 +506,30 @@ async function saveInterview(applicantId){
 
   }
 
+}
+
+
+function getInterviewNote(applicantId){
+
+  const select =
+    document.getElementById(
+      "noteSelect_" + applicantId
+    );
+
+  const selectedTexts =
+    Array.from(select.selectedOptions)
+      .map(option => option.value);
+
+  const etc =
+    document.getElementById(
+      "note_" + applicantId
+    ).value.trim();
+
+  if(etc){
+    selectedTexts.push("기타: " + etc);
+  }
+
+  return selectedTexts.join(" / ");
 }
 
 </script>
