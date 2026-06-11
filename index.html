@@ -758,6 +758,27 @@
     font-size:13px;
   }
 }
+.contract-expire-badge{
+  display:none;
+  position:absolute;
+  top:-10px;
+  right:-10px;
+  min-width:28px;
+  height:28px;
+  padding:0 8px;
+  border-radius:999px;
+  background:#dc2626;
+  color:#fff;
+  font-size:14px;
+  font-weight:900;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.25);
+}
+
+.contract-admin-link{
+  position:relative;
+}
   </style>
 </head>
 
@@ -1130,7 +1151,12 @@
           <a href="https://thebigkorea.github.io/hr-system/regular-contract.html" target="_blank">정규직 근로계약서</a>
           <a href="https://thebigkorea.github.io/hr-system/part-contract.html" target="_blank">아르바이트 근로계약서</a>
           <a href="https://thebigkorea.github.io/hr-system/service-contract.html" target="_blank">사업소득자 용역계약서</a>
-          <a href="https://thebigkorea.github.io/hr-system/contract-admin.html" target="_blank">계약서 관리자</a>  
+          <a class="contract-admin-link"
+             href="https://thebigkorea.github.io/hr-system/contract-admin.html"
+             target="_blank">
+             계약서 관리자
+            <span id="contractExpireBadge" class="contract-expire-badge">0</span>
+          </a> 
           <a class="contract-btn"
              href="https://docs.google.com/spreadsheets/d/1sSKno2C3Gnvx-FwfEru_rsP0QWzliWcVEQIKe9vXFqc/edit?gid=1591232369#gid=1591232369"
              target="_blank">
@@ -1374,6 +1400,140 @@ badges.forEach(function(badge){
 window.addEventListener(
   "load",
   loadTodayInterviewBadge
+);
+
+const CONTRACT_API_URL =
+"https://script.google.com/macros/s/AKfycbzCO4TLMRGgt_OY-3T92mw58AAKcOwquq0ubepUEJgPO9YPeMV-hNeP7AHy7lvOPog7oQ/exec";
+
+async function loadContractExpireBadge(){
+
+  const badge =
+    document.getElementById("contractExpireBadge");
+
+  if(!badge) return;
+
+  try{
+
+    const res =
+      await fetch(CONTRACT_API_URL, {
+        method:"POST",
+        body:JSON.stringify({
+          action:"getContractList"
+        })
+      });
+
+    const data =
+      await res.json();
+
+    const list =
+      data.contracts || [];
+
+    const count =
+      list.filter(function(c){
+
+        const type =
+          String(c.contractType || "");
+
+        if(
+          !type.includes("계약직") &&
+          !type.includes("아르바이트") &&
+          !type.includes("용역") &&
+          !type.includes("사업소득")
+        ){
+          return false;
+        }
+
+        const end =
+          parseContractEndDate(c.endDate);
+
+        if(!end) return false;
+
+        const today =
+          new Date();
+
+        today.setHours(0,0,0,0);
+
+        const diff =
+          Math.ceil(
+            (end - today) /
+            (1000 * 60 * 60 * 24)
+          );
+
+        return diff <= 30;
+
+      }).length;
+
+    if(count > 0){
+
+      badge.textContent =
+        count > 99 ? "99+" : String(count);
+
+      badge.style.setProperty(
+        "display",
+        "flex",
+        "important"
+      );
+
+    }else{
+
+      badge.style.setProperty(
+        "display",
+        "none",
+        "important"
+      );
+
+    }
+
+  }catch(e){
+
+    console.log("계약만료 배지 조회 실패", e);
+
+  }
+
+}
+
+function parseContractEndDate(value){
+
+  if(!value) return null;
+
+  const text =
+    String(value).trim();
+
+  let m =
+    text.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
+
+  if(m){
+    return new Date(
+      Number(m[1]),
+      Number(m[2]) - 1,
+      Number(m[3])
+    );
+  }
+
+  m =
+    text.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+
+  if(m){
+    return new Date(
+      Number(m[1]),
+      Number(m[2]) - 1,
+      Number(m[3])
+    );
+  }
+
+  const d =
+    new Date(text);
+
+  if(isNaN(d.getTime())) return null;
+
+  d.setHours(0,0,0,0);
+
+  return d;
+}
+
+window.addEventListener(
+  "load",
+  loadContractExpireBadge
 );
 
 </script>
