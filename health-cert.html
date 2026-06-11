@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>보건증 관리</title>
+
+<style>
+body{
+  margin:0;
+  padding:30px;
+  background:#f8f3ea;
+  font-family:"Noto Sans KR",sans-serif;
+}
+.wrap{max-width:1100px;margin:0 auto;}
+h1{color:#3b2414;font-size:42px;}
+.card{
+  background:white;
+  border-radius:24px;
+  padding:24px;
+  margin-bottom:24px;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);
+}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr 1fr;
+  gap:12px;
+}
+input,select,button{
+  height:52px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  padding:0 14px;
+  font-size:16px;
+}
+button{
+  background:#8a5a2b;
+  color:white;
+  font-weight:800;
+  cursor:pointer;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+}
+th{
+  background:#3b2414;
+  color:white;
+  padding:14px;
+}
+td{
+  padding:13px;
+  border-bottom:1px solid #eee;
+  text-align:center;
+}
+.badge{
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:800;
+}
+.normal{background:#dcfce7;color:#166534;}
+.warn{background:#fff3cd;color:#8a5a00;}
+.danger{background:#fed7aa;color:#c2410c;}
+.expired{background:#fee2e2;color:#b91c1c;}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <h1>보건증 관리</h1>
+
+  <div class="card">
+    <div class="grid">
+      <input id="name" placeholder="직원명">
+      <input id="store" placeholder="소속" value="한국의집 롯데월드몰점">
+      <input id="phone" placeholder="연락처">
+      <input id="expireDate" type="date">
+    </div>
+    <br>
+    <button onclick="saveHealthCert()">저장</button>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>직원명</th>
+          <th>소속</th>
+          <th>연락처</th>
+          <th>보건증 만료일</th>
+          <th>상태</th>
+        </tr>
+      </thead>
+      <tbody id="listBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const API_URL =
+"https://script.google.com/macros/s/AKfycby-FdNL_GsXFB4klTrk8fM6YB7Fgkoh0-we-D48z9o34d0OUy09PtHuAaCIAfngIqs7/exec";
+
+document.addEventListener("DOMContentLoaded", loadHealthCertList);
+
+async function saveHealthCert(){
+  const data = {
+    action:"saveHealthCert",
+    name:val("name"),
+    store:val("store"),
+    phone:val("phone"),
+    expireDate:val("expireDate")
+  };
+
+  if(!data.name || !data.expireDate){
+    alert("직원명과 만료일은 필수입니다.");
+    return;
+  }
+
+  const res = await fetch(API_URL,{
+    method:"POST",
+    body:JSON.stringify(data)
+  });
+
+  const result = await res.json();
+
+  if(result.success){
+    alert("저장되었습니다.");
+    loadHealthCertList();
+  }else{
+    alert(result.message || "저장 실패");
+  }
+}
+
+async function loadHealthCertList(){
+  const res = await fetch(API_URL,{
+    method:"POST",
+    body:JSON.stringify({action:"getHealthCertList"})
+  });
+
+  const result = await res.json();
+  const list = result.list || [];
+  const body = document.getElementById("listBody");
+
+  body.innerHTML = "";
+
+  list.forEach(item=>{
+    body.innerHTML += `
+      <tr>
+        <td>${item.name}</td>
+        <td>${item.store}</td>
+        <td>${item.phone}</td>
+        <td>${item.expireDate}</td>
+        <td>${makeStatusBadge(item.expireDate)}</td>
+      </tr>
+    `;
+  });
+}
+
+function makeStatusBadge(date){
+  const diff = getDiffDays(date);
+
+  if(diff < 0) return `<span class="badge expired">만료</span>`;
+  if(diff <= 7) return `<span class="badge danger">즉시갱신</span>`;
+  if(diff <= 30) return `<span class="badge warn">갱신임박</span>`;
+  return `<span class="badge normal">정상</span>`;
+}
+
+function getDiffDays(date){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const end = new Date(date);
+  end.setHours(0,0,0,0);
+
+  return Math.ceil((end - today) / (1000*60*60*24));
+}
+
+function val(id){
+  return document.getElementById(id).value.trim();
+}
+</script>
+</body>
+</html>
