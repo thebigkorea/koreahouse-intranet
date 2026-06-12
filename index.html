@@ -949,7 +949,7 @@
           <div class="buttons">
             <a class="btn primary" href="https://thebigkorea.github.io/koreahouse-attendance/?v=3" target="_blank">출퇴근 등록</a>
             <a class="btn" href="https://thebigkorea.github.io/koreahouse-attendance/?v=3" target="_blank">직원 등록</a>
-            <a class="btn full" href="https://docs.google.com/spreadsheets/d/1h0QX4dF2HIawjqJB2spoaeyHUdvUjG3tL-TUe30fQiI/edit?gid=905748662#gid=905748662" target="_blank">관리자 조회</a>
+           <a class="btn full" href="#" onclick="openAttendanceAdmin()">관리자 조회</a>
           </div>
         </article>
 
@@ -988,13 +988,7 @@
 
              </a>
 
-             <a class="btn full"
-                href="https://docs.google.com/spreadsheets/d/1WgLVb-hTehmz2huM5e-gyds1s8aX-7eBhMCYVZEyFDM/edit?gid=1278172800#gid=1278172800"
-                target="_blank">
-
-                지원자 원장조회
-
-             </a>
+             <a class="btn full" href="#" onclick="openApplicantSheet()">지원자 원장조회</a>
 
            </div>
 
@@ -1061,11 +1055,7 @@
                직원정보 입력
              </a>
 
-             <a class="btn"
-               href="https://docs.google.com/spreadsheets/d/1sSKno2C3Gnvx-FwfEru_rsP0QWzliWcVEQIKe9vXFqc/edit?gid=0#gid=0"
-                target="_blank">
-               인사대장 조회
-             </a>             
+             <a class="btn"href="#" onclick="openHrSheet()"> 인사대장 조회</a>          
 
            </div>         
 
@@ -1644,6 +1634,75 @@ function openHrLedger(){
 }
 </script>
 
+<script>
+function openHrSheet(){
+
+  const pw =
+    prompt("인사대장 조회 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://docs.google.com/spreadsheets/d/1sSKno2C3Gnvx-FwfEru_rsP0QWzliWcVEQIKe9vXFqc/edit?gid=0#gid=0",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
+
+
+<script>
+function openApplicantSheet(){
+
+  const pw =
+    prompt("지원자 원장조회 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://docs.google.com/spreadsheets/d/1WgLVb-hTehmz2huM5e-gyds1s8aX-7eBhMCYVZEyFDM/edit?gid=1278172800#gid=1278172800",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
+
+<script>
+function openAttendanceAdmin(){
+
+  const pw =
+    prompt("출퇴근 관리자 조회 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://docs.google.com/spreadsheets/d/1h0QX4dF2HIawjqJB2spoaeyHUdvUjG3tL-TUe30fQiI/edit?gid=905748662#gid=905748662",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
 
 </body>
 </html>
