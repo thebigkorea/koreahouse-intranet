@@ -1188,12 +1188,12 @@
             <span id="contractExpireBadge" class="contract-expire-badge">0</span>
           </a> 
           <a class="contract-btn"
-             href="https://docs.google.com/spreadsheets/d/1sSKno2C3Gnvx-FwfEru_rsP0QWzliWcVEQIKe9vXFqc/edit?gid=1591232369#gid=1591232369"
-             target="_blank">
+            href="#"
+             onclick="openContractLedger()">
 
-   근로계약서 원장조회
+             근로계약서 원장조회
 
-</a>        
+          </a>
         </div>
       </div>
     </section>
@@ -1596,6 +1596,29 @@ async function loadHealthCertBadge(){
   }
 }
 
+</script>
+
+<script>
+function openContractLedger(){
+
+  const pw =
+    prompt("근로계약서 원장조회 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://docs.google.com/spreadsheets/d/1sSKno2C3Gnvx-FwfEru_rsP0QWzliWcVEQIKe9vXFqc/edit?gid=1591232369#gid=1591232369",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
 </script>
 
 
