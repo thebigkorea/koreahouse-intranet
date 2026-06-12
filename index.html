@@ -905,11 +905,7 @@
        <span>›</span>
       </a>
 
-      <a href="https://docs.google.com/spreadsheets/d/1h0QX4dF2HIawjqJB2spoaeyHUdvUjG3tL-TUe30fQiI/edit?gid=905748662#gid=905748662"
-         target="_blank">
-        출퇴근 관리
-        <span>›</span>
-      </a>
+      <a href="#"onclick="openAttendanceManage()">출퇴근 관리<span>›</span></a>
 
       <a href="https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=777698556#gid=777698556"
          target="_blank">
@@ -1002,7 +998,7 @@
           <div class="buttons">
             <a class="btn primary" href="https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=777698556#gid=777698556" target="_blank">스케줄 입력</a>
             <a class="btn" href="https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=950636545#gid=950636545" target="_blank">인쇄용 보기</a>
-            <a class="btn full" href="https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=422940514#gid=422940514" target="_blank">직원 목록</a>
+            <a class="btn full" href="#" onclick="openStaffList()">직원 목록</a>
           </div>
         </article>
         
@@ -1703,6 +1699,53 @@ function openAttendanceAdmin(){
   }
 }
 </script>
+
+<script>
+function openAttendanceManage(){
+
+  const pw =
+    prompt("출퇴근 관리 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://docs.google.com/spreadsheets/d/1h0QX4dF2HIawjqJB2spoaeyHUdvUjG3tL-TUe30fQiI/edit?gid=905748662#gid=905748662",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
+
+<script>
+function openStaffList(){
+
+  const pw =
+    prompt("직원 목록 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=422940514#gid=422940514",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
+
 
 </body>
 </html>
