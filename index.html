@@ -42,6 +42,27 @@
 
     a { color:inherit; text-decoration:none; }
 
+    .btn{
+  position:relative;
+}
+
+.badge-count{
+  position:absolute;
+  top:-8px;
+  right:-8px;
+  min-width:22px;
+  height:22px;
+  padding:0 6px;
+  border-radius:999px;
+  background:#ef2525;
+  color:white;
+  font-size:12px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
     .topbar {
       position:sticky;
       top:0;
@@ -1014,12 +1035,14 @@
                원장조회
             </a>
 
-            <a class="btn badge-link"
-                href="health-cert.html"
-                target="_blank">
-                보건증 관리
-              <span id="healthCertBadge" class="badge">0</span>
-            </a>
+            <a class="btn" href="health-cert.html">
+              보건증 관리
+              <span id="healthCertBadge"
+                class="badge-count"
+                style="display:none;">
+                0
+                </span>
+             </a>
 
           </div>
         </article>
@@ -1543,7 +1566,38 @@ window.addEventListener(
   loadContractExpireBadge
 );
 
+
+const HEALTH_CERT_API_URL =
+"https://script.google.com/macros/s/AKfycby-FdNL_GsXFB4klTrk8fM6YB7Fgkoh0-we-D48z9o34d0OUy09PtHuAaCIAfngIqs7/exec";
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadHealthCertBadge();
+});
+
+async function loadHealthCertBadge(){
+  try{
+    const res = await fetch(HEALTH_CERT_API_URL + "?action=badge");
+    const result = await res.json();
+
+    const count = Number(result.count || 0);
+    const badge = document.getElementById("healthCertBadge");
+
+    if(!badge) return;
+
+    if(count > 0){
+      badge.textContent = count;
+      badge.style.display = "inline-flex";
+    }else{
+      badge.style.display = "none";
+    }
+
+  }catch(err){
+    console.log("보건증 배지 조회 실패", err);
+  }
+}
+
 </script>
+
 
 </body>
 </html>
