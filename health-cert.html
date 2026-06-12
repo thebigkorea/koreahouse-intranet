@@ -28,6 +28,11 @@ h1{
   margin:0 0 32px;
 }
 
+.retire-btn{
+  background:#b91c1c;
+  margin-left:6px;
+}
+
 .card{
   background:white;
   border-radius:24px;
@@ -219,6 +224,39 @@ async function saveHealthCert(){
   }
 }
 
+
+async function retireHealthCert(index){
+
+  const item = currentList[index];
+  if(!item) return;
+
+  if(!confirm(`${item.name} 직원을 퇴사 처리할까요?`)){
+    return;
+  }
+
+  try{
+    const res = await fetch(API_URL,{
+      method:"POST",
+      body:JSON.stringify({
+        action:"retire",
+        name:item.name
+      })
+    });
+
+    const result = await res.json();
+
+    if(result.success){
+      alert("퇴사 처리되었습니다.");
+      loadHealthCertList();
+    }else{
+      alert(result.message || "퇴사 처리 실패");
+    }
+
+  }catch(err){
+    alert("퇴사 처리 중 오류가 발생했습니다.");
+  }
+}
+
 async function loadHealthCertList(){
 
   const body = document.getElementById("listBody");
@@ -260,6 +298,7 @@ async function loadHealthCertList(){
           <td>${makeStatusBadge(item.expireDate)}</td>
           <td>
             <button class="edit-btn" onclick="editHealthCert(${index})">수정</button>
+            <button class="edit-btn retire-btn" onclick="retireHealthCert(${index})">퇴사</button>
           </td>
         </tr>
       `;
