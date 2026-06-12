@@ -1134,7 +1134,7 @@
           <div class="buttons">
             <a class="btn primary" href="https://thebigkorea.github.io/hr-system/certificate.html" target="_blank">재직증명서</a>
             <a class="btn" href="https://thebigkorea.github.io/hr-system/career.html" target="_blank">경력증명서</a>
-            <a class="btn full" href="https://thebigkorea.github.io/hr-system/hr-list.html" target="_blank">인사관리대장</a>
+           <a class="btn full" href="#" onclick="openHrLedger()"> 인사관리대장</a>
           </div>
         </article>
 
@@ -1610,6 +1610,29 @@ function openContractLedger(){
 
     window.open(
       "https://docs.google.com/spreadsheets/d/1sSKno2C3Gnvx-FwfEru_rsP0QWzliWcVEQIKe9vXFqc/edit?gid=1591232369#gid=1591232369",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
+
+<script>
+function openHrLedger(){
+
+  const pw =
+    prompt("인사관리대장 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://thebigkorea.github.io/hr-system/hr-list.html",
       "_blank"
     );
 
