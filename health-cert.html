@@ -6,9 +6,7 @@
 <title>보건증 관리</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box;}
 
 body{
   margin:0;
@@ -26,13 +24,11 @@ body{
 }
 
 h1{
-  color:#3b2414;
   font-size:42px;
   margin:0 0 32px;
 }
 
 .card{
-  width:100%;
   background:white;
   border-radius:24px;
   padding:24px;
@@ -46,7 +42,7 @@ h1{
   gap:12px;
 }
 
-input,select,button{
+input,button{
   width:100%;
   height:52px;
   border-radius:12px;
@@ -65,6 +61,17 @@ button{
   border:none;
 }
 
+.btn-row{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+}
+
+.cancel-btn{
+  background:#777;
+  display:none;
+}
+
 .table-wrap{
   width:100%;
   overflow-x:auto;
@@ -73,7 +80,6 @@ button{
 table{
   width:100%;
   border-collapse:collapse;
-  background:white;
 }
 
 th{
@@ -103,53 +109,27 @@ td{
 .danger{background:#fed7aa;color:#c2410c;}
 .expired{background:#fee2e2;color:#b91c1c;}
 
+.edit-btn{
+  height:36px;
+  min-width:60px;
+  font-size:14px;
+  border-radius:10px;
+}
+
 .empty{
   padding:30px;
   text-align:center;
   color:#777;
 }
 
-/* 휴대폰 */
 @media (max-width:600px){
-
-  .wrap{
-    padding:28px 16px;
-  }
-
-  h1{
-    font-size:30px;
-    margin-bottom:22px;
-  }
-
-  .card{
-    border-radius:20px;
-    padding:18px;
-    margin-bottom:18px;
-  }
-
-  .grid{
-    grid-template-columns:1fr;
-    gap:10px;
-  }
-
-  input,select,button{
-    height:48px;
-    font-size:15px;
-  }
-
-  button{
-    width:100%;
-    margin-top:4px;
-  }
-
-  table{
-    min-width:620px;
-  }
-
-  th,td{
-    font-size:14px;
-    padding:12px 10px;
-  }
+  .wrap{padding:28px 16px;}
+  h1{font-size:30px;}
+  .card{padding:18px;}
+  .grid{grid-template-columns:1fr;}
+  .btn-row{flex-direction:column;}
+  button{width:100%;}
+  table{min-width:720px;}
 }
 </style>
 </head>
@@ -166,8 +146,11 @@ td{
       <input id="phone" placeholder="연락처">
       <input id="expireDate" type="date">
     </div>
-    <br>
-    <button onclick="saveHealthCert()">저장</button>
+
+    <div class="btn-row">
+      <button id="saveBtn" onclick="saveHealthCert()">저장</button>
+      <button id="cancelBtn" class="cancel-btn" onclick="cancelEdit()">수정취소</button>
+    </div>
   </div>
 
   <div class="card">
@@ -180,6 +163,7 @@ td{
             <th>연락처</th>
             <th>보건증 만료일</th>
             <th>상태</th>
+            <th>관리</th>
           </tr>
         </thead>
         <tbody id="listBody"></tbody>
@@ -193,16 +177,20 @@ td{
 const API_URL =
 "https://script.google.com/macros/s/AKfycby-FdNL_GsXFB4klTrk8fM6YB7Fgkoh0-we-D48z9o34d0OUy09PtHuAaCIAfngIqs7/exec";
 
+let currentList = [];
+let editName = "";
+
 document.addEventListener("DOMContentLoaded", loadHealthCertList);
 
 async function saveHealthCert(){
 
   const data = {
-    action:"save",
-    name:val("name"),
-    store:val("store"),
-    phone:val("phone"),
-    expireDate:val("expireDate")
+    action: editName ? "update" : "save",
+    oldName: editName,
+    name: val("name"),
+    store: val("store"),
+    phone: val("phone"),
+    expireDate: val("expireDate")
   };
 
   if(!data.name || !data.expireDate){
@@ -219,12 +207,8 @@ async function saveHealthCert(){
     const result = await res.json();
 
     if(result.success){
-      alert("저장되었습니다.");
-
-      document.getElementById("name").value = "";
-      document.getElementById("phone").value = "";
-      document.getElementById("expireDate").value = "";
-
+      alert(editName ? "수정되었습니다." : "저장되었습니다.");
+      clearForm();
       loadHealthCertList();
     }else{
       alert(result.message || "저장 실패");
@@ -238,9 +222,10 @@ async function saveHealthCert(){
 async function loadHealthCertList(){
 
   const body = document.getElementById("listBody");
+
   body.innerHTML = `
     <tr>
-      <td colspan="5" class="empty">불러오는 중입니다.</td>
+      <td colspan="6" class="empty">불러오는 중입니다.</td>
     </tr>
   `;
 
@@ -253,18 +238,19 @@ async function loadHealthCertList(){
     const result = await res.json();
     const list = result.list || [];
 
+    currentList = list;
     body.innerHTML = "";
 
     if(list.length === 0){
       body.innerHTML = `
         <tr>
-          <td colspan="5" class="empty">등록된 보건증이 없습니다.</td>
+          <td colspan="6" class="empty">등록된 보건증이 없습니다.</td>
         </tr>
       `;
       return;
     }
 
-    list.forEach(item=>{
+    list.forEach((item,index)=>{
       body.innerHTML += `
         <tr>
           <td>${item.name || ""}</td>
@@ -272,6 +258,9 @@ async function loadHealthCertList(){
           <td>${item.phone || ""}</td>
           <td>${item.expireDate || ""}</td>
           <td>${makeStatusBadge(item.expireDate)}</td>
+          <td>
+            <button class="edit-btn" onclick="editHealthCert(${index})">수정</button>
+          </td>
         </tr>
       `;
     });
@@ -279,10 +268,42 @@ async function loadHealthCertList(){
   }catch(err){
     body.innerHTML = `
       <tr>
-        <td colspan="5" class="empty">자료를 불러오지 못했습니다.</td>
+        <td colspan="6" class="empty">자료를 불러오지 못했습니다.</td>
       </tr>
     `;
   }
+}
+
+function editHealthCert(index){
+
+  const item = currentList[index];
+  if(!item) return;
+
+  editName = item.name || "";
+
+  document.getElementById("name").value = item.name || "";
+  document.getElementById("store").value = item.store || "";
+  document.getElementById("phone").value = item.phone || "";
+  document.getElementById("expireDate").value = item.expireDate || "";
+
+  document.getElementById("saveBtn").textContent = "수정저장";
+  document.getElementById("cancelBtn").style.display = "inline-block";
+
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function cancelEdit(){
+  clearForm();
+}
+
+function clearForm(){
+  editName = "";
+  document.getElementById("name").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("expireDate").value = "";
+  document.getElementById("store").value = "한국의집 롯데월드몰점";
+  document.getElementById("saveBtn").textContent = "저장";
+  document.getElementById("cancelBtn").style.display = "none";
 }
 
 function makeStatusBadge(date){
@@ -304,7 +325,7 @@ function getDiffDays(date){
   const end = new Date(date);
   end.setHours(0,0,0,0);
 
-  return Math.ceil((end - today) / (1000*60*60*24));
+  return Math.floor((end - today) / (1000*60*60*24));
 }
 
 function val(id){
