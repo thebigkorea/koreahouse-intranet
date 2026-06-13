@@ -265,7 +265,9 @@
   </div>
 </div>
 
-<button class="btn btn-dark" onclick="loadRecentWorkers()">
+<button id="searchListBtn"
+        class="btn btn-dark"
+        onclick="loadRecentWorkers()">
   기간 검색
 </button>
 
@@ -468,74 +470,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadRecentWorkers() {
 
-  const box =
-    document.getElementById("workerList");
+  const box = document.getElementById("workerList");
+  const btn = document.getElementById("searchListBtn");
 
   box.innerHTML = "불러오는 중...";
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "검색 중...";
+  }
 
   const startDate = document.getElementById("listStartDate").value;
   const endDate = document.getElementById("listEndDate").value;
 
   try {
 
-    try {
+    let url = API_URL + "?action=getDailyWorkerList";
 
-  let url =
-    API_URL + "?action=getDailyWorkerList";
+    if (startDate) {
+      url += "&startDate=" + encodeURIComponent(startDate);
+    }
 
-  if (startDate) {
-    url += "&startDate=" +
-      encodeURIComponent(startDate);
-  }
+    if (endDate) {
+      url += "&endDate=" + encodeURIComponent(endDate);
+    }
 
-  if (endDate) {
-    url += "&endDate=" +
-      encodeURIComponent(endDate);
-  }
-
-  const res = await fetch(url);
-
-  const json = await res.json();
+    const res = await fetch(url);
+    const json = await res.json();
 
     if (!json.success) {
-      box.innerHTML = "불러오기에 실패했습니다.";
+      box.innerHTML = json.message || "불러오기에 실패했습니다.";
       return;
     }
 
     const list = json.data || [];
 
     if (list.length === 0) {
-      box.innerHTML = "최근 입력 내역이 없습니다.";
+      box.innerHTML = "해당 기간의 입력 내역이 없습니다.";
       return;
     }
 
+    window.workerCache = list;
+
     box.innerHTML = list.map(item => `
       <div class="result-item">
-        <strong>
-          ${item.name}
-        </strong>
-
+        <strong>${item.name}</strong>
         <p>
           날짜: ${item.date || "-"}<br>
+          매장: ${item.store || "-"}<br>
           수당: ${item.allowance || "-"}<br>
           업무: ${item.job || "-"}<br>
           지급상태: ${item.payStatus || "-"}
         </p>
 
-        <button
-          class="btn btn-dark"
-          onclick="editWorker(${item.rowNumber})">
+        <button class="btn btn-dark"
+                onclick="editWorker(${item.rowNumber})">
           수정
         </button>
       </div>
     `).join("");
 
-    window.workerCache = list;
+  } catch (err) {
+    box.innerHTML = "목록 조회 중 오류가 발생했습니다.";
+  }
 
-  } catch(err) {
-
-    box.innerHTML =
-      "목록 조회 중 오류가 발생했습니다.";
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = "기간 검색";
   }
 }
 
