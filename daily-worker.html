@@ -244,10 +244,18 @@
       </select>
 
       <button id="saveBtn" class="btn btn-primary" onclick="saveDailyWorker()">저장하기</button>
+      <button id="updateBtn"class="btn btn-dark"onclick="updateDailyWorker()"style="display:none;">수정 저장</button>
       <button class="btn btn-light" onclick="clearForm()">새 입력</button>
 
       <div id="saveNotice" class="notice"></div>
       <div class="small">저장하면 구글시트의 일용직_근무내역, 월별 현황, 미지급 현황이 자동 갱신됩니다.</div>
+    </div>
+      <div class="card">
+        <h3>최근 입력 내역</h3>
+
+         <div id="workerList">
+         불러오는 중...
+      </div>
     </div>
   </div>
 
