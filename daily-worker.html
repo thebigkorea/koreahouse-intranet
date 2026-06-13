@@ -253,9 +253,25 @@
       <div class="card">
         <h3>최근 입력 내역</h3>
 
-         <div id="workerList">
-         불러오는 중...
-      </div>
+<div class="row">
+  <div>
+    <label>시작일</label>
+    <input id="listStartDate" type="date">
+  </div>
+
+  <div>
+    <label>종료일</label>
+    <input id="listEndDate" type="date">
+  </div>
+</div>
+
+<button class="btn btn-dark" onclick="loadRecentWorkers()">
+  기간 검색
+</button>
+
+<div id="workerList">
+  불러오는 중...
+</div>
     </div>
   </div>
 
@@ -457,13 +473,29 @@ async function loadRecentWorkers() {
 
   box.innerHTML = "불러오는 중...";
 
+  const startDate = document.getElementById("listStartDate").value;
+  const endDate = document.getElementById("listEndDate").value;
+
   try {
 
-    const res = await fetch(
-      API_URL + "?action=getDailyWorkerList"
-    );
+    try {
 
-    const json = await res.json();
+  let url =
+    API_URL + "?action=getDailyWorkerList";
+
+  if (startDate) {
+    url += "&startDate=" +
+      encodeURIComponent(startDate);
+  }
+
+  if (endDate) {
+    url += "&endDate=" +
+      encodeURIComponent(endDate);
+  }
+
+  const res = await fetch(url);
+
+  const json = await res.json();
 
     if (!json.success) {
       box.innerHTML = "불러오기에 실패했습니다.";
