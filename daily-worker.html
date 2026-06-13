@@ -443,6 +443,173 @@
 
       return phone || "";
     }
+
+    let selectedRowNumber = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadRecentWorkers();
+});
+
+async function loadRecentWorkers() {
+
+  const box =
+    document.getElementById("workerList");
+
+  box.innerHTML = "불러오는 중...";
+
+  try {
+
+    const res = await fetch(
+      API_URL + "?action=getDailyWorkerList"
+    );
+
+    const json = await res.json();
+
+    if (!json.success) {
+      box.innerHTML = "불러오기에 실패했습니다.";
+      return;
+    }
+
+    const list = json.data || [];
+
+    if (list.length === 0) {
+      box.innerHTML = "최근 입력 내역이 없습니다.";
+      return;
+    }
+
+    box.innerHTML = list.map(item => `
+      <div class="result-item">
+        <strong>
+          ${item.name}
+        </strong>
+
+        <p>
+          날짜: ${item.date || "-"}<br>
+          수당: ${item.allowance || "-"}<br>
+          업무: ${item.job || "-"}<br>
+          지급상태: ${item.payStatus || "-"}
+        </p>
+
+        <button
+          class="btn btn-dark"
+          onclick="editWorker(${item.rowNumber})">
+          수정
+        </button>
+      </div>
+    `).join("");
+
+    window.workerCache = list;
+
+  } catch(err) {
+
+    box.innerHTML =
+      "목록 조회 중 오류가 발생했습니다.";
+  }
+}
+
+function editWorker(rowNumber) {
+
+  const item =
+    (window.workerCache || [])
+      .find(x => x.rowNumber === rowNumber);
+
+  if (!item) return;
+
+  selectedRowNumber = rowNumber;
+
+  document.getElementById("date").value =
+    item.date || "";
+
+  document.getElementById("store").value =
+    item.store || "한국의집";
+
+  document.getElementById("name").value =
+    item.name || "";
+
+  document.getElementById("allowance").value =
+    item.allowance || "";
+
+  document.getElementById("job").value =
+    item.job || "";
+
+  document.getElementById("rrn").value =
+    item.rrn || "";
+
+  document.getElementById("bank").value =
+    item.bank || "";
+
+  document.getElementById("phone").value =
+    item.phone || "";
+
+  document.getElementById("account").value =
+    item.account || "";
+
+  document.getElementById("memo").value =
+    item.memo || "";
+
+  document.getElementById("payStatus").value =
+    item.payStatus || "미지급";
+
+  document.getElementById("updateBtn")
+    .style.display = "block";
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+async function updateDailyWorker() {
+
+  if (!selectedRowNumber) {
+    alert("수정할 내역을 선택해주세요.");
+    return;
+  }
+
+  const data = {
+    action: "updateDailyWorker",
+    rowNumber: selectedRowNumber,
+    date: document.getElementById("date").value,
+    store: document.getElementById("store").value,
+    name: document.getElementById("name").value.trim(),
+    allowance: document.getElementById("allowance").value,
+    job: document.getElementById("job").value,
+    rrn: document.getElementById("rrn").value.trim(),
+    bank: document.getElementById("bank").value.trim(),
+    account: document.getElementById("account").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    memo: document.getElementById("memo").value.trim(),
+    payStatus: document.getElementById("payStatus").value
+  };
+
+  try {
+
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+
+    if (json.success) {
+
+      alert("수정되었습니다.");
+
+      loadRecentWorkers();
+
+      document.getElementById("updateBtn")
+        .style.display = "none";
+
+    } else {
+
+      alert(json.message || "수정 실패");
+    }
+
+  } catch(err) {
+
+    alert("수정 중 오류가 발생했습니다.");
+  }
+}
   </script>
 </body>
 </html>
