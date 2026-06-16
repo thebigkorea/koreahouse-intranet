@@ -908,6 +908,42 @@
 .contract-admin-link{
   position:relative;
 }
+
+/* 메인 배경 선명도 / 글씨 가독성 최종 조정 */
+
+.hero {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.48) 0%,
+      rgba(255,255,255,.28) 28%,
+      rgba(255,255,255,.05) 58%,
+      rgba(255,255,255,0) 100%
+    ),
+    url('./images/main.jpg') center center/cover no-repeat !important;
+}
+
+.hero::before{
+  background:transparent !important;
+  backdrop-filter:none !important;
+}
+
+.eyebrow{
+  color:#b88948 !important;
+  text-shadow:0 2px 8px rgba(255,255,255,.75) !important;
+}
+
+.hero h1{
+  color:#2b1b10 !important;
+  text-shadow:0 3px 12px rgba(255,255,255,.75) !important;
+}
+
+.hero p{
+  color:#2f2f2f !important;
+  font-weight:800 !important;
+  text-shadow:0 2px 8px rgba(255,255,255,.8) !important;
+}
+
   </style>
 </head>
 
