@@ -46,6 +46,46 @@
   position:relative;
 }
 
+.menu-dropdown{
+  position:relative;
+}
+
+.menu-dropdown > a{
+  display:block;
+}
+
+.submenu{
+  display:none;
+  position:absolute;
+  top:42px;
+  left:0;
+  min-width:220px;
+  background:#fffaf2;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:10px;
+  box-shadow:0 16px 35px rgba(0,0,0,.18);
+  z-index:9999;
+}
+
+.submenu a{
+  display:block;
+  padding:12px 14px;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.submenu a:hover{
+  background:#efe4d4;
+}
+
+.menu-dropdown:hover .submenu{
+  display:block;
+}
+
+
 .quick-modern{
   display:grid;
   gap:14px;
@@ -869,12 +909,58 @@
       </a>
 
       <div class="menu">
-        <a href="#home">홈</a>
-        <a href="#store">매장업무</a>
-        <a href="#hr">인사관리</a>
-        <a href="#contract">전자계약</a>
-        <a href="#admin">관리자</a>
-      </div>
+
+  <div class="menu-dropdown">
+    <a href="#home">홈 ▾</a>
+    <div class="submenu">
+      <a href="#home">메인화면</a>
+      <a href="#store">매장업무</a>
+      <a href="#hr">인사관리</a>
+    </div>
+  </div>
+
+  <div class="menu-dropdown">
+    <a href="#store">매장업무 ▾</a>
+    <div class="submenu">
+      <a href="daily-worker.html" target="_blank">근무내역 입력</a>
+      <a href="applicant-admin.html" target="_blank">면접관리</a>
+      <a href="store-manager.html" target="_blank">운영관리</a>
+      <a href="health-cert.html" target="_blank">보건증관리</a>
+      <a href="koreahouse-order.html" target="_blank">통합발주</a>
+    </div>
+  </div>
+
+  <div class="menu-dropdown">
+    <a href="#hr">인사관리 ▾</a>
+    <div class="submenu">
+      <a href="employee-info.html">직원정보 입력</a>
+      <a href="#" onclick="openHrLedger()">인사관리대장</a>
+      <a href="https://thebigkorea.github.io/koreahouse-leave/" target="_blank">연월차 신청</a>
+      <a href="https://thebigkorea.github.io/hr-system/retirement-admin.html" target="_blank">퇴직관리</a>
+    </div>
+  </div>
+
+  <div class="menu-dropdown">
+    <a href="#contract">전자계약 ▾</a>
+    <div class="submenu">
+      <a href="https://thebigkorea.github.io/hr-system/regular-contract.html" target="_blank">정규직 계약</a>
+      <a href="https://thebigkorea.github.io/hr-system/part-contract.html" target="_blank">계약직 계약</a>
+      <a href="https://thebigkorea.github.io/hr-system/service-contract.html" target="_blank">용역계약</a>
+      <a href="https://thebigkorea.github.io/hr-system/contract-admin.html" target="_blank">계약서관리</a>
+    </div>
+  </div>
+
+  <div class="menu-dropdown">
+    <a href="#admin">관리자 ▾</a>
+    <div class="submenu">
+      <a href="#" onclick="openAttendanceAdmin()">출퇴근 조회</a>
+      <a href="#" onclick="openApplicantSheet()">지원자 원장조회</a>
+      <a href="#" onclick="openStaffList()">직원목록</a>
+      <a href="#" onclick="openContractLedger()">근로계약서 원장조회</a>
+    </div>
+  </div>
+
+</div>
     </nav>
   </header>
 
