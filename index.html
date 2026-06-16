@@ -2180,20 +2180,7 @@ async function loadHealthCertBadge(){
 }
 
 
-    if(!badge) return;
-
-    if(count > 0){
-      badge.textContent = count;
-      badge.style.display = "inline-flex";
-    }else{
-      badge.style.display = "none";
-    }
-
-  }catch(err){
-    console.log("보건증 배지 조회 실패", err);
-  }
-}
-
+    
 </script>
 
 <script>
