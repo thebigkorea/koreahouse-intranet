@@ -371,9 +371,17 @@ function makeStatusBadge(date){
 
   const diff = getDiffDays(date);
 
-  if(diff < 0) return `<span class="badge expired">만료</span>`;
-  if(diff <= 7) return `<span class="badge danger">즉시갱신</span>`;
-  if(diff <= 30) return `<span class="badge warn">갱신임박</span>`;
+  if(diff < 0){
+    return `<span class="badge expired">만료</span>`;
+  }
+
+  if(diff <= 7){
+    return `<span class="badge danger">D-${diff}</span>`;
+  }
+
+  if(diff <= 30){
+    return `<span class="badge warn">D-${diff}</span>`;
+  }
 
   return `<span class="badge normal">정상</span>`;
 }
