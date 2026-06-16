@@ -339,24 +339,24 @@
       color:var(--brown-dark);
     }
 
-    .hero {
-  position:relative;
-  min-height:100vh;
-  max-width:none;
-  margin:0;
-  padding:120px 70px 80px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:40px;
-  overflow:hidden;
+   .hero {
+  position: relative;
+  min-height: 100vh;
+  max-width: none;
+  margin: 0;
+  padding: 120px 70px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  overflow: hidden;
 
   background:
     linear-gradient(
       90deg,
-      rgba(15,10,7,.72) 0%,
-      rgba(15,10,7,.45) 40%,
-      rgba(15,10,7,.20) 100%
+      rgba(0,0,0,.35) 0%,
+      rgba(0,0,0,.18) 42%,
+      rgba(255,255,255,.05) 100%
     ),
     url('./images/main.jpg') center center/cover no-repeat;
 }
@@ -365,7 +365,8 @@
   content:'';
   position:absolute;
   inset:0;
-  backdrop-filter:blur(1px);
+  background:rgba(255,255,255,.04);
+  backdrop-filter:none;
 }
 
 .hero-card{
