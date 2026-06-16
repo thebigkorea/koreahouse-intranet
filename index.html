@@ -1167,6 +1167,33 @@
   color:#1d4f8f;
 }
 
+.badge-link{
+  position:relative;
+}
+
+.unpaid-badge{
+  position:absolute;
+  top:-8px;
+  right:-8px;
+
+  min-width:24px;
+  height:24px;
+
+  padding:0 6px;
+
+  border-radius:999px;
+
+  background:#ef4444;
+  color:#fff;
+
+  font-size:12px;
+  font-weight:700;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
   </style>
 </head>
 
@@ -1530,13 +1557,19 @@
 
   <div class="buttons">
 
-    <a class="btn primary"
-       href="daily-worker.html"
-       target="_blank">
+    <a class="btn primary badge-link"
+   href="daily-worker.html"
+   target="_blank">
 
-       한국의집 입력
+   한국의집 입력
 
-    </a>
+   <span
+     id="koreaDailyUnpaidBadge"
+     class="badge unpaid-badge">
+     0
+   </span>
+
+</a>
 
     <a class="btn"
        href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=0#gid=0"
@@ -1546,13 +1579,19 @@
 
     </a>
 
-    <a class="btn primary"
-       href="https://thebigkorea.github.io/gilchaejeong-apgujeong-intranet/daily-worker.html"
-       target="_blank">
+    <a class="btn primary badge-link"
+   href="https://thebigkorea.github.io/gilchaejeong-apgujeong-intranet/daily-worker.html"
+   target="_blank">
 
-       길채정 입력
+   길채정 입력
 
-    </a>
+   <span
+     id="gilchaeDailyUnpaidBadge"
+     class="badge unpaid-badge">
+     0
+   </span>
+
+</a>
 
     <a class="btn"
        href="https://docs.google.com/spreadsheets/d/1UQ-ZTX7m5vncD3vAes77sLsB8kFPOnH759jt5EcZZuY/edit?gid=2024602370#gid=2024602370"
