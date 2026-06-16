@@ -944,6 +944,104 @@
   text-shadow:0 2px 8px rgba(255,255,255,.8) !important;
 }
 
+
+/* 한국의집 메인 화면을 본사 포털처럼 좌우 분리 */
+
+.hero{
+  max-width:1200px !important;
+  min-height:auto !important;
+  margin:0 auto !important;
+  padding:44px 22px 34px !important;
+  display:grid !important;
+  grid-template-columns:1.35fr .65fr !important;
+  gap:26px !important;
+  align-items:stretch !important;
+  background:none !important;
+  overflow:visible !important;
+}
+
+.hero::before{
+  display:none !important;
+}
+
+.hero-card{
+  min-height:430px !important;
+  border-radius:34px !important;
+  overflow:hidden !important;
+  position:relative !important;
+  max-width:none !important;
+  padding:0 !important;
+  background:
+    linear-gradient(
+      120deg,
+      rgba(30,18,10,.48),
+      rgba(30,18,10,.08)
+    ),
+    url('./images/main.jpg') center center/cover no-repeat !important;
+  box-shadow:var(--shadow) !important;
+}
+
+.hero-card .eyebrow,
+.hero-card h1,
+.hero-card p{
+  position:relative !important;
+  z-index:2 !important;
+  margin-left:42px !important;
+  margin-right:42px !important;
+}
+
+.hero-card .eyebrow{
+  margin-top:230px !important;
+  color:#ffd58a !important;
+  font-size:13px !important;
+  font-weight:900 !important;
+  letter-spacing:.24em !important;
+}
+
+.hero h1{
+  color:#fff !important;
+  font-size:46px !important;
+  line-height:1.15 !important;
+  margin-top:14px !important;
+  margin-bottom:14px !important;
+  letter-spacing:-.07em !important;
+  text-shadow:0 6px 18px rgba(0,0,0,.45) !important;
+}
+
+.hero p{
+  color:rgba(255,255,255,.9) !important;
+  font-size:16px !important;
+  line-height:1.7 !important;
+  max-width:620px !important;
+  font-weight:600 !important;
+  text-shadow:0 4px 14px rgba(0,0,0,.45) !important;
+}
+
+.notice-card{
+  width:auto !important;
+  min-height:430px !important;
+  border-radius:34px !important;
+  background:rgba(255,250,242,.96) !important;
+  padding:30px !important;
+  box-shadow:var(--shadow) !important;
+  backdrop-filter:none !important;
+}
+
+@media(max-width:980px){
+  .hero{
+    grid-template-columns:1fr !important;
+    padding:24px 16px !important;
+  }
+
+  .hero-card{
+    min-height:390px !important;
+  }
+
+  .hero-card .eyebrow{
+    margin-top:190px !important;
+  }
+}
+
   </style>
 </head>
 
