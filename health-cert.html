@@ -274,10 +274,32 @@ async function loadHealthCertList(){
     });
 
     const result = await res.json();
-    const list = result.list || [];
+const list = result.list || [];
 
-    currentList = list;
-    body.innerHTML = "";
+/* 만료일 가까운 순서로 정렬 */
+list.sort((a, b) => {
+
+  const aDiff = getDiffDays(a.expireDate);
+  const bDiff = getDiffDays(b.expireDate);
+
+  const priority = diff => {
+    if(diff < 0) return 0;      // 만료
+    if(diff <= 7) return 1;     // 즉시갱신
+    if(diff <= 30) return 2;    // 갱신임박
+    return 3;                   // 정상
+  };
+
+  const pa = priority(aDiff);
+  const pb = priority(bDiff);
+
+  if(pa !== pb) return pa - pb;
+
+  return aDiff - bDiff;
+
+});
+
+currentList = list;
+body.innerHTML = "";
 
     if(list.length === 0){
       body.innerHTML = `
