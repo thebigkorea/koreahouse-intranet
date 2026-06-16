@@ -46,6 +46,60 @@
   position:relative;
 }
 
+.quick-modern{
+  display:grid;
+  gap:14px;
+  margin-top:24px;
+}
+
+.quick-modern a{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 18px;
+  border-radius:18px;
+  font-size:15px;
+  font-weight:900;
+  border:1px solid rgba(122,74,34,.14);
+  box-shadow:0 8px 20px rgba(52,32,16,.07);
+}
+
+.quick-modern a:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 28px rgba(52,32,16,.13);
+}
+
+.quick-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.quick-icon{
+  font-size:22px;
+  margin-right:8px;
+}
+
+.quick-reserve{background:#fff8ec;color:#6b3f17;}
+.quick-sales-in{background:#e9fff4;color:#07803d;}
+.quick-sales-view{background:#eafaf0;color:#126a3a;}
+.quick-daily{background:#f1ecff;color:#6444b8;}
+.quick-ledger{background:#f3efff;color:#5b3ca8;}
+.quick-gil-in{background:#fff1e5;color:#d95f00;}
+.quick-gil-view{background:#fff4e8;color:#c65300;}
+.quick-interview{background:#eaf6ff;color:#2878c9;}
+.quick-order{background:#fff7df;color:#a76a00;}
+.quick-attend{background:#ffeef0;color:#cf3d4a;}
+.quick-schedule{background:#f4f4f4;color:#444;}
+
+@media(max-width:560px){
+  .quick-row{
+    grid-template-columns:1fr;
+  }
+}
+
+
 .badge-count{
   position:absolute;
   top:-8px;
@@ -843,93 +897,101 @@
       직원들이 가장 자주 사용하는 기능을 빠르게 실행합니다.
     </p>
 
-    <div class="quick-list">
+    <div class="quick-modern">
 
-      <a href="https://docs.google.com/spreadsheets/d/1QI4Jz_iIqG0DbkFmZtsXqQSivOM4cXtwrFvxlXh3bck/edit?gid=2121518039#gid=2121518039"
-         target="_blank">
-        예약관리 열기
-        <span>›</span>
-      </a>
-
-      <div class="quick-two-buttons">
-
-  <a class="quick-link"
-     href="https://script.google.com/macros/s/AKfycbx-QNqhusp57z6cxhKLcTymf0z5gx7mHkt9kOrcLEGIfxN9b-kgNlk8qtZ_VLWv57dA/exec"
+  <a class="quick-reserve"
+     href="https://docs.google.com/spreadsheets/d/1QI4Jz_iIqG0DbkFmZtsXqQSivOM4cXtwrFvxlXh3bck/edit?gid=2121518039#gid=2121518039"
      target="_blank">
-
-     영업실적보고서 입력
-     <span>›</span>
-
+    <span><span class="quick-icon">📅</span>예약관리 열기</span>
+    <span>›</span>
   </a>
 
-  <a class="quick-link"
-     href="https://docs.google.com/spreadsheets/d/1VXAFKtm7IaK6Ns_QbrRzpP8XnzBHau6e49GXhNe0uQg/edit?gid=949326317#gid=949326317"
+  <div class="quick-row">
+
+    <a class="quick-sales-in"
+       href="https://script.google.com/macros/s/AKfycbx-QNqhusp57z6cxhKLcTymf0z5gx7mHkt9kOrcLEGIfxN9b-kgNlk8qtZ_VLWv57dA/exec"
+       target="_blank">
+      <span><span class="quick-icon">📊</span>영업실적보고서 입력</span>
+      <span>›</span>
+    </a>
+
+    <a class="quick-sales-view"
+       href="https://docs.google.com/spreadsheets/d/1VXAFKtm7IaK6Ns_QbrRzpP8XnzBHau6e49GXhNe0uQg/edit?gid=949326317#gid=949326317"
+       target="_blank">
+      <span><span class="quick-icon">📋</span>영업실적 보고서 조회</span>
+      <span>›</span>
+    </a>
+
+  </div>
+
+  <div class="quick-row">
+
+    <a class="quick-daily badge-link"
+       href="daily-worker.html"
+       target="_blank">
+      <span><span class="quick-icon">📝</span>한국의집 근무내역 입력</span>
+      <span id="koreaDailyUnpaidBadgeTop" class="badge unpaid-badge">0</span>
+      <span>›</span>
+    </a>
+
+    <a class="quick-ledger"
+       href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=0#gid=0"
+       target="_blank">
+      <span><span class="quick-icon">🔍</span>한국의집 원장조회</span>
+      <span>›</span>
+    </a>
+
+  </div>
+
+  <div class="quick-row">
+
+    <a class="quick-gil-in badge-link"
+       href="https://thebigkorea.github.io/gilchaejeong-apgujeong-intranet/daily-worker.html"
+       target="_blank">
+      <span><span class="quick-icon">🏬</span>압구정 길채정 입력</span>
+      <span id="gilchaejeongDailyUnpaidBadgeTop" class="badge unpaid-badge">0</span>
+      <span>›</span>
+    </a>
+
+    <a class="quick-gil-view"
+       href="https://docs.google.com/spreadsheets/d/1UQ-ZTX7m5vncD3vAes77sLsB8kFPOnH759jt5EcZZuY/edit?gid=2024602370#gid=2024602370"
+       target="_blank">
+      <span><span class="quick-icon">🔎</span>압구정 길채정 원장조회</span>
+      <span>›</span>
+    </a>
+
+  </div>
+
+  <a class="quick-interview badge-link"
+     href="applicant-admin.html"
      target="_blank">
+    <span><span class="quick-icon">🧑‍💼</span>면접관리</span>
+    <span id="todayInterviewBadgeTop" class="badge">0</span>
+    <span>›</span>
+  </a>
 
-     영업실적 보고서 조회
-     <span>›</span>
+  <a class="quick-order"
+     href="https://thebigkorea.github.io/koreahouse-intranet/koreahouse-order.html"
+     target="_blank">
+    <span><span class="quick-icon">📦</span>한국의집 통합 발주</span>
+    <span>›</span>
+  </a>
 
+  <a class="quick-attend"
+     href="#"
+     onclick="openAttendanceManage()">
+    <span><span class="quick-icon">⏱️</span>출퇴근 관리</span>
+    <span>›</span>
+  </a>
+
+  <a class="quick-schedule"
+     href="https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=777698556#gid=777698556"
+     target="_blank">
+    <span><span class="quick-icon">🗓️</span>주간 스케줄표</span>
+    <span>›</span>
   </a>
 
 </div>
-      
-
-      <div class="quick-two-buttons">
-
-        <a class="quick-link badge-link"
-           href="daily-worker.html"
-           target="_blank">
-          한국의집 근무내역 입력
-          <span id="koreaDailyUnpaidBadgeTop" class="badge unpaid-badge">0</span>
-          <span>›</span>
-        </a>
-
-        <a class="quick-link"
-           href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=0#gid=0"
-           target="_blank">
-          한국의집 원장조회
-          <span>›</span>
-        </a>
-
-        <a class="quick-link badge-link"
-           href="https://thebigkorea.github.io/gilchaejeong-apgujeong-intranet/daily-worker.html"
-           target="_blank">
-          압구정 길채정 입력
-          <span id="gilchaejeongDailyUnpaidBadgeTop" class="badge unpaid-badge">0</span>
-          <span>›</span>
-        </a>
-
-        <a class="quick-link"
-           href="https://docs.google.com/spreadsheets/d/1UQ-ZTX7m5vncD3vAes77sLsB8kFPOnH759jt5EcZZuY/edit?gid=2024602370#gid=2024602370"
-           target="_blank">
-          압구정 길채정 원장조회
-          <span>›</span>
-        </a>
-
-      </div>
-
-      <a class="quick-link badge-link"
-        href="applicant-admin.html"
-        target="_blank">
-         면접관리
-        <span id="todayInterviewBadgeTop" class="badge">0</span>
-       <span>›</span>
-      </a>
-
-      <a class="quick-btn" href="https://thebigkorea.github.io/koreahouse-intranet/koreahouse-order.html" target="_blank">
-       한국의집 통합 발주
-       <span>›</span>
-      </a>
-
-      <a href="#"onclick="openAttendanceManage()">출퇴근 관리<span>›</span></a>
-
-      <a href="https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=777698556#gid=777698556"
-         target="_blank">
-        주간 스케줄표
-        <span>›</span>
-      </a>
-
-    </div>
   </div>
 </aside>
     </div>
