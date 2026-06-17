@@ -1,0 +1,137 @@
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbyIR9zeGZz14r-5RjUeHL0amYXNVu7QaG-oQ6kmusge__3VZ7C94GW-6PT-B_V_asRT/exec";
+
+window.addEventListener("load", () => {
+  setToday();
+  loadList();
+});
+
+function setToday(){
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+
+  document.getElementById("workDate").value =
+    `${yyyy}-${mm}-${dd}`;
+}
+
+async function saveOvertime(){
+
+  const workDate =
+    document.getElementById("workDate").value;
+
+  const employeeName =
+    document.getElementById("employeeName").value.trim();
+
+  const type =
+    document.getElementById("type").value;
+
+  const hours =
+    document.getElementById("hours").value;
+
+  const reason =
+    document.getElementById("reason").value.trim();
+
+  const memo =
+    document.getElementById("memo").value.trim();
+
+  if(!workDate){
+    alert("근무일자를 입력하세요.");
+    return;
+  }
+
+  if(!employeeName){
+    alert("직원명을 입력하세요.");
+    return;
+  }
+
+  const payload = {
+    action:"save",
+    workDate,
+    employeeName,
+    type,
+    hours,
+    reason,
+    memo,
+    writer:"한국의집",
+    store:"한국의집 롯데월드몰점"
+  };
+
+  try{
+    const res = await fetch(API_URL,{
+      method:"POST",
+      body:JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if(data.success){
+      alert("저장되었습니다.");
+      clearForm();
+      loadList();
+    }else{
+      alert(data.message || "저장 실패");
+    }
+
+  }catch(e){
+    alert("저장 중 오류가 발생했습니다.");
+  }
+}
+
+function clearForm(){
+  document.getElementById("employeeName").value = "";
+  document.getElementById("type").value = "초과근무";
+  document.getElementById("hours").value = "0.5";
+  document.getElementById("reason").value = "";
+  document.getElementById("memo").value = "";
+  setToday();
+}
+
+async function loadList(){
+
+  const tbody =
+    document.getElementById("tbody");
+
+  tbody.innerHTML =
+    `<tr><td colspan="5" class="empty">불러오는 중...</td></tr>`;
+
+  try{
+    const res =
+      await fetch(API_URL + "?action=list&t=" + Date.now());
+
+    const data =
+      await res.json();
+
+    const list =
+      data.list || [];
+
+    if(!list.length){
+      tbody.innerHTML =
+        `<tr><td colspan="5" class="empty">등록된 내역이 없습니다.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML =
+      list.slice(0,20).map(item => `
+        <tr>
+          <td>${safe(item.workDate)}</td>
+          <td>${safe(item.employeeName)}</td>
+          <td>${safe(item.type)}</td>
+          <td>${safe(item.hours)}시간</td>
+          <td>${safe(item.reason)}</td>
+        </tr>
+      `).join("");
+
+  }catch(e){
+    tbody.innerHTML =
+      `<tr><td colspan="5" class="empty">조회 실패</td></tr>`;
+  }
+}
+
+function safe(value){
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+}
