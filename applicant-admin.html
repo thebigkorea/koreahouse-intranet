@@ -238,11 +238,34 @@ tr:hover{
   white-space:pre-wrap;
 }
 
+.status-cell{
+  min-width:110px;
+  text-align:center;
+}
+
 .status-label{
-  font-size:11px;
-  font-weight:700;
+  display:inline-block;
+  white-space:nowrap;
+  font-size:12px;
+  font-weight:900;
   color:#7a4a22;
-  margin-bottom:4px;
+  background:#fff3e3;
+  border:1px solid #e1c6a8;
+  border-radius:999px;
+  padding:4px 10px;
+  margin:8px 0 6px;
+}
+
+.status-select{
+  width:90px;
+  min-width:90px;
+  height:40px;
+  border:1px solid #d8c8b4;
+  border-radius:12px;
+  background:#fff;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
 }
 
 .interviewer-cell{
@@ -433,7 +456,7 @@ function render(list){
     value="${safeAttr(item.interviewer)}">
 </td>
 
-        <td>
+        <td class="status-cell">
           <span class="badge ${badgeClass}">
   ${safe(item.status)}
 </span>
@@ -441,7 +464,7 @@ function render(list){
 <br><br>
 
 <div class="status-label">
-  상태변경
+  상태 선택
 </div>
 
 <select
