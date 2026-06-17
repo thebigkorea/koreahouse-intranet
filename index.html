@@ -1739,23 +1739,17 @@ table{
 
   <div class="quick-row">
 
-  <a
-    href="overtime.html"
-    class="quick-card overtime-input-card">
+  <a href="#"
+   onclick="openOvertimePage('overtime.html')"
+   class="quick-modern">
+   📝 초과근무 입력
+</a>
 
-    <span>📝</span>
-    <span>초과근무 입력</span>
-
-  </a>
-
-  <a
-    href="overtime-admin.html"
-    class="quick-card overtime-admin-card">
-
-    <span>🔍</span>
-    <span>초과근무 조회</span>
-
-  </a>
+<a href="#"
+   onclick="openOvertimePage('overtime-admin.html')"
+   class="quick-modern">
+   🔍 초과근무 조회
+</a>
 
 </div>
 
@@ -2662,6 +2656,23 @@ function openContractLedger(){
     alert("비밀번호가 틀렸습니다.");
 
   }
+}
+</script>
+
+<script>
+function openOvertimePage(url){
+
+  const password =
+    prompt("초과근무관리 비밀번호를 입력하세요.");
+
+  if(password === null) return;
+
+  if(password !== "1234"){
+    alert("비밀번호가 틀렸습니다.");
+    return;
+  }
+
+  window.open(url,"_blank");
 }
 </script>
 
