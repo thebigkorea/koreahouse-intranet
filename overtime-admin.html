@@ -84,19 +84,27 @@
 
   <div class="table-card" id="monthlyBox">
 
-  <h3>월별 초과근무 집계</h3>
+  <div class="monthly-head">
+    <h3 id="monthlyTitle">월별 초과근무 일지</h3>
 
-  <table>
-    <thead>
-      <tr>
-        <th>직원명</th>
-        <th>총시간</th>
-      </tr>
-    </thead>
+    <div>
+      <button onclick="loadMonthlyReport()" class="month-btn">
+        월별일지 생성
+      </button>
 
-    <tbody id="monthlyTbody"></tbody>
+      <button onclick="exportMonthlyExcel()" class="month-btn excel">
+        엑셀출력
+      </button>
+    </div>
+  </div>
 
-  </table>
+  <div class="monthly-scroll">
+    <table id="monthlyTable">
+      <thead id="monthlyThead"></thead>
+      <tbody id="monthlyTbody"></tbody>
+      <tfoot id="monthlyTfoot"></tfoot>
+    </table>
+  </div>
 
 </div>
 

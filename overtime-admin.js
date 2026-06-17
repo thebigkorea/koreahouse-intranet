@@ -246,3 +246,194 @@ function downloadExcel(){
 
   link.click();
 }
+async function loadMonthlyReport(){
+
+  const startDate =
+    document.getElementById("startDate").value;
+
+  if(!startDate){
+    alert("조회 시작일을 선택하세요.");
+    return;
+  }
+
+  const year =
+    Number(startDate.substring(0,4));
+
+  const month =
+    Number(startDate.substring(5,7));
+
+  const title =
+    `한국의집 롯데월드몰점 ${String(year).slice(2)}년 ${String(month).padStart(2,"0")}월 초과근무 내역`;
+
+  document.getElementById("monthlyTitle").textContent =
+    title;
+
+  try{
+
+    const res =
+      await fetch(
+        `${API_URL}?action=monthly&year=${year}&month=${month}&t=${Date.now()}`
+      );
+
+    const data =
+      await res.json();
+
+    if(!data.success){
+      alert("월별 일지를 불러오지 못했습니다.");
+      return;
+    }
+
+    renderMonthlyReport(data.data);
+
+  }catch(e){
+    alert("월별 일지 조회 중 오류가 발생했습니다.");
+  }
+}
+
+function renderMonthlyReport(data){
+
+  const thead =
+    document.getElementById("monthlyThead");
+
+  const tbody =
+    document.getElementById("monthlyTbody");
+
+  const tfoot =
+    document.getElementById("monthlyTfoot");
+
+  const days =
+    data.days || [];
+
+  thead.innerHTML =
+    `<tr>
+      <th>직원명</th>
+      ${
+        days.map(d => `<th>${d}일</th>`).join("")
+      }
+      <th>합계</th>
+    </tr>`;
+
+  if(!data.rows || !data.rows.length){
+
+    tbody.innerHTML =
+      `<tr>
+        <td colspan="${days.length + 2}">
+          등록된 초과근무 내역이 없습니다.
+        </td>
+      </tr>`;
+
+    tfoot.innerHTML = "";
+    return;
+  }
+
+  tbody.innerHTML =
+    data.rows.map(row => {
+
+      let total =
+        Number(row.total || 0);
+
+      return `
+        <tr>
+          <td class="name-cell">${safe(row.employeeName)}</td>
+
+          ${
+            days.map(day => {
+
+              const entries =
+                row.days && row.days[day]
+                ? row.days[day]
+                : [];
+
+              if(!entries.length){
+                return `<td></td>`;
+              }
+
+              const text =
+                entries.map(e => {
+                  const type = e.type || "";
+                  const hours = Number(e.hours || 0);
+
+                  if(type.includes("미휴게")){
+                    return `<span class="red-text">미휴 ${hours}</span>`;
+                  }
+
+                  if(type.includes("휴무")){
+                    return `<span class="red-text">휴무 ${hours}</span>`;
+                  }
+
+                  if(type.includes("조퇴")){
+                    return `<span>조퇴 ${hours}</span>`;
+                  }
+
+                  return `${hours}`;
+                }).join("<br>");
+
+              return `<td>${text}</td>`;
+
+            }).join("")
+          }
+
+          <td class="total-cell">${total}</td>
+        </tr>
+      `;
+
+    }).join("");
+
+  const grandTotal =
+    data.rows.reduce((sum,row) => {
+      return sum + Number(row.total || 0);
+    },0);
+
+  tfoot.innerHTML =
+    `<tr>
+      <td class="total-cell">합계</td>
+      <td colspan="${days.length}"></td>
+      <td class="total-cell">${grandTotal}</td>
+    </tr>`;
+}
+
+function exportMonthlyExcel(){
+
+  const table =
+    document.getElementById("monthlyTable");
+
+  if(!table || !table.innerText.trim()){
+    alert("먼저 월별일지를 생성하세요.");
+    return;
+  }
+
+  const title =
+    document.getElementById("monthlyTitle").textContent || "초과근무일지";
+
+  const html =
+    `
+    <html>
+    <head>
+      <meta charset="UTF-8">
+    </head>
+    <body>
+      <h3>${title}</h3>
+      ${table.outerHTML}
+    </body>
+    </html>
+    `;
+
+  const blob =
+    new Blob(
+      [html],
+      {
+        type:"application/vnd.ms-excel;charset=utf-8;"
+      }
+    );
+
+  const link =
+    document.createElement("a");
+
+  link.href =
+    URL.createObjectURL(blob);
+
+  link.download =
+    title + ".xls";
+
+  link.click();
+}

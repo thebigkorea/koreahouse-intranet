@@ -167,3 +167,73 @@ td{
     padding:14px;
   }
 }
+.monthly-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:18px;
+  border-bottom:1px solid #eee3d6;
+}
+
+.monthly-head h3{
+  margin:0;
+  color:#7a4a22;
+  font-size:21px;
+  font-weight:900;
+}
+
+.month-btn{
+  border:0;
+  border-radius:12px;
+  padding:10px 14px;
+  background:#7a4a22;
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.month-btn.excel{
+  background:#197857;
+}
+
+.monthly-scroll{
+  overflow:auto;
+  padding:12px;
+}
+
+#monthlyTable{
+  border-collapse:collapse;
+  min-width:1400px;
+  background:#fff;
+}
+
+#monthlyTable th,
+#monthlyTable td{
+  border:1px solid #333;
+  padding:6px;
+  text-align:center;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+#monthlyTable th{
+  background:#f1e5d6;
+  font-weight:900;
+}
+
+#monthlyTable .name-cell{
+  min-width:90px;
+  font-weight:900;
+  background:#fffaf2;
+}
+
+#monthlyTable .total-cell{
+  background:#fff3cd;
+  font-weight:900;
+}
+
+#monthlyTable .red-text{
+  color:#d93025;
+  font-weight:900;
+}
