@@ -437,3 +437,45 @@ function exportMonthlyExcel(){
 
   link.click();
 }
+async function approveAllPending(){
+
+  const pendingList =
+    ALL_LIST.filter(item => item.status === "등록");
+
+  if(!pendingList.length){
+    alert("승인할 내역이 없습니다.");
+    return;
+  }
+
+  const ok =
+    confirm(`${pendingList.length}건을 모두 승인 처리할까요?`);
+
+  if(!ok) return;
+
+  for(const item of pendingList){
+
+    await fetch(API_URL,{
+      method:"POST",
+      body:JSON.stringify({
+        action:"save",
+        recordId:item.recordId,
+        workDate:item.workDate,
+        employeeName:item.employeeName,
+        type:item.type,
+        hours:item.hours,
+        reason:item.reason,
+        memo:item.memo,
+        writer:item.writer,
+        store:item.store,
+        status:"승인"
+      })
+    });
+
+  }
+
+  alert("전체 승인 처리되었습니다.");
+
+  document.getElementById("statusFilter").value = "등록";
+
+  loadList();
+}
