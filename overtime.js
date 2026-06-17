@@ -7,6 +7,28 @@ window.addEventListener("load", () => {
   loadList();
 });
 
+document.getElementById("type").addEventListener("change", changeUnitLabel);
+
+function changeUnitLabel(){
+
+  const type =
+    document.getElementById("type").value;
+
+  const label =
+    document.getElementById("hoursLabel");
+
+  if(!label) return;
+
+  if(type === "휴무근무"){
+    label.textContent = "일수";
+  }else if(type === "조퇴"){
+    label.textContent = "차감시간";
+  }else{
+    label.textContent = "시간";
+  }
+}
+
+
 function setToday(){
   const today = new Date();
   const yyyy = today.getFullYear();
