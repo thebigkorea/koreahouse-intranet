@@ -170,3 +170,57 @@ async function loadEmployees(){
 
   }
 }
+function toggleEmployeeBox(){
+  const box = document.getElementById("employeeBox");
+  box.style.display =
+    box.style.display === "none" ? "block" : "none";
+}
+
+async function saveEmployee(){
+
+  const name =
+    document.getElementById("newEmployeeName").value.trim();
+
+  const position =
+    document.getElementById("newEmployeePosition").value.trim();
+
+  const status =
+    document.getElementById("newEmployeeStatus").value;
+
+  if(!name){
+    alert("직원명을 입력하세요.");
+    return;
+  }
+
+  const payload = {
+    action:"saveEmployee",
+    name,
+    position,
+    status
+  };
+
+  try{
+
+    const res = await fetch(API_URL,{
+      method:"POST",
+      body:JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if(data.success){
+      alert("직원정보가 저장되었습니다.");
+
+      document.getElementById("newEmployeeName").value = "";
+      document.getElementById("newEmployeePosition").value = "";
+      document.getElementById("newEmployeeStatus").value = "재직";
+
+      loadEmployees();
+    }else{
+      alert(data.message || "직원 저장 실패");
+    }
+
+  }catch(e){
+    alert("직원 저장 중 오류가 발생했습니다.");
+  }
+}
