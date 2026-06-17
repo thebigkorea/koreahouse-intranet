@@ -311,18 +311,27 @@ function changeUnitLabel(){
   }
 
   if(type === "조퇴"){
-    label.textContent = "차감시간";
-    hours.innerHTML = `
-      <option value="0.5">0.5시간 차감</option>
-      <option value="1">1시간 차감</option>
-      <option value="1.5">1.5시간 차감</option>
-      <option value="2">2시간 차감</option>
-      <option value="2.5">2.5시간 차감</option>
-      <option value="3">3시간 차감</option>
-      <option value="4">4시간 차감</option>
-    `;
-    return;
-  }
+  label.textContent = "차감시간";
+  hours.innerHTML = `
+    <option value="0.5">0.5시간 차감</option>
+    <option value="1">1시간 차감</option>
+    <option value="1.5">1.5시간 차감</option>
+    <option value="2">2시간 차감</option>
+    <option value="2.5">2.5시간 차감</option>
+    <option value="3">3시간 차감</option>
+    <option value="3.5">3.5시간 차감</option>
+    <option value="4">4시간 차감</option>
+    <option value="4.5">4.5시간 차감</option>
+    <option value="5">5시간 차감</option>
+    <option value="5.5">5.5시간 차감</option>
+    <option value="6">6시간 차감</option>
+    <option value="6.5">6.5시간 차감</option>
+    <option value="7">7시간 차감</option>
+    <option value="7.5">7.5시간 차감</option>
+    <option value="8">8시간 차감</option>
+  `;
+  return;
+}
 
   label.textContent = "시간";
   hours.innerHTML = `
