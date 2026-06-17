@@ -1935,22 +1935,22 @@ table{
   <div class="buttons">
 
   <a class="btn primary"
-     href="overtime.html"
-     target="_blank">
-     초과근무 입력
-  </a>
+   href="#"
+   onclick="openOvertimePage('overtime.html')">
+   초과근무 입력
+</a>
 
-  <a class="btn"
-     href="overtime-admin.html"
-     target="_blank">
-     초과근무 조회
-  </a>
+<a class="btn"
+   href="#"
+   onclick="openOvertimePage('overtime-admin.html')">
+   초과근무 조회
+</a>
 
-  <a class="btn"
-     href="https://docs.google.com/spreadsheets/d/1pr_KX9T-DGJ54jeYIKwG48LCW6JUDZIehUvAKkVyeqs/edit?gid=707151453#gid=707151453"
-     target="_blank">
-     초과근무 원장
-  </a>
+<a class="btn"
+   href="#"
+   onclick="openOvertimePage('https://docs.google.com/spreadsheets/d/1pr_KX9T-DGJ54jeYIKwG48LCW6JUDZIehUvAKkVyeqs/edit?gid=707151453#gid=707151453')">
+   초과근무 원장
+</a>
 
 </div>
 
@@ -2595,6 +2595,24 @@ function openContractLedger(){
   }
 }
 </script>
+
+<script>
+function openOvertimePage(url){
+
+  const password =
+    prompt("초과근무관리 비밀번호를 입력하세요.");
+
+  if(password === null) return;
+
+  if(password !== "1234"){
+    alert("비밀번호가 틀렸습니다.");
+    return;
+  }
+
+  window.open(url, "_blank");
+}
+</script>
+
 
 <script>
 function openHrLedger(){
