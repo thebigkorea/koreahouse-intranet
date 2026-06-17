@@ -5,9 +5,15 @@ window.addEventListener("load", () => {
   setToday();
   loadEmployees();
   loadList();
-});
 
-document.getElementById("type").addEventListener("change", changeUnitLabel);
+  const typeSelect =
+    document.getElementById("type");
+
+  if(typeSelect){
+    typeSelect.addEventListener("change", changeUnitLabel);
+    changeUnitLabel();
+  }
+});
 
 function changeUnitLabel(){
 
@@ -109,6 +115,7 @@ function clearForm(){
   document.getElementById("reason").value = "";
   document.getElementById("memo").value = "";
   setToday();
+  changeUnitLabel();
 }
 
 async function loadList(){
