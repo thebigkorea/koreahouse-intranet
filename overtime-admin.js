@@ -5,6 +5,7 @@ let ALL_LIST = [];
 
 window.addEventListener("load", () => {
   setThisMonth();
+  document.getElementById("statusFilter").value = "등록";
   loadList();
 });
 
@@ -16,6 +17,7 @@ function setThisMonth(){
 
   document.getElementById("startDate").value = `${y}-${m}-01`;
   document.getElementById("endDate").value = `${y}-${m}-${String(last).padStart(2,"0")}`;
+  document.getElementById("statusFilter").value = "등록";
 }
 
 async function loadList(){
@@ -473,9 +475,8 @@ async function approveAllPending(){
 
   }
 
-  alert("전체 승인 처리되었습니다.");
+  alert("전체 승인 완료");
 
-  document.getElementById("statusFilter").value = "등록";
-
-  loadList();
+document.getElementById("statusFilter").value = "등록";
+loadList();
 }
