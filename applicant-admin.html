@@ -143,10 +143,19 @@ tr:hover{
 }
 
 .note-toggle{
-  background:#f1e5d6;
-  color:#3b2414;
+  background:#7a4a22;
+  color:#fff;
   width:100%;
   margin-bottom:8px;
+  border:2px solid #3b2414;
+  font-size:14px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.note-toggle::after{
+  content:" ▼";
+  font-size:12px;
 }
 
 .note-options{
@@ -155,6 +164,23 @@ tr:hover{
   border-radius:12px;
   padding:10px;
   background:#fffaf4;
+}
+
+.opinion-box{
+  margin-top:10px;
+}
+
+.opinion-box label{
+  display:block;
+  font-size:13px;
+  font-weight:900;
+  margin-bottom:6px;
+  color:#3b2414;
+}
+
+.opinion-box textarea{
+  min-height:90px;
+  background:#fff;
 }
 
 .note-options.open{
@@ -212,6 +238,8 @@ tr:hover{
   white-space:pre-wrap;
 }
 
+
+
 </style>
 </head>
 
@@ -255,8 +283,7 @@ tr:hover{
           <th>면접담당</th>
           <th>상태</th>
           <th>등록비고</th>
-          <th>면접내용</th>
-          <th>최종의견</th>
+          <th>면접내용 / 최종의견</th>
           <th>불참</th>
           <th>저장</th>
         </tr>
@@ -346,7 +373,7 @@ function render(list){
 
     tbody.innerHTML =
       `<tr>
-        <td colspan="12" style="text-align:center;padding:40px;">
+        <td colspan="11" style="text-align:center;padding:40px;">
           지원자가 없습니다.
         </td>
       </tr>`;
@@ -498,15 +525,18 @@ function render(list){
                  </div>`
               : ""
             }
+            <div class="opinion-box">
+             <label>최종의견</label>
+               <textarea
+                 id="opinion_${item.applicantId}"
+                 placeholder="면접 후 최종 의견을 입력하세요.">${safe(item.finalOpinion)}</textarea>
+            </div>  
 
           </div>
 
         </td>
 
-        <td class="memo">
-          <textarea
-            id="opinion_${item.applicantId}">${safe(item.finalOpinion)}</textarea>
-        </td>
+        
 
         <td>
           ${
