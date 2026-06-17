@@ -238,7 +238,20 @@ tr:hover{
   white-space:pre-wrap;
 }
 
+.status-label{
+  font-size:11px;
+  font-weight:700;
+  color:#7a4a22;
+  margin-bottom:4px;
+}
 
+.interviewer-cell{
+  min-width:120px;
+}
+
+.interviewer-cell input{
+  min-width:100px;
+}
 
 </style>
 </head>
@@ -280,11 +293,10 @@ tr:hover{
           <th>매장</th>
           <th>직무</th>
           <th>면접일정</th>
-          <th>면접담당</th>
+          <th>면접관</th>
           <th>상태</th>
           <th>등록비고</th>
-          <th>면접내용 / 최종의견</th>
-          <th>불참</th>
+          <th>면접내용 / 최종의견</th>          
           <th>저장</th>
         </tr>
       </thead>
@@ -415,27 +427,35 @@ function render(list){
             value="${item.interviewTime || ""}">
         </td>
 
-        <td>
-          <input
-            id="interviewer_${item.applicantId}"
-            value="${safeAttr(item.interviewer)}">
-        </td>
+        <td class="interviewer-cell">
+  <input
+    id="interviewer_${item.applicantId}"
+    value="${safeAttr(item.interviewer)}">
+</td>
 
         <td>
           <span class="badge ${badgeClass}">
-            ${safe(item.status)}
-          </span>
+  ${safe(item.status)}
+</span>
 
-          <br><br>
+<br><br>
 
-          <select id="status_${item.applicantId}">
-            <option ${selected(item.status,"예정")}>예정</option>
-            <option ${selected(item.status,"완료")}>완료</option>
-            <option ${selected(item.status,"불참")}>불참</option>
-            <option ${selected(item.status,"보류")}>보류</option>
-            <option ${selected(item.status,"채용")}>채용</option>
-            <option ${selected(item.status,"불합격")}>불합격</option>
-          </select>
+<div class="status-label">
+  상태변경
+</div>
+
+<select
+  id="status_${item.applicantId}"
+  class="status-select">
+
+  <option ${selected(item.status,"예정")}>예정</option>
+  <option ${selected(item.status,"완료")}>완료</option>
+  <option ${selected(item.status,"불참")}>불참</option>
+  <option ${selected(item.status,"보류")}>보류</option>
+  <option ${selected(item.status,"채용")}>채용</option>
+  <option ${selected(item.status,"불합격")}>불합격</option>
+
+</select>
         </td>
 
         <td class="register-memo">
