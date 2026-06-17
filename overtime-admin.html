@@ -42,8 +42,19 @@
       </select>
     </div>
 
-    <button onclick="loadList()">조회</button>
-  </div>
+    <button onclick="loadList()">
+     조회
+    </button>
+
+    <button onclick="loadMonthly()">
+    월별집계
+    </button>
+
+    <button onclick="downloadExcel()">
+    엑셀출력
+    </button>
+
+   </div>
 
   <div class="summary">
     <div>전체 <strong id="totalCount">0</strong>건</div>
@@ -70,6 +81,26 @@
       <tbody id="tbody"></tbody>
     </table>
   </div>
+
+  <div class="table-card" id="monthlyBox">
+
+  <h3>월별 초과근무 집계</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>직원명</th>
+        <th>총시간</th>
+      </tr>
+    </thead>
+
+    <tbody id="monthlyTbody"></tbody>
+
+  </table>
+
+</div>
+
+
 
 </div>
 

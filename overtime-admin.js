@@ -179,3 +179,70 @@ function safe(value){
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;");
 }
+async function loadMonthly(){
+
+  const ym =
+    document
+      .getElementById("startDate")
+      .value
+      .substring(0,7);
+
+  const res =
+    await fetch(API_URL,{
+      method:"POST",
+      body:JSON.stringify({
+        action:"monthly",
+        ym
+      })
+    });
+
+  const data =
+    await res.json();
+
+  const tbody =
+    document.getElementById("monthlyTbody");
+
+  tbody.innerHTML =
+    (data.list || []).map(item=>`
+      <tr>
+        <td>${item.employeeName}</td>
+        <td>${item.totalHours}</td>
+      </tr>
+    `).join("");
+}
+
+function downloadExcel(){
+
+  let csv =
+    "직원명,총시간\n";
+
+  document
+    .querySelectorAll("#monthlyTbody tr")
+    .forEach(tr=>{
+
+      const td =
+        tr.querySelectorAll("td");
+
+      csv +=
+        `${td[0].innerText},${td[1].innerText}\n`;
+    });
+
+  const blob =
+    new Blob(
+      [csv],
+      {
+        type:"text/csv;charset=utf-8;"
+      }
+    );
+
+  const link =
+    document.createElement("a");
+
+  link.href =
+    URL.createObjectURL(blob);
+
+  link.download =
+    "초과근무집계.csv";
+
+  link.click();
+}
