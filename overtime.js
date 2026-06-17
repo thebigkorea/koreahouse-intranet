@@ -23,14 +23,52 @@ function changeUnitLabel(){
   const label =
     document.getElementById("hoursLabel");
 
-  if(!label) return;
+  const hours =
+    document.getElementById("hours");
+
+  if(!label || !hours) return;
 
   if(type === "휴무근무"){
+
     label.textContent = "일수";
+
+    hours.innerHTML = `
+      <option value="0.5">0.5일</option>
+      <option value="1">1일</option>
+      <option value="1.5">1.5일</option>
+      <option value="2">2일</option>
+      <option value="3">3일</option>
+      <option value="4">4일</option>
+    `;
+
   }else if(type === "조퇴"){
+
     label.textContent = "차감시간";
+
+    hours.innerHTML = `
+      <option value="0.5">0.5시간 차감</option>
+      <option value="1">1시간 차감</option>
+      <option value="1.5">1.5시간 차감</option>
+      <option value="2">2시간 차감</option>
+      <option value="2.5">2.5시간 차감</option>
+      <option value="3">3시간 차감</option>
+      <option value="4">4시간 차감</option>
+    `;
+
   }else{
+
     label.textContent = "시간";
+
+    hours.innerHTML = `
+      <option value="0.5">0.5</option>
+      <option value="1">1</option>
+      <option value="1.5">1.5</option>
+      <option value="2">2</option>
+      <option value="2.5">2.5</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    `;
   }
 }
 
