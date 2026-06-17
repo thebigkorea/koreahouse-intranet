@@ -58,11 +58,18 @@ input,select{
 
 .search-card button{
   margin-top:25px;
+  height:56px;
+  min-width:220px;
+
   border:0;
   border-radius:12px;
+
   background:#7a4a22;
   color:white;
+
+  font-size:16px;
   font-weight:900;
+
   cursor:pointer;
 }
 
@@ -235,5 +242,10 @@ td{
 
 #monthlyTable .red-text{
   color:#d93025;
+  font-weight:900;
+}
+.bulk-btn{
+  height:56px !important;
+  font-size:16px;
   font-weight:900;
 }
