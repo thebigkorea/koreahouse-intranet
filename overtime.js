@@ -3,6 +3,7 @@ const API_URL =
 
 window.addEventListener("load", () => {
   setToday();
+  loadEmployees();
   loadList();
 });
 
@@ -134,4 +135,38 @@ function safe(value){
     .replace(/&/g,"&amp;")
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;");
+}
+async function loadEmployees(){
+
+  const select =
+    document.getElementById("employeeName");
+
+  select.innerHTML =
+    `<option value="">직원을 선택하세요</option>`;
+
+  try{
+
+    const res =
+      await fetch(API_URL + "?action=employees&t=" + Date.now());
+
+    const data =
+      await res.json();
+
+    const list =
+      data.list || [];
+
+    select.innerHTML =
+      `<option value="">직원을 선택하세요</option>` +
+      list.map(emp => `
+        <option value="${safe(emp.name)}">
+          ${safe(emp.name)}${emp.position ? " / " + safe(emp.position) : ""}
+        </option>
+      `).join("");
+
+  }catch(e){
+
+    select.innerHTML =
+      `<option value="">직원목록 조회 실패</option>`;
+
+  }
 }
