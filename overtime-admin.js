@@ -235,33 +235,25 @@ async function loadMonthlyReport(){
 
 function renderMonthlyReport(data){
 
-  const thead =
-    document.getElementById("monthlyThead");
+  const thead = document.getElementById("monthlyThead");
+  const tbody = document.getElementById("monthlyTbody");
+  const tfoot = document.getElementById("monthlyTfoot");
 
-  const tbody =
-    document.getElementById("monthlyTbody");
-
-  const tfoot =
-    document.getElementById("monthlyTfoot");
-
-  const days =
-    data.days || [];
+  const days = data.days || [];
 
   thead.innerHTML =
     `<tr>
       <th>직원명</th>
-      ${
-        days.map(d => `<th>${d}일</th>`).join("")
-      }
+      ${days.map(d => `<th>${d}일</th>`).join("")}
       <th>시간합계</th>
       <th>미휴일수</th>
+      <th>연차미사용</th>
     </tr>`;
 
   if(!data.rows || !data.rows.length){
-
     tbody.innerHTML =
       `<tr>
-        <td colspan="${days.length + 3}">
+        <td colspan="${days.length + 4}">
           등록된 초과근무 내역이 없습니다.
         </td>
       </tr>`;
@@ -272,12 +264,14 @@ function renderMonthlyReport(data){
 
   let grandHourTotal = 0;
   let grandOffDayTotal = 0;
+  let grandUnusedAnnualTotal = 0;
 
   tbody.innerHTML =
     data.rows.map(row => {
 
       let hourTotal = 0;
       let offDayTotal = 0;
+      let unusedAnnualTotal = 0;
 
       const dayCells =
         days.map(day => {
@@ -294,15 +288,17 @@ function renderMonthlyReport(data){
           const text =
             entries.map(e => {
 
-              const type =
-                e.type || "";
-
-              const hours =
-                Number(e.hours || 0);
+              const type = e.type || "";
+              const hours = Number(e.hours || 0);
 
               if(type === "휴무근무"){
                 offDayTotal += hours;
                 return `<span class="red-text">미휴 ${hours}</span>`;
+              }
+
+              if(type === "연차미사용"){
+                unusedAnnualTotal += hours;
+                return `<span class="red-text">연차 ${hours}</span>`;
               }
 
               if(type === "조퇴"){
@@ -326,6 +322,7 @@ function renderMonthlyReport(data){
 
       grandHourTotal += hourTotal;
       grandOffDayTotal += offDayTotal;
+      grandUnusedAnnualTotal += unusedAnnualTotal;
 
       return `
         <tr>
@@ -333,6 +330,7 @@ function renderMonthlyReport(data){
           ${dayCells}
           <td class="total-cell">${hourTotal}</td>
           <td class="total-cell">${offDayTotal}</td>
+          <td class="total-cell">${unusedAnnualTotal}</td>
         </tr>
       `;
 
@@ -344,6 +342,7 @@ function renderMonthlyReport(data){
       <td colspan="${days.length}"></td>
       <td class="total-cell">${grandHourTotal}</td>
       <td class="total-cell">${grandOffDayTotal}</td>
+      <td class="total-cell">${grandUnusedAnnualTotal}</td>
     </tr>`;
 }
 

@@ -28,7 +28,7 @@ function changeUnitLabel(){
 
   if(!label || !hours) return;
 
-  if(type === "휴무근무"){
+  if(type === "휴무근무" || type === "연차미사용"){
 
     label.textContent = "일수";
 
