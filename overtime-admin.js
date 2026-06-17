@@ -127,9 +127,16 @@ async function changeStatus(recordId,status){
     const data = await res.json();
 
     if(data.success){
-      alert(`${status} 처리되었습니다.`);
-      loadList();
-    }else{
+
+  alert(`${status} 처리되었습니다.`);
+
+  if(status === "승인"){
+    document.getElementById("statusFilter").value = "등록";
+  }
+
+  loadList();
+
+}else{
       alert(data.message || "처리 실패");
     }
 
@@ -181,73 +188,7 @@ function safe(value){
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;");
 }
-async function loadMonthly(){
 
-  const ym =
-    document
-      .getElementById("startDate")
-      .value
-      .substring(0,7);
-
-  const res =
-    await fetch(API_URL,{
-      method:"POST",
-      body:JSON.stringify({
-        action:"monthly",
-        ym
-      })
-    });
-
-  const data =
-    await res.json();
-
-  const tbody =
-    document.getElementById("monthlyTbody");
-
-  tbody.innerHTML =
-    (data.list || []).map(item=>`
-      <tr>
-        <td>${item.employeeName}</td>
-        <td>${item.totalHours}</td>
-      </tr>
-    `).join("");
-}
-
-function downloadExcel(){
-
-  let csv =
-    "직원명,총시간\n";
-
-  document
-    .querySelectorAll("#monthlyTbody tr")
-    .forEach(tr=>{
-
-      const td =
-        tr.querySelectorAll("td");
-
-      csv +=
-        `${td[0].innerText},${td[1].innerText}\n`;
-    });
-
-  const blob =
-    new Blob(
-      [csv],
-      {
-        type:"text/csv;charset=utf-8;"
-      }
-    );
-
-  const link =
-    document.createElement("a");
-
-  link.href =
-    URL.createObjectURL(blob);
-
-  link.download =
-    "초과근무집계.csv";
-
-  link.click();
-}
 async function loadMonthlyReport(){
 
   const startDate =
@@ -312,14 +253,15 @@ function renderMonthlyReport(data){
       ${
         days.map(d => `<th>${d}일</th>`).join("")
       }
-      <th>합계</th>
+      <th>시간합계</th>
+      <th>미휴일수</th>
     </tr>`;
 
   if(!data.rows || !data.rows.length){
 
     tbody.innerHTML =
       `<tr>
-        <td colspan="${days.length + 2}">
+        <td colspan="${days.length + 3}">
           등록된 초과근무 내역이 없습니다.
         </td>
       </tr>`;
@@ -328,69 +270,80 @@ function renderMonthlyReport(data){
     return;
   }
 
+  let grandHourTotal = 0;
+  let grandOffDayTotal = 0;
+
   tbody.innerHTML =
     data.rows.map(row => {
 
-      let total =
-        Number(row.total || 0);
+      let hourTotal = 0;
+      let offDayTotal = 0;
+
+      const dayCells =
+        days.map(day => {
+
+          const entries =
+            row.days && row.days[day]
+            ? row.days[day]
+            : [];
+
+          if(!entries.length){
+            return `<td></td>`;
+          }
+
+          const text =
+            entries.map(e => {
+
+              const type =
+                e.type || "";
+
+              const hours =
+                Number(e.hours || 0);
+
+              if(type === "휴무근무"){
+                offDayTotal += hours;
+                return `<span class="red-text">미휴 ${hours}</span>`;
+              }
+
+              if(type === "조퇴"){
+                hourTotal -= hours;
+                return `<span class="red-text">-${hours}</span>`;
+              }
+
+              hourTotal += hours;
+
+              if(type === "미휴게"){
+                return `<span class="red-text">${hours}</span>`;
+              }
+
+              return `${hours}`;
+
+            }).join("<br>");
+
+          return `<td>${text}</td>`;
+
+        }).join("");
+
+      grandHourTotal += hourTotal;
+      grandOffDayTotal += offDayTotal;
 
       return `
         <tr>
           <td class="name-cell">${safe(row.employeeName)}</td>
-
-          ${
-            days.map(day => {
-
-              const entries =
-                row.days && row.days[day]
-                ? row.days[day]
-                : [];
-
-              if(!entries.length){
-                return `<td></td>`;
-              }
-
-              const text =
-                entries.map(e => {
-                  const type = e.type || "";
-                  const hours = Number(e.hours || 0);
-
-                  if(type.includes("미휴게")){
-                    return `<span class="red-text">미휴 ${hours}</span>`;
-                  }
-
-                  if(type.includes("휴무")){
-                    return `<span class="red-text">휴무 ${hours}</span>`;
-                  }
-
-                  if(type.includes("조퇴")){
-                    return `<span>조퇴 ${hours}</span>`;
-                  }
-
-                  return `${hours}`;
-                }).join("<br>");
-
-              return `<td>${text}</td>`;
-
-            }).join("")
-          }
-
-          <td class="total-cell">${total}</td>
+          ${dayCells}
+          <td class="total-cell">${hourTotal}</td>
+          <td class="total-cell">${offDayTotal}</td>
         </tr>
       `;
 
     }).join("");
 
-  const grandTotal =
-    data.rows.reduce((sum,row) => {
-      return sum + Number(row.total || 0);
-    },0);
-
   tfoot.innerHTML =
     `<tr>
-      <td class="total-cell">합계</td>
+      <td class="total-cell">전체합계</td>
       <td colspan="${days.length}"></td>
-      <td class="total-cell">${grandTotal}</td>
+      <td class="total-cell">${grandHourTotal}</td>
+      <td class="total-cell">${grandOffDayTotal}</td>
     </tr>`;
 }
 
