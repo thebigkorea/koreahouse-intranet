@@ -38,7 +38,7 @@
 
       <div>
         <label>구분</label>
-        <select id="type">
+        <select id="type" onchange="changeUnitLabel()">
           <option>초과근무</option>
           <option>미휴게</option>
           <option>특근</option>
@@ -49,8 +49,8 @@
       </div>
 
       <div>
-        <label>시간</label>
-        <select id="hours">
+        <label id="hoursLabel">시간</label>
+         <select id="hours">
           <option value="0.5">0.5</option>
           <option value="1">1</option>
           <option value="1.5">1.5</option>
