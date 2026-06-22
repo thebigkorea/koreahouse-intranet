@@ -499,6 +499,17 @@
     renderHallItems();
   }
 
+  function formatDate(dateStr){
+
+  const d = new Date(dateStr);
+
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+
+  return `${y}-${m}-${day}`;
+}
+
   async function deleteHallItem(id){
     if(!confirm("삭제하시겠습니까?")) return;
 
@@ -521,6 +532,34 @@
     renderHallItems();
   }
 
+  async function completeHallItem(id){
+
+  if(!confirm("발주완료 처리하시겠습니까?")){
+    return;
+  }
+
+  const form = new FormData();
+
+  form.append("action","completeHallItem");
+  form.append("id",id);
+
+  const res = await fetch(API_URL,{
+    method:"POST",
+    body:form
+  });
+
+  const data = await res.json();
+
+  if(!data.success){
+    alert(data.message || "처리에 실패했습니다.");
+    return;
+  }
+
+  renderHallItems();
+}
+
+  
+
   async function renderHallItems(){
     const list = document.getElementById("hallList");
 
@@ -536,7 +575,7 @@
     const today = todayStr();
 
     const items = data.items
-      .filter(item => item.date >= today)
+      .filter(item => item.status !== "삭제")
       .sort((a,b) => a.date.localeCompare(b.date));
 
     if(items.length === 0){
@@ -545,14 +584,53 @@
     }
 
     list.innerHTML = items.map(item => `
-      <div class="hall-item">
-        <div>
-          <strong>${item.date}</strong><br>
-          ${item.text}
-        </div>
-        <button onclick="deleteHallItem('${item.id}')">삭제</button>
-      </div>
-    `).join("");
+  <div class="hall-item">
+    <div>
+      <strong>${formatDate(item.date)}</strong><br>
+
+      ${item.text}
+
+      ${
+        item.status === "발주완료"
+        ? `<div style="
+            margin-top:6px;
+            color:#2f7d43;
+            font-weight:800;
+          ">
+            ✓ 발주완료
+          </div>`
+        : ""
+      }
+    </div>
+
+    <div style="
+      display:flex;
+      gap:8px;
+      align-items:flex-start;
+    ">
+
+      ${
+        item.status !== "발주완료"
+        ? `
+        <button
+          style="
+            background:#2f7d43;
+            color:#fff;
+          "
+          onclick="completeHallItem('${item.id}')">
+          발주완료
+        </button>
+        `
+        : ""
+      }
+
+      <button onclick="deleteHallItem('${item.id}')">
+        삭제
+      </button>
+
+    </div>
+  </div>
+`).join("");
   }
 
   document.addEventListener("DOMContentLoaded", () => {
