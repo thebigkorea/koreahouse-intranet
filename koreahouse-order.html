@@ -447,7 +447,8 @@
   </main>
 
   <script>
-  const STORAGE_KEY = "koreahouse_hall_items";
+  const API_URL =
+    "https://script.google.com/macros/s/AKfycbzWZGC317IPlIiLj0vbApl0JuedU7ogn9oo9OD67pBD57_Nwyp-5nHMhWV6H1pQNL_1Mw/exec";
 
   function todayStr(){
     const d = new Date();
@@ -457,21 +458,12 @@
     return `${y}-${m}-${day}`;
   }
 
-  function getItems(){
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  async function getHallItems(){
+    const res = await fetch(`${API_URL}?action=getHallItems`);
+    return await res.json();
   }
 
-  function saveItems(items){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }
-
-  function cleanOldItems(){
-    const today = todayStr();
-    const items = getItems().filter(item => item.date >= today);
-    saveItems(items);
-  }
-
-  function addHallItem(){
+  async function addHallItem(){
     const date = document.getElementById("hallDate").value;
     const text = document.getElementById("hallItem").value.trim();
 
@@ -485,30 +477,67 @@
       return;
     }
 
-    const items = getItems();
-    items.push({
-      id: Date.now(),
-      date,
-      text
+    const form = new FormData();
+    form.append("action", "addHallItem");
+    form.append("date", date);
+    form.append("text", text);
+    form.append("writer", "");
+
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: form
     });
 
-    saveItems(items);
+    const data = await res.json();
+
+    if(!data.success){
+      alert(data.message || "등록에 실패했습니다.");
+      return;
+    }
 
     document.getElementById("hallItem").value = "";
     renderHallItems();
   }
 
-  function deleteHallItem(id){
-    const items = getItems().filter(item => item.id !== id);
-    saveItems(items);
+  async function deleteHallItem(id){
+    if(!confirm("삭제하시겠습니까?")) return;
+
+    const form = new FormData();
+    form.append("action", "deleteHallItem");
+    form.append("id", id);
+
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: form
+    });
+
+    const data = await res.json();
+
+    if(!data.success){
+      alert(data.message || "삭제에 실패했습니다.");
+      return;
+    }
+
     renderHallItems();
   }
 
-  function renderHallItems(){
-    cleanOldItems();
-
+  async function renderHallItems(){
     const list = document.getElementById("hallList");
-    const items = getItems().sort((a,b) => a.date.localeCompare(b.date));
+
+    list.innerHTML = `<p style="color:#7b6a5c;">불러오는 중...</p>`;
+
+    const data = await getHallItems();
+
+    if(!data.success){
+      list.innerHTML = `<p style="color:#c0392b;">목록을 불러오지 못했습니다.</p>`;
+      return;
+    }
+
+    const today = todayStr();
+
+    const items = data.items
+      .filter(item => item.date >= today)
+      .sort((a,b) => a.date.localeCompare(b.date));
 
     if(items.length === 0){
       list.innerHTML = `<p style="color:#7b6a5c;">등록된 홀 필요물품이 없습니다.</p>`;
@@ -521,7 +550,7 @@
           <strong>${item.date}</strong><br>
           ${item.text}
         </div>
-        <button onclick="deleteHallItem(${item.id})">삭제</button>
+        <button onclick="deleteHallItem('${item.id}')">삭제</button>
       </div>
     `).join("");
   }
