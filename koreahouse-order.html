@@ -592,7 +592,10 @@
     const today = todayStr();
 
     const items = data.items
-      .filter(item => item.status !== "삭제")
+      .filter(item =>
+       item.status !== "삭제" &&
+       item.date >= todayStr()
+      )
       .sort((a,b) => a.date.localeCompare(b.date));
 
     if(items.length === 0){
