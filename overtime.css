@@ -649,3 +649,48 @@ body.modal-open{
 .monthly-overtime-table{
   min-width:100%;
 }
+/* 월간표 가로 스크롤 */
+.monthly-table-wrap{
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  border:1px solid #e5e5e5;
+  border-radius:12px;
+}
+
+/* 스크롤바 항상 표시 */
+.monthly-table-wrap::-webkit-scrollbar{
+  height:14px;
+}
+
+.monthly-table-wrap::-webkit-scrollbar-track{
+  background:#f1f1f1;
+}
+
+.monthly-table-wrap::-webkit-scrollbar-thumb{
+  background:#b6b6b6;
+  border-radius:8px;
+}
+
+.monthly-table-wrap::-webkit-scrollbar-thumb:hover{
+  background:#8c8c8c;
+}
+
+.monthly-overtime-table{
+  min-width:1800px;   /* 직원 수에 맞게 1800~2500 정도 */
+}
+.horizontal-scrollbar{
+    position:sticky;
+    bottom:0;
+    width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    height:18px;
+    background:#fff;
+    z-index:999;
+    border-top:1px solid #ddd;
+}
+
+.horizontal-scrollbar div{
+    height:1px;
+}

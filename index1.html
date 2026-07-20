@@ -1,0 +1,2893 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>한국의집 업무포털</title>
+  <meta name="description" content="한국의집 내부 직원용 업무포털" />
+  <meta name="theme-color" content="#8a5a2b" />
+  <link rel="icon"
+        href="./images/portal-icon-512.png">
+
+  <link rel="apple-touch-icon"
+        href="./images/portal-icon-512.png">
+
+
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --brown:#7a4a22;
+      --brown-dark:#3b2414;
+      --gold:#b88948;
+      --cream:#f8f3ea;
+      --paper:#fffaf2;
+      --ink:#24170f;
+      --muted:#75685c;
+      --line:#e8dccb;
+      --blue:#0f6b8f;
+      --green:#197857;
+      --red:#a94438;
+      --shadow:0 18px 45px rgba(52,32,16,.14);
+      --radius:24px;
+    }
+
+    body {
+      margin:0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", Arial, sans-serif;
+      color:var(--ink);
+      background:linear-gradient(180deg,#f6efe4 0%,#fff 48%,#f8f3ea 100%);
+    }
+
+    a { color:inherit; text-decoration:none; }
+
+    .btn{
+  position:relative;
+}
+
+.menu-dropdown{
+  position:relative;
+}
+
+.menu-dropdown > a{
+  display:block;
+}
+
+.submenu{
+  display:none;
+  position:absolute;
+  top:42px;
+  left:0;
+  min-width:220px;
+  background:#fffaf2;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:10px;
+  box-shadow:0 16px 35px rgba(0,0,0,.18);
+  z-index:9999;
+}
+
+.submenu a{
+  display:block;
+  padding:12px 14px;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.submenu a:hover{
+  background:#efe4d4;
+}
+
+.menu-dropdown:hover .submenu{
+  display:block;
+}
+
+
+.quick-modern{
+  display:grid;
+  gap:14px;
+  margin-top:24px;
+}
+
+.quick-modern a{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 18px;
+  border-radius:18px;
+  font-size:15px;
+  font-weight:900;
+  border:1px solid rgba(122,74,34,.14);
+  box-shadow:0 8px 20px rgba(52,32,16,.07);
+}
+
+.quick-modern a:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 28px rgba(52,32,16,.13);
+}
+
+.quick-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.quick-icon{
+  font-size:22px;
+  margin-right:8px;
+}
+
+.quick-reserve{background:#fff8ec;color:#6b3f17;}
+.quick-sales-in{background:#e9fff4;color:#07803d;}
+.quick-sales-view{background:#eafaf0;color:#126a3a;}
+.quick-daily{background:#f1ecff;color:#6444b8;}
+.quick-ledger{background:#f3efff;color:#5b3ca8;}
+.quick-gil-in{background:#fff1e5;color:#d95f00;}
+.quick-gil-view{background:#fff4e8;color:#c65300;}
+.quick-interview{background:#eaf6ff;color:#2878c9;}
+.quick-order{background:#fff7df;color:#a76a00;}
+.quick-attend{background:#ffeef0;color:#cf3d4a;}
+.quick-schedule{background:#f4f4f4;color:#444;}
+
+@media(max-width:560px){
+  .quick-row{
+    grid-template-columns:1fr;
+  }
+}
+
+
+.badge-count{
+  position:absolute;
+  top:-8px;
+  right:-8px;
+  min-width:22px;
+  height:22px;
+  padding:0 6px;
+  border-radius:999px;
+  background:#ef2525;
+  color:white;
+  font-size:12px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+    .topbar {
+      position:sticky;
+      top:0;
+      z-index:100;
+      background:rgba(255,250,242,.92);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+    }
+
+    .quick-two-buttons{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .contract-buttons{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .contract-buttons .contract-btn:last-child{
+      grid-column:1 / 3;
+    }
+
+    .nav {
+      max-width:1200px;
+      margin:0 auto;
+      padding:18px 22px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+    }
+
+    .logo {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:210px;
+    }
+
+    .quick-two-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.quick-list .quick-small {
+  justify-content: center;
+  font-size: 15px;
+  padding: 14px 12px;
+  position: relative;
+}
+
+.badge-link {
+  position: relative;
+}
+
+.badge,
+.unpaid-badge {
+  display: none;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #d93025;
+  color: #fff;
+  font-size: 13px !important;
+  font-weight: 900;
+  align-items: center;
+  justify-content: center;
+  line-height: 26px;
+  z-index: 999;
+  box-shadow: 0 4px 10px rgba(0,0,0,.25);
+}
+
+.quick-list a .badge,
+.quick-list a .unpaid-badge,
+.report-btn .badge,
+.report-btn .unpaid-badge {
+  font-size: 13px !important;
+  line-height: 26px !important;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.report-btn {
+  position: relative;
+  text-align: center;
+  padding: 16px 12px;
+  border-radius: 14px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.report-btn.brown {
+  background: #8b572a;
+  color: #fff;
+}
+
+.report-btn.beige {
+  background: #f1e7d8;
+  color: #2b1b10;
+}
+
+.badge-wrap {
+  position: relative;
+}
+
+.badge-new {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #e53935;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,.25);
+}
+
+    .logo-mark {
+      width:42px;
+      height:42px;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--gold),var(--brown));
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-weight:900;
+      box-shadow:0 10px 20px rgba(122,74,34,.24);
+    }
+
+    .logo-text strong {
+      display:block;
+      font-size:20px;
+      letter-spacing:-.04em;
+    }
+
+    .logo-text span {
+      display:block;
+      font-size:11px;
+      color:var(--muted);
+      letter-spacing:.13em;
+      margin-top:2px;
+    }
+
+    .menu {
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .menu a {
+      padding:10px 13px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:14px;
+      color:#4b382b;
+    }
+
+    .menu a:hover {
+      background:#efe3d2;
+      color:var(--brown-dark);
+    }
+
+   .hero {
+  position: relative;
+  min-height: 100vh;
+  max-width: none;
+  margin: 0;
+  padding: 120px 70px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.82) 0%,
+      rgba(255,255,255,.58) 34%,
+      rgba(255,255,255,.08) 62%,
+      rgba(255,255,255,0) 100%
+    ),
+    url('./images/main.jpg') center center/cover no-repeat;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,.06);
+  backdrop-filter:none;
+  pointer-events:none;
+}
+
+.hero-card{
+  position:relative;
+  z-index:2;
+  max-width:720px;
+  padding:0;
+  background:none;
+  box-shadow:none;
+  min-height:auto;
+}
+
+.eyebrow{
+  color:#b88948;
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:.26em;
+  margin-bottom:20px;
+  text-shadow:0 2px 6px rgba(255,255,255,.7);
+}
+
+.hero h1{
+  font-size:64px;
+  line-height:1.08;
+  margin:0 0 24px;
+  letter-spacing:-0.08em;
+  color:#2b1b10;
+  text-shadow:0 2px 10px rgba(255,255,255,.65);
+}
+
+.hero p{
+  max-width:660px;
+  font-size:19px;
+  line-height:1.8;
+  color:#2f2f2f;
+  font-weight:700;
+  text-shadow:0 2px 8px rgba(255,255,255,.65);
+}
+
+.notice-card{
+  position:relative;
+  z-index:2;
+  width:460px;
+  border-radius:34px;
+  background:rgba(255,255,255,.92);
+  padding:42px;
+  box-shadow:0 30px 80px rgba(0,0,0,.28);
+  backdrop-filter:blur(12px);
+}
+
+.notice-card h2{
+  font-size:42px;
+  margin:0 0 18px;
+  letter-spacing:-0.06em;
+}
+
+.quick-list{
+  gap:18px;
+  margin-top:30px;
+}
+
+.quick-list a{
+  padding:18px 18px;
+  border-radius:18px;
+  font-size:15px;
+  background:#faf6ef;
+  border:1px solid #eadfce;
+}
+
+.quick-list a span{
+  font-size:18px;
+}
+
+.eyebrow{
+  font-size:18px;
+  color:#f0c98a;
+  letter-spacing:.28em;
+  margin-bottom:28px;
+}
+
+    .eyebrow {
+      color:#f3c27d;
+      font-size:13px;
+      font-weight:900;
+      letter-spacing:.22em;
+      margin-bottom:18px;
+    }
+
+    .hero h1 {
+      font-size:54px;
+      line-height:1.08;
+      margin:0 0 22px;
+      letter-spacing:-.07em;
+    }
+
+    .hero p {
+      max-width:660px;
+      font-size:17px;
+      line-height:1.75;
+      color:rgba(255,255,255,.84);
+      margin:0;
+    }
+
+    .notice-card {
+      border-radius:32px;
+      padding:32px;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(232,220,203,.9);
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .notice-card h2 {
+      margin:0 0 16px;
+      font-size:25px;
+      letter-spacing:-.05em;
+    }
+
+    .quick-list {
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .quick-list a {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 14px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:14px;
+  font-weight:800;
+  font-size:14px;
+}
+
+    .quick-list a:hover { transform:translateY(-1px); box-shadow:0 12px 25px rgba(52,32,16,.08); }
+
+    section {
+      max-width:1200px;
+      margin:0 auto;
+      padding:34px 22px;
+    }
+
+    .section-head {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:16px;
+      margin-bottom:20px;
+    }
+
+    .section-head h2 {
+      font-size:30px;
+      margin:0;
+      letter-spacing:-.06em;
+    }
+
+    .section-head p {
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+
+    .card {
+      background:rgba(255,255,255,.88);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:24px;
+      box-shadow:0 10px 26px rgba(52,32,16,.08);
+    }
+
+    .card h3 {
+      margin:0 0 8px;
+      font-size:21px;
+      letter-spacing:-.04em;
+    }
+
+    .card p {
+      margin:0 0 18px;
+      color:var(--muted);
+      line-height:1.65;
+      font-size:14px;
+    }
+
+    .icon {
+  width:56px;
+  height:56px;
+  border-radius:18px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:28px;
+  margin-bottom:18px;
+  background:var(--brown);
+}
+
+    .icon.blue { background:var(--blue); }
+    .icon.green { background:var(--green); }
+    .icon.red { background:var(--red); }
+    .icon.gold { background:var(--gold); }
+    .icon.dark { background:var(--brown-dark); }
+
+    .buttons {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .btn {
+      border:0;
+      border-radius:14px;
+      padding:13px 12px;
+      background:#f3eadc;
+      color:#372416;
+      font-weight:900;
+      text-align:center;
+      cursor:pointer;
+      transition:.15s ease;
+      font-size:14px;
+    }
+
+    .btn:hover { background:#e7d4ba; transform:translateY(-1px); }
+    .btn.primary { background:var(--brown); color:#fff; }
+    .btn.primary:hover { background:var(--brown-dark); }
+    .btn.full { grid-column:1/-1; }
+
+    .contract-box {
+      background:linear-gradient(135deg,#2d1c12,#8a5a2b);
+      color:#fff;
+      border-radius:30px;
+      padding:30px;
+      display:grid;
+      grid-template-columns:.9fr 1.1fr;
+      gap:24px;
+      align-items:center;
+      box-shadow:var(--shadow);
+    }
+
+    .contract-box h2 {
+      font-size:32px;
+      line-height:1.2;
+      margin:0 0 14px;
+      letter-spacing:-.06em;
+    }
+
+    .contract-box p {
+      margin:0;
+      color:rgba(255,255,255,.78);
+      line-height:1.7;
+    }
+
+    .contract-buttons {
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+
+    .contract-buttons a {
+      background:rgba(255,255,255,.13);
+      border:1px solid rgba(255,255,255,.22);
+      padding:17px;
+      border-radius:18px;
+      font-weight:900;
+      color:#fff;
+      text-align:center;
+    }
+
+    .contract-buttons a:hover { background:rgba(255,255,255,.24); }
+
+    .admin-note {
+      margin-top:18px;
+      padding:18px 20px;
+      border-radius:18px;
+      background:#fff7e8;
+      border:1px solid #ead7b9;
+      color:#5c4025;
+      line-height:1.7;
+      font-size:14px;
+    }
+
+    footer {
+      max-width:1200px;
+      margin:24px auto 0;
+      padding:32px 22px 50px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.7;
+    }
+
+    /* =========================
+   태블릿
+========================= */
+@media (max-width: 1024px){
+
+  .hero{
+    flex-direction:column;
+    align-items:stretch;
+    padding:90px 24px 40px;
+    min-height:auto;
+    gap:24px;
+  }
+
+  .hero-card{
+    max-width:100%;
+  }
+
+  .notice-card{
+    width:100%;
+  }
+
+  .hero h1{
+    font-size:56px;
+  }
+
+  .hero p{
+    font-size:18px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .contract-box{
+    grid-template-columns:1fr;
+  }
+
+  .contract-buttons{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+/* =========================
+   모바일
+========================= */
+@media (max-width: 768px){
+
+  body{
+    overflow-x:hidden;
+  }
+
+  .topbar{
+    position:relative;
+  }
+
+  .nav{
+    padding:16px;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:14px;
+  }
+
+  .logo{
+    min-width:auto;
+  }
+
+  .logo-text strong{
+    font-size:18px;
+  }
+
+  .logo-text span{
+    font-size:10px;
+  }
+
+  .menu{
+    width:100%;
+    justify-content:flex-start;
+    gap:6px;
+  }
+
+  .menu a{
+    font-size:14px;
+    padding:8px 10px;
+  }
+
+  .hero{
+    padding:0;
+    min-height:auto;
+    flex-direction:column;
+    gap:0;
+    border-radius:0;
+  }
+
+  .hero-card{
+    width:100%;
+    padding:28px 22px;
+  }
+
+  .hero h1{
+    font-size:42px;
+    line-height:1.15;
+    margin-bottom:18px;
+  }
+
+  .hero p{
+    font-size:15px;
+    line-height:1.7;
+  }
+
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.18em;
+  }
+
+  .notice-card{
+    width:100%;
+    border-radius:28px 28px 0 0;
+    margin-top:-10px;
+    padding:26px 20px;
+  }
+
+  .notice-card h2{
+    font-size:34px;
+  }
+
+  .quick-list{
+    gap:12px;
+  }
+
+  .quick-list a{
+    padding:18px 16px;
+    font-size:17px;
+    border-radius:18px;
+  }
+
+  .quick-list a span{
+    font-size:22px;
+  }
+
+  section{
+    padding:24px 16px;
+  }
+
+  .section-head h2{
+    font-size:26px;
+  }
+
+  .card{
+    padding:20px;
+    border-radius:22px;
+  }
+
+  .card h3{
+    font-size:20px;
+  }
+
+  .buttons{
+    grid-template-columns:1fr;
+  }
+
+  .btn{
+    width:100%;
+    font-size:15px;
+    padding:14px;
+  }
+
+  .report-grid{
+    grid-template-columns:1fr;
+  }
+
+  .report-btn{
+    width:100%;
+    font-size:15px;
+    padding:16px;
+  }
+
+  .contract-box{
+    padding:24px 20px;
+    border-radius:24px;
+  }
+
+  .contract-box h2{
+    font-size:28px;
+  }
+
+  .contract-buttons{
+    grid-template-columns:1fr;
+  }
+
+  footer{
+    padding:30px 18px 50px;
+    font-size:12px;
+  }
+}
+
+/* =========================
+   작은 휴대폰
+========================= */
+@media (max-width: 480px){
+
+  .hero h1{
+    font-size:34px;
+  }
+
+  .notice-card h2{
+    font-size:28px;
+  }
+
+  .quick-list a{
+    font-size:15px;
+  }
+
+  .menu{
+    flex-wrap:wrap;
+  }
+
+  .menu a{
+    font-size:13px;
+  }
+}
+.contract-expire-badge{
+  display:none;
+  position:absolute;
+  top:-10px;
+  right:-10px;
+  min-width:28px;
+  height:28px;
+  padding:0 8px;
+  border-radius:999px;
+  background:#dc2626;
+  color:#fff;
+  font-size:14px;
+  font-weight:900;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.25);
+}
+
+.contract-admin-link{
+  position:relative;
+}
+
+/* 메인 배경 선명도 / 글씨 가독성 최종 조정 */
+
+.hero {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.48) 0%,
+      rgba(255,255,255,.28) 28%,
+      rgba(255,255,255,.05) 58%,
+      rgba(255,255,255,0) 100%
+    ),
+    url('./images/main.jpg') center center/cover no-repeat !important;
+}
+
+.hero::before{
+  background:transparent !important;
+  backdrop-filter:none !important;
+}
+
+.eyebrow{
+  color:#b88948 !important;
+  text-shadow:0 2px 8px rgba(255,255,255,.75) !important;
+}
+
+.hero h1{
+  color:#2b1b10 !important;
+  text-shadow:0 3px 12px rgba(255,255,255,.75) !important;
+}
+
+.hero p{
+  color:#2f2f2f !important;
+  font-weight:800 !important;
+  text-shadow:0 2px 8px rgba(255,255,255,.8) !important;
+}
+
+
+/* =========================
+   최종 메인 레이아웃 정리
+========================= */
+
+.hero{
+  max-width:1440px !important;
+  margin:36px auto 40px !important;
+  padding:0 28px !important;
+  min-height:auto !important;
+  display:grid !important;
+  grid-template-columns:minmax(0, 1fr) 420px !important;
+  gap:28px !important;
+  align-items:start !important;
+  background:none !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+
+.hero::before{
+  display:none !important;
+}
+
+.hero-card{
+  position:relative !important;
+  min-height:640px !important;
+  border-radius:34px !important;
+  overflow:hidden !important;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.52) 0%,
+      rgba(0,0,0,.32) 35%,
+      rgba(0,0,0,.08) 70%
+    ),
+    url('./images/main.jpg') center center/cover no-repeat !important;
+  box-shadow:0 22px 55px rgba(52,32,16,.18) !important;
+}
+
+.hero-card .eyebrow,
+.hero-card h1,
+.hero-card p{
+  position:relative !important;
+  z-index:2 !important;
+  margin-left:56px !important;
+  margin-right:56px !important;
+}
+
+.hero-card .eyebrow{
+  margin-top:310px !important;
+  margin-bottom:16px !important;
+  color:#ffd58a !important;
+  font-size:13px !important;
+  font-weight:900 !important;
+  letter-spacing:.24em !important;
+  text-shadow:0 5px 18px rgba(0,0,0,.55) !important;
+}
+
+.hero h1{
+  color:#fff !important;
+  font-size:54px !important;
+  line-height:1.12 !important;
+  margin-top:0 !important;
+  margin-bottom:20px !important;
+  letter-spacing:-.07em !important;
+  text-shadow:0 8px 24px rgba(0,0,0,.65) !important;
+}
+
+.hero p{
+  color:rgba(255,255,255,.94) !important;
+  font-size:17px !important;
+  line-height:1.75 !important;
+  max-width:680px !important;
+  font-weight:700 !important;
+  text-shadow:0 6px 18px rgba(0,0,0,.65) !important;
+}
+
+.notice-card{
+  position:relative !important;
+  width:100% !important;
+  min-height:auto !important;
+  max-height:none !important;
+  height:auto !important;
+  overflow:visible !important;
+  border-radius:34px !important;
+  background:rgba(255,250,242,.96) !important;
+  padding:34px !important;
+  box-shadow:0 22px 55px rgba(52,32,16,.16) !important;
+  backdrop-filter:none !important;
+}
+
+.notice-card h2{
+  color:#2b1b10 !important;
+  font-size:34px !important;
+  font-weight:900 !important;
+  margin:0 0 14px !important;
+  letter-spacing:-.06em !important;
+}
+
+.notice-card p{
+  color:#5f6673 !important;
+  font-size:15px !important;
+  font-weight:700 !important;
+  line-height:1.65 !important;
+  text-shadow:none !important;
+}
+
+.quick-modern{
+  margin-top:24px !important;
+  gap:14px !important;
+}
+
+.quick-modern a{
+  min-height:62px !important;
+  padding:14px 16px !important;
+  font-size:14px !important;
+  border-radius:17px !important;
+}
+
+.quick-row{
+  grid-template-columns:1fr 1fr !important;
+  gap:12px !important;
+}
+
+@media(max-width:1100px){
+  .hero{
+    grid-template-columns:1fr !important;
+    padding:24px 16px !important;
+  }
+
+  .hero-card{
+    min-height:430px !important;
+  }
+
+  .hero-card .eyebrow{
+    margin-top:210px !important;
+  }
+
+  .notice-card{
+    margin-top:0 !important;
+  }
+}
+
+@media(max-width:560px){
+  .hero-card{
+    min-height:380px !important;
+  }
+
+  .hero-card .eyebrow,
+  .hero-card h1,
+  .hero-card p{
+    margin-left:24px !important;
+    margin-right:24px !important;
+  }
+
+  .hero-card .eyebrow{
+    margin-top:180px !important;
+  }
+
+  .hero h1{
+    font-size:34px !important;
+  }
+
+  .hero p{
+    font-size:14px !important;
+  }
+
+  .quick-row{
+    grid-template-columns:1fr !important;
+  }
+}
+
+/* 최종 메인 배치 - 사진과 자주쓰는 업무 가까이 */
+
+.hero{
+  max-width:1320px !important;
+  margin:28px auto 44px !important;
+  padding:0 22px !important;
+  display:grid !important;
+  grid-template-columns:minmax(0, 1fr) 520px !important;
+  gap:18px !important;
+  align-items:stretch !important;
+  background:none !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+
+.hero-card{
+  width:100% !important;
+  max-width:none !important;
+  min-height:640px !important;
+  border-radius:32px !important;
+}
+
+.notice-card{
+  width:100% !important;
+  max-width:none !important;
+  min-height:640px !important;
+  height:auto !important;
+  padding:34px !important;
+  border-radius:32px !important;
+}
+
+.quick-modern a{
+  min-height:62px !important;
+  padding:14px 18px !important;
+  font-size:15px !important;
+}
+
+.quick-row{
+  grid-template-columns:1fr 1fr !important;
+  gap:14px !important;
+}
+
+.quick-row a span{
+  white-space:nowrap !important;
+}
+
+.quick-files{
+  background:#eef6ff;
+  color:#1d4f8f;
+}
+
+.badge-link{
+  position:relative;
+}
+
+.unpaid-badge{
+  position:absolute;
+  top:-8px;
+  right:-8px;
+
+  min-width:24px;
+  height:24px;
+
+  padding:0 6px;
+
+  border-radius:999px;
+
+  background:#ef4444;
+  color:#fff;
+
+  font-size:12px;
+  font-weight:700;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.quick-health{
+  background:#eefbf3;
+  color:#16703f;
+}
+
+/* ==================================================
+   한국의집 인트라넷 모바일 반응형 최종 수정
+   CSS 맨 아래에 추가
+================================================== */
+
+html,
+body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+img,
+iframe,
+table{
+  max-width:100%;
+}
+
+@media(max-width:768px){
+
+  .topbar{
+    position:relative !important;
+  }
+
+  .nav{
+    width:100% !important;
+    padding:14px 16px !important;
+    display:block !important;
+  }
+
+  .logo{
+    width:100% !important;
+    min-width:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    margin-bottom:18px !important;
+  }
+
+  .logo-mark{
+    width:58px !important;
+    height:58px !important;
+    border-radius:18px !important;
+    font-size:24px !important;
+    flex:0 0 auto !important;
+  }
+
+  .logo-text strong{
+    font-size:24px !important;
+    line-height:1.2 !important;
+    word-break:keep-all !important;
+  }
+
+  .logo-text span{
+    font-size:12px !important;
+    letter-spacing:.16em !important;
+  }
+
+  .menu{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:10px !important;
+  }
+
+  .menu-dropdown{
+    width:100% !important;
+    position:relative !important;
+  }
+
+  .menu-dropdown > a{
+    width:100% !important;
+    display:block !important;
+    padding:14px 12px !important;
+    border-radius:14px !important;
+    background:#f4eadb !important;
+    font-size:15px !important;
+    font-weight:900 !important;
+    text-align:center !important;
+  }
+
+  .submenu{
+    position:static !important;
+    display:none !important;
+    width:100% !important;
+    min-width:0 !important;
+    margin-top:6px !important;
+    box-shadow:none !important;
+    border-radius:14px !important;
+  }
+
+  .menu-dropdown:hover .submenu{
+    display:block !important;
+  }
+
+  .submenu a{
+    font-size:14px !important;
+    padding:12px !important;
+    text-align:center !important;
+    white-space:normal !important;
+  }
+
+  .hero{
+    width:100% !important;
+    max-width:100% !important;
+    margin:0 !important;
+    padding:18px 14px 26px !important;
+    display:block !important;
+  }
+
+  .hero-card{
+    width:100% !important;
+    min-height:360px !important;
+    border-radius:28px !important;
+  }
+
+  .hero-card .eyebrow,
+  .hero-card h1,
+  .hero-card p{
+    margin-left:22px !important;
+    margin-right:22px !important;
+  }
+
+  .hero-card .eyebrow{
+    margin-top:170px !important;
+    font-size:11px !important;
+  }
+
+  .hero h1{
+    font-size:32px !important;
+    line-height:1.2 !important;
+  }
+
+  .hero p{
+    font-size:14px !important;
+    line-height:1.65 !important;
+  }
+
+  .notice-card{
+    width:100% !important;
+    min-height:auto !important;
+    margin-top:18px !important;
+    padding:26px 20px !important;
+    border-radius:28px !important;
+  }
+
+  .notice-card h2{
+    font-size:32px !important;
+  }
+
+  .notice-card p{
+    font-size:14px !important;
+  }
+
+  .quick-modern{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:12px !important;
+  }
+
+  .quick-row{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:12px !important;
+  }
+
+  .quick-modern a{
+    width:100% !important;
+    min-width:0 !important;
+    min-height:58px !important;
+    padding:15px 16px !important;
+    font-size:15px !important;
+    border-radius:18px !important;
+  }
+
+  .quick-modern a span:first-child{
+    min-width:0 !important;
+    white-space:normal !important;
+    word-break:keep-all !important;
+    line-height:1.35 !important;
+  }
+
+  section{
+    width:100% !important;
+    padding:24px 14px !important;
+  }
+
+  .section-head{
+    display:block !important;
+  }
+
+  .section-head h2{
+    font-size:26px !important;
+  }
+
+  .grid{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:16px !important;
+  }
+
+  .card{
+    width:100% !important;
+    padding:22px 18px !important;
+    border-radius:24px !important;
+  }
+
+  .buttons,
+  .report-grid,
+  .contract-buttons,
+  .quick-two-buttons{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:10px !important;
+  }
+
+  .contract-buttons .contract-btn:last-child{
+    grid-column:auto !important;
+  }
+
+  .btn,
+  .report-btn,
+  .contract-buttons a{
+    width:100% !important;
+    min-width:0 !important;
+    font-size:15px !important;
+    padding:15px 12px !important;
+    text-align:center !important;
+    white-space:normal !important;
+  }
+
+  .contract-box{
+    display:block !important;
+    width:100% !important;
+    padding:24px 18px !important;
+    border-radius:26px !important;
+  }
+
+  .contract-box h2{
+    font-size:28px !important;
+  }
+
+  footer{
+    width:100% !important;
+    padding:28px 16px 44px !important;
+  }
+}
+
+@media(max-width:420px){
+
+  .logo-text strong{
+    font-size:21px !important;
+  }
+
+  .logo-text span{
+    font-size:10px !important;
+  }
+
+  .menu{
+    grid-template-columns:1fr 1fr !important;
+  }
+
+  .menu-dropdown > a{
+    font-size:14px !important;
+    padding:13px 8px !important;
+  }
+
+  .hero h1{
+    font-size:29px !important;
+  }
+
+  .notice-card h2{
+    font-size:29px !important;
+  }
+
+  .quick-icon{
+    font-size:20px !important;
+    margin-right:5px !important;
+  }
+}
+
+/* ===========================
+   한국의집 카드별 대표색
+=========================== */
+
+/* 예약관리 */
+.grid .card:nth-child(1) .btn.primary{
+  background:#2563eb !important;
+}
+
+/* 출퇴근 */
+.grid .card:nth-child(2) .btn.primary{
+  background:#16a34a !important;
+}
+
+/* 채용지원자 */
+.grid .card:nth-child(3) .btn.primary{
+  background:#0891b2 !important;
+}
+
+/* 주간스케줄 */
+.grid .card:nth-child(4) .btn.primary{
+  background:#ca8a04 !important;
+}
+
+/* 매장운영관리 */
+.grid .card:nth-child(5) .btn.primary{
+  background:#7c3aed !important;
+}
+
+/* 직원정보 */
+.grid .card:nth-child(6) .btn.primary{
+  background:#059669 !important;
+}
+
+/* 통합발주 */
+.grid .card:nth-child(7) .btn.primary{
+  background:#ea580c !important;
+}
+
+/* 초과근무관리 */
+.grid .card:nth-child(9) .btn.primary{
+  background:#dc2626 !important;
+}
+
+/* 일용직관리 */
+.grid .card:nth-child(8) .btn.primary{
+  background:#0284c7 !important;
+}
+
+/* 연월차 */
+#hr .card:nth-child(1) .btn.primary{
+  background:#16a34a !important;
+}
+
+/* 증명서 */
+#hr .card:nth-child(2) .btn.primary{
+  background:#475569 !important;
+}
+
+/* 퇴직관리 */
+#hr .card:nth-child(3) .btn.primary{
+  background:#dc2626 !important;
+}
+
+/* 영업실적 */
+#hr .card:nth-child(4) .report-btn.brown{
+  background:#7c3aed !important;
+}
+
+.btn.sheet{
+  background:#188038;
+  color:#fff;
+}
+
+/* 자주 쓰는 업무 박스 크기 축소 */
+.notice-card{
+  padding:26px !important;
+  min-height:auto !important;
+}
+
+.notice-card h2{
+  font-size:28px !important;
+  margin-bottom:10px !important;
+}
+
+.notice-card p{
+  font-size:13px !important;
+  line-height:1.45 !important;
+}
+
+.quick-modern{
+  gap:9px !important;
+  margin-top:16px !important;
+}
+
+.quick-modern a{
+  min-height:48px !important;
+  padding:10px 14px !important;
+  font-size:13px !important;
+  border-radius:14px !important;
+}
+
+.quick-icon{
+  font-size:18px !important;
+  margin-right:5px !important;
+}
+
+.quick-row{
+  gap:9px !important;
+}
+
+.overtime-input-card{
+  background:#e9f3ff;
+  color:#0b6ecf;
+}
+
+.overtime-admin-card{
+  background:#f7efe1;
+  color:#8a5a1e;
+}
+
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <nav class="nav">
+      <a class="logo" href="#home">
+        <div class="logo-mark">韓</div>
+        <div class="logo-text">
+          <strong>한국의집 업무포털</strong>
+          <span>INTERNAL STAFF INTRANET</span>
+        </div>
+      </a>
+
+      <div class="menu">
+
+  <div class="menu-dropdown">
+    <a href="#home">홈 ▾</a>
+    <div class="submenu">
+      <a href="#home">메인화면</a>
+      <a href="#store">매장업무</a>
+      <a href="#hr">인사관리</a>
+    </div>
+  </div>
+
+  <div class="menu-dropdown">
+    <a href="#store">매장업무 ▾</a>
+    <div class="submenu">
+      <a href="daily-worker.html" target="_blank">근무내역 입력</a>
+      <a href="applicant-admin.html" target="_blank">면접관리</a>
+      <a href="store-manager.html" target="_blank">운영관리</a>
+      <a href="health-cert.html" target="_blank">보건증관리</a>
+      <a href="koreahouse-order.html" target="_blank">통합발주</a>
+    </div>
+  </div>
+
+  <div class="menu-dropdown">
+    <a href="#hr">인사관리 ▾</a>
+    <div class="submenu">
+      <a href="employee-info.html">직원정보 입력</a>
+      <a href="#" onclick="openHrLedger()">인사관리대장</a>
+      <a href="https://thebigkorea.github.io/koreahouse-leave/" target="_blank">연월차 신청</a>
+      <a href="https://thebigkorea.github.io/hr-system/retirement-admin.html" target="_blank">퇴직관리</a>
+    </div>
+  </div>
+
+  <div class="menu-dropdown">
+    <a href="#contract">전자계약 ▾</a>
+    <div class="submenu">
+      <a href="https://thebigkorea.github.io/hr-system/regular-contract.html" target="_blank">정규직 계약</a>
+      <a href="https://thebigkorea.github.io/hr-system/part-contract.html" target="_blank">계약직 계약</a>
+      <a href="https://thebigkorea.github.io/hr-system/service-contract.html" target="_blank">용역계약</a>
+      <a href="https://thebigkorea.github.io/hr-system/contract-admin.html" target="_blank">계약서관리</a>
+    </div>
+  </div>
+
+  <div class="menu-dropdown">
+    <a href="#admin">관리자 ▾</a>
+    <div class="submenu">
+      <a href="#" onclick="openAttendanceAdmin()">출퇴근 조회</a>
+      <a href="#" onclick="openApplicantSheet()">지원자 원장조회</a>
+      <a href="#" onclick="openStaffList()">직원목록</a>
+      <a href="#" onclick="openContractLedger()">근로계약서 원장조회</a>
+    </div>
+  </div>
+
+</div>
+    </nav>
+  </header>
+
+  <main id="home">
+    <div class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">KOREA HOUSE · STAFF PORTAL</div>
+        <h1>한국의집<br />내부 업무시스템</h1>
+        <p>
+          출퇴근, 예약관리, 주간 스케줄, 연월차, 인사관리, 전자계약 업무를
+          한 곳에서 바로 실행하는<br> 한국의집 직원용 인트라넷입니다.
+        </p>
+      </div>
+
+      <aside class="notice-card">
+  <div>
+    <h2>자주 쓰는 업무</h2>
+
+    <p style="color:var(--muted); line-height:1.65; margin:0;">
+      직원들이 가장 자주 사용하는 기능을 빠르게 실행합니다.
+    </p>
+
+    <div class="quick-modern">
+
+  <<a class="quick-reserve"
+   href="https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec"
+   target="_blank">
+    <span><span class="quick-icon">📅</span>예약관리 열기</span>
+    <span>›</span>
+  </a>
+
+  <div class="quick-row">
+
+    <a class="quick-sales-in"
+       href="https://script.google.com/macros/s/AKfycbx-QNqhusp57z6cxhKLcTymf0z5gx7mHkt9kOrcLEGIfxN9b-kgNlk8qtZ_VLWv57dA/exec"
+       target="_blank">
+      <span><span class="quick-icon">📊</span>영업실적보고서 입력</span>
+      <span>›</span>
+    </a>
+
+    <a class="quick-sales-view"
+       href="https://docs.google.com/spreadsheets/d/1VXAFKtm7IaK6Ns_QbrRzpP8XnzBHau6e49GXhNe0uQg/edit?gid=949326317#gid=949326317"
+       target="_blank">
+      <span><span class="quick-icon">📋</span>영업실적 보고서 조회</span>
+      <span>›</span>
+    </a>
+
+  </div>
+
+  <div class="quick-row">
+
+  <a
+    class="quick-daily badge-link"
+    href="https://thebigkorea.github.io/thebigkorea-hq/daily-worker.html"
+    target="_blank"
+    style="grid-column:1 / -1;"
+  >
+    <span>
+      <span class="quick-icon">👷</span>
+      한국의집 일용직 통합관리
+    </span>
+
+    <span
+      id="koreaDailyUnpaidBadgeTop"
+      class="badge unpaid-badge">
+      0
+    </span>
+
+    <span>›</span>
+  </a>
+
+</div>
+
+  <div class="quick-row">
+
+  <a href="#"
+   onclick="openOvertimePage('overtime.html')"
+   class="quick-modern">
+   📝 초과근무 입력
+</a>
+
+<a href="#"
+   onclick="openOvertimePage('overtime-admin.html')"
+   class="quick-modern">
+   🔍 초과근무 조회
+</a>
+
+</div>
+
+ 
+  <a class="quick-interview badge-link"
+     href="applicant-admin.html"
+     target="_blank">
+    <span><span class="quick-icon">🧑‍💼</span>면접관리</span>
+    <span id="todayInterviewBadgeTop" class="badge">0</span>
+    <span>›</span>
+  </a>
+
+  <a class="quick-order"
+     href="https://thebigkorea.github.io/koreahouse-intranet/koreahouse-order.html"
+     target="_blank">
+    <span><span class="quick-icon">📦</span>한국의집 통합 발주</span>
+    <span>›</span>
+  </a>
+
+  <a class="quick-attend"
+     href="#"
+     onclick="openAttendanceManage()">
+    <span><span class="quick-icon">⏱️</span>출퇴근 관리</span>
+    <span>›</span>
+  </a>
+
+  <a class="quick-schedule"
+     href="https://thebigkorea.github.io/koreahouse-weekly-schedule/"
+     target="_blank">
+    <span><span class="quick-icon">🗓️</span>주간 스케줄표</span>
+    <span>›</span>
+  </a>
+
+  <a class="quick-schedule"
+   href="https://thebigkorea.github.io/koreahouse-schedule/"
+   target="_blank">
+  <span><span class="quick-icon">📅</span>근무스케줄관리</span>
+  <span>›</span>
+</a>
+
+  <a class="quick-files"
+   href="https://drive.worksmobile.com/drive/web/my?resourceKey=MTAwMDAxNTA0NzA1MTQyfDM0NzI2MDA4NDIzMTAyMjcyMDl8RHww&resourceLocation=24101"
+   target="_blank">
+  <span><span class="quick-icon">📁</span>한국의집 영업관련 파일</span>
+  <span>›</span>
+</a>
+
+<a class="quick-health badge-link"
+   href="health-cert.html"
+   target="_blank">
+  <span>
+    <span class="quick-icon">🩺</span>
+    보건증 관리
+  </span>
+
+  <span id="healthCertBadgeTop"
+        class="badge-count"
+        style="display:none;">
+    0
+  </span>
+
+  <span>›</span>
+</a>
+
+</div>
+  </div>
+</aside>
+    </div>
+
+    <section id="store">
+      <div class="section-head">
+        <div>
+          <h2>매장 업무 시스템</h2>
+          <p>현장 직원과 점장이 매일 사용하는 기본 업무 메뉴입니다.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <div class="icon blue">📅</div>
+            <h3>예약·고객·문자관리</h3>
+            <p>예약관리, 고객관리, 문자관리를 각각 바로 실행합니다.</p>
+          <div class="buttons">
+
+  <a class="btn primary"
+     href="https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec"
+     target="_blank">
+    예약관리
+  </a>
+
+  <a class="btn"
+     href="https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec?page=customer-manager"
+     target="_blank">
+    고객관리
+  </a>
+
+  <a class="btn full"
+     href="https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec?page=sms-manager"
+     target="_blank">
+    문자관리
+  </a>
+
+</div>
+        </article>
+
+        <article class="card">
+          <div class="icon green">⏱️</div>
+          <h3>출퇴근</h3>
+          <p>직원 출근·퇴근 등록과 관리자 근태 조회를 실행합니다.</p>
+          <div class="buttons">
+            <a class="btn primary" href="https://thebigkorea.github.io/koreahouse-attendance/?v=3" target="_blank">출퇴근 등록</a>
+            <a class="btn" href="https://thebigkorea.github.io/koreahouse-attendance/?v=3" target="_blank">직원 등록</a>
+           <a class="btn full" href="#" onclick="openAttendanceAdmin()">관리자 조회</a>
+          </div>
+        </article>
+
+        <article class="card">
+
+           <div class="icon blue">🧑‍💼</div>
+
+            <h3>채용지원자 관리</h3>
+
+            <p>
+             지원자 등록, 면접일정, 면접기록,
+             불참자 재면접 차단을 관리합니다.
+            </p>
+
+           <div class="buttons">
+
+             <a class="btn primary"
+                href="applicant.html"
+                target="_blank">
+
+                지원자 등록
+
+             </a>
+
+             <a class="btn badge-link"
+                href="applicant-admin.html"
+                target="_blank">
+
+                면접관리
+
+                <span
+                  id="todayInterviewBadge"
+                  class="badge">
+                  0
+               </span>
+
+             </a>
+
+             <a class="btn full" href="#" onclick="openApplicantSheet()">지원자 원장조회</a>
+
+           </div>
+
+         </article>
+
+
+        <article class="card">
+  <div class="icon gold">🗓️</div>
+  <h3>주간 스케줄</h3>
+  <p>홀, 주방, 전처리, 설거지 근무표를 작성하고 인쇄합니다.</p>
+
+  <div class="buttons">
+    <a class="btn primary"
+       href="https://thebigkorea.github.io/koreahouse-weekly-schedule/"
+       target="_blank">
+      스케줄 입력
+    </a>
+
+    <a class="btn"
+       href="https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=950636545#gid=950636545"
+       target="_blank">
+      스케줄 원장
+    </a>
+
+    <a class="btn full"
+       href="#"
+       onclick="openStaffList()">
+      직원 목록
+    </a>
+  </div>
+</article>
+        
+        <article class="card">
+          <div class="icon">📊</div>
+
+          <h3>매장 운영관리</h3>
+
+          <p>
+           직원관리, 고객관리, 설비점검, 위생관리 및 컴플레인을 기록합니다.
+          </p>
+
+          <div class="buttons">
+
+            <a class="btn primary"
+              href="store-manager.html"
+               target="_blank">
+               운영관리입력
+            </a>
+
+            <a class="btn"
+               href="https://docs.google.com/spreadsheets/d/1msk6vf_5zPXcUH9iimGW82BQzeiKXpDyxm2itsq7o1Q/edit?gid=370891861#gid=370891861"
+               target="_blank">
+               원장조회
+            </a>
+
+            <a class="btn" href="health-cert.html">
+              보건증 관리
+              <span id="healthCertBadge"
+                class="badge-count"
+                style="display:none;">
+                0
+                </span>
+             </a>
+
+          </div>
+        </article>
+         <article class="card">
+
+           <div class="icon green">👤</div>
+            <h3>직원정보 입력</h3>
+
+           <p> 기존 직원의 기본정보를 한국의집 인사대장에 저장합니다. </p>
+
+          <div class="buttons">
+
+            <a class="btn primary"
+               href="employee-info.html"
+               target="_blank">
+               직원정보 입력
+             </a>
+
+             <a class="btn"href="#" onclick="openHrSheet()"> 인사대장 조회</a>          
+
+           </div>         
+
+         </article>
+
+         <article class="card">
+
+  <div class="icon gold">📦</div>
+
+  <h3>통합 발주</h3>
+
+  <p>
+    맥, 서울명성, 마미팜, 롯데칠성,
+    동부주류, 우리술상회 발주를 통합 관리합니다.
+  </p>
+
+  <div class="buttons">
+
+    <a class="btn primary"
+       href="https://thebigkorea.github.io/koreahouse-intranet/koreahouse-order.html"
+       target="_blank">
+
+       통합 발주 열기
+
+    </a>
+
+    <a class="btn"
+       href="https://thebigkorea.github.io/koreahouse-intranet/koreahouse-order.html"
+       target="_blank">
+
+       홀 필요물품
+
+    </a>
+
+  </div>
+
+</article>
+
+<article class="card">
+
+  <div class="icon red">⏰</div>
+
+  <h3>초과근무 관리</h3>
+
+  <p>
+    직원별 초과근무 내역을 입력하고
+    월별 초과근무 일지를 조회합니다.
+  </p>
+
+  <div class="buttons">
+
+  <a class="btn primary"
+   href="#"
+   onclick="openOvertimePage('overtime.html')">
+   초과근무 입력
+</a>
+
+<a class="btn"
+   href="#"
+   onclick="openOvertimePage('overtime-admin.html')">
+   초과근무 조회
+</a>
+
+<a class="btn"
+   href="#"
+   onclick="openOvertimePage('https://docs.google.com/spreadsheets/d/1pr_KX9T-DGJ54jeYIKwG48LCW6JUDZIehUvAKkVyeqs/edit?gid=707151453#gid=707151453')">
+   초과근무 원장
+</a>
+
+</div>
+
+</article>
+
+<article class="card">
+
+  <div class="icon blue">👷</div>
+
+  <h3>일용직 관리</h3>
+
+  <p>
+    <p>
+  한국의집과 압구정 길채정의
+  일용직 근무내역 입력, 원장조회,
+  세무자료 생성까지 통합 관리합니다.
+</p>
+  </p>
+
+  <div class="buttons">
+
+  <a
+    class="btn primary full badge-link"
+    href="https://thebigkorea.github.io/thebigkorea-hq/daily-worker.html"
+    target="_blank">
+
+    👷 일용직 통합관리
+
+    <span
+      id="koreaDailyUnpaidBadge"
+      class="badge unpaid-badge">
+      0
+    </span>
+
+  </a>
+
+</div>
+
+</article>
+
+             </div>
+        </section>
+
+    <section id="hr">
+      <div class="section-head">
+        <div>
+          <h2>인사관리 시스템</h2>
+          <p>직원 증명서, 연월차, 인사관리대장을 한 곳에서 관리합니다.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+
+  <div class="icon red">🌿</div>
+
+  <h3>연월차 관리</h3>
+
+  <p>
+    연월차 신청, 승인, 직원관리, 연월차 원장까지
+    하나의 시스템에서 통합 관리합니다.
+  </p>
+
+  <div class="buttons">
+
+    <a class="btn primary full"
+       href="https://thebigkorea.github.io/koreahouse-leave/"
+       target="_blank">
+
+      연월차 관리
+
+    </a>
+
+  </div>
+
+</article>
+
+        <article class="card">
+          <div class="icon dark">📄</div>
+          <h3>증명서 발급</h3>
+          <p>재직증명서와 경력증명서를 조회하고 출력합니다.</p>
+          <div class="buttons">
+            <a class="btn primary" href="https://thebigkorea.github.io/hr-system/certificate.html" target="_blank">재직증명서</a>
+            <a class="btn" href="https://thebigkorea.github.io/hr-system/career.html" target="_blank">경력증명서</a>
+           <a class="btn full" href="#" onclick="openHrLedger()"> 인사관리대장</a>
+          </div>
+        </article>
+
+        <article class="card">
+
+  <div class="icon red">📋</div>
+
+  <h3>퇴직관리</h3>
+
+  <p>
+    전자 사직서, 권고사직 합의,
+    퇴직자 조회 및 전자서명을 관리합니다.
+  </p>
+
+  <div class="buttons">
+
+    <a class="btn primary"
+   href="https://thebigkorea.github.io/hr-system/retirement-admin.html"
+   target="_blank">
+  퇴직서 작성
+</a>
+
+<a class="btn"
+   href="https://thebigkorea.github.io/hr-system/retirement-list.html"
+   target="_blank">
+  퇴직자 관리자
+</a>
+
+<a class="btn full"
+   href="https://thebigkorea.github.io/hr-system/retirement-auth.html"
+   target="_blank">
+  퇴직자 조회 원장
+</a>
+
+  </div>
+
+</article>
+
+<article class="card">
+  <div class="icon gold">📅</div>
+
+  <h3>근무스케줄관리</h3>
+
+  <p>
+    휴무신청, 승인·반려, 월별 근무표 작성과
+    전월 요일패턴 불러오기를 관리합니다.
+  </p>
+
+  <div class="buttons">
+    <a class="btn primary"
+       href="https://thebigkorea.github.io/koreahouse-schedule/"
+       target="_blank">
+      근무스케줄 열기
+    </a>
+
+    <a class="btn"
+       href="https://docs.google.com/spreadsheets/d/1k-frRCi6Mq-Qj2CGcNDNrPr6s1zBxNhN0u-WpEI66vg/edit?gid=443860899#gid=443860899"
+       target="_blank">
+      근무스케줄 원장
+    </a>
+  </div>
+</article>
+
+        <article class="card">
+          <div class="icon">👥</div>
+          <h3>영업실적보고서</h3>
+          <p>영업실적 보고서 조회, 입력, 지급 상태를 관리합니다.</p>
+          <div class="report-grid">
+         <a class="report-btn beige" href="https://script.google.com/macros/s/AKfycbx-QNqhusp57z6cxhKLcTymf0z5gx7mHkt9kOrcLEGIfxN9b-kgNlk8qtZ_VLWv57dA/exec" target="_blank">
+             영업실적보고서 입력
+          </a>
+
+          <a class="report-btn brown" href="https://docs.google.com/spreadsheets/d/1VXAFKtm7IaK6Ns_QbrRzpP8XnzBHau6e49GXhNe0uQg/edit?gid=949326317#gid=949326317" target="_blank">
+               한국의집 영업실적보고서 조회
+           </a>
+
+          <a class="report-btn beige" href="daily-worker.html" target="_blank">
+            일용직 근무내역 입력
+          </a>
+
+         <a class="report-btn beige badge-link" href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=0#gid=0" target="_blank">
+            일용직 근무내역 원장조회
+           <span id="dailyUnpaidBadgeReport" class="badge unpaid-badge">0</span>
+         </a>
+        </div>
+            
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="contract">
+      <div class="contract-box">
+        <div>
+          <div class="eyebrow">E-CONTRACT SYSTEM</div>
+          <h2>전자계약 관리</h2>
+          <p>
+            정규직 근로계약서, 아르바이트 근로계약서, 사업소득자 용역계약서를
+            작성하고 전자서명 요청 및 완료본 조회까지 관리합니다.
+          </p>
+        </div>
+
+        <div class="contract-buttons">
+          <a href="https://thebigkorea.github.io/hr-system/regular-contract.html" target="_blank">정규직 근로계약서</a>
+          <a href="https://thebigkorea.github.io/hr-system/part-contract.html" target="_blank">아르바이트 근로계약서</a>
+          <a href="https://thebigkorea.github.io/hr-system/service-contract.html" target="_blank">사업소득자 용역계약서</a>
+          <a class="contract-admin-link"
+             href="https://thebigkorea.github.io/hr-system/contract-admin.html"
+             target="_blank">
+             계약서 관리자
+            <span id="contractExpireBadge" class="contract-expire-badge">0</span>
+          </a> 
+          <a class="contract-btn"
+            href="#"
+             onclick="openContractLedger()">
+
+             근로계약서 원장조회
+
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="admin">
+      <div class="section-head">
+        <div>
+          <h2>관리자 바로가기</h2>
+          <p>점장 및 관리자 전용 시트와 관리 페이지입니다.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <div class="icon dark">🔐</div>
+          <h3>관리자 시트</h3>
+          <p>예약, 근태, 연월차, 직원 정보 원본 시트로 이동합니다.</p>
+          <div class="buttons">
+            <a class="btn primary" href="통합관리시트_링크" target="_blank">통합관리 시트</a>
+            <a class="btn" href="예약시트_링크" target="_blank">예약 시트</a>
+            <a class="btn full" href="근태시트_링크" target="_blank">근태 시트</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="icon blue">📢</div>
+          <h3>공지사항</h3>
+          <p>직원 공지, 업무 매뉴얼, 매장 운영 기준을 안내합니다.</p>
+          <div class="buttons">
+            <a class="btn primary" href="공지사항_링크" target="_blank">공지사항</a>
+            <a class="btn" href="업무매뉴얼_링크" target="_blank">업무 매뉴얼</a>
+            <a class="btn full" href="교육자료_링크" target="_blank">교육자료</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="icon green">🏢</div>
+          <h3>본사 관리</h3>
+          <p>추후 더큰코리아 전 지점 통합관리로 확장할 수 있는 영역입니다.</p>
+          <div class="buttons">
+            <a class="btn primary" href="본사관리_링크" target="_blank">본사 관리</a>
+            <a class="btn" href="매장별현황_링크" target="_blank">매장별 현황</a>
+            <a class="btn full" href="브랜드별현황_링크" target="_blank">브랜드별 현황</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="admin-note">
+        ※ 이 페이지는 외부 고객용 홈페이지가 아니라 내부 직원용 인트라넷입니다.
+        실제 사용 전 각 버튼의 <strong>_링크</strong> 부분을 현재 사용 중인 Apps Script, Google Sheets,
+        GitHub Pages 주소로 교체하면 됩니다.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>한국의집 업무포털</strong><br />
+    내부 직원 업무 편의를 위한 인트라넷입니다. 외부 공개용 홈페이지와 분리하여 운영하는 것을 권장합니다.<br />
+    © THE BIG KOREA / KOREA HOUSE INTERNAL SYSTEM
+  </footer>
+
+  <script>
+/*
+  일용직 미지급 배지 표시
+  - dailyUnpaidBadgeTop: 상단 자주 쓰는 업무 원장조회 버튼
+  - dailyUnpaidBadgeReport: 영업실적보고서 카드 원장조회 버튼
+*/
+
+
+const KOREA_DAILY_WORKER_API_URL =
+"https://script.google.com/macros/s/AKfycbz_NFlMRhx_mP_0maccpd62iWNHGMVo-pAZCHg7s8-tM26QvKlIVrPL6TmElRgM6XIS/exec";
+
+const GILCHAEJEONG_DAILY_WORKER_API_URL =
+"https://script.google.com/macros/s/AKfycbzjJ4xzZl96Wi4AcYrfKrEzIl-gY5iEZCUEiZ_th51mD2Kq97G13z883QIMjFf99sQE3w/exec";
+
+
+async function loadUnpaidBadge(apiUrl, badgeIds) {
+
+  try {
+
+    const url =
+      apiUrl + "?action=getDailyUnpaidCount&t=" + Date.now();
+
+    const res =
+      await fetch(url, { cache:"no-store" });
+
+    const data =
+      await res.json();
+
+    const count =
+      Number(data.count || data.unpaidCount || 0);
+
+    badgeIds.forEach(function(id){
+
+      const badge =
+        document.getElementById(id);
+
+      if(!badge) return;
+
+      if(count > 0){
+
+        badge.textContent =
+          count > 99 ? "99+" : String(count);
+
+        badge.style.setProperty(
+          "display",
+          "flex",
+          "important"
+        );
+
+      }else{
+
+        badge.textContent = "0";
+
+        badge.style.setProperty(
+          "display",
+          "none",
+          "important"
+        );
+      }
+
+    });
+
+  } catch(e){
+
+    console.log("배지 조회 실패", e);
+
+  }
+
+}
+
+
+function loadDailyUnpaidBadges(){
+
+  loadUnpaidBadge(
+    KOREA_DAILY_WORKER_API_URL,
+    [
+      "koreaDailyUnpaidBadgeTop",
+      "dailyUnpaidBadgeReport",
+      "koreaDailyUnpaidBadge"
+    ]
+  );
+
+  loadUnpaidBadge(
+    GILCHAEJEONG_DAILY_WORKER_API_URL,
+    [
+      "gilchaeDailyUnpaidBadge"
+    ]
+  );
+
+}
+
+window.addEventListener(
+  "load",
+  loadDailyUnpaidBadges
+);
+
+
+const APPLICANT_API_URL =
+"https://script.google.com/macros/s/AKfycbwNqmreZsa_YpzlTQxL4HzkklxxI1wie-ujq-BLeLgtUqPt-_ti4_W1MdbJ0Qf-eIaWJA/exec";
+
+async function loadTodayInterviewBadge(){
+
+  try{
+
+    const res =
+      await fetch(
+        APPLICANT_API_URL +
+        "?action=getTodayInterviewCount&t=" +
+        Date.now(),
+        { cache:"no-store" }
+      );
+
+    const data =
+      await res.json();
+
+    const count =
+      Number(data.count || 0);
+
+    const badges =
+  [
+    document.getElementById("todayInterviewBadge"),
+    document.getElementById("todayInterviewBadgeTop")
+  ];
+
+badges.forEach(function(badge){
+
+  if(!badge) return;
+
+  if(count > 0){
+    badge.textContent = count > 99 ? "99+" : String(count);
+    badge.style.setProperty("display", "flex", "important");
+  }else{
+    badge.style.setProperty("display", "none", "important");
+  }
+
+});
+
+    if(!badge) return;
+
+    if(count > 0){
+
+      badge.textContent =
+        count > 99
+        ? "99+"
+        : String(count);
+
+      badge.style.setProperty(
+        "display",
+        "flex",
+        "important"
+      );
+
+    }else{
+
+      badge.style.setProperty(
+        "display",
+        "none",
+        "important"
+      );
+
+    }
+
+  }catch(e){
+
+    console.log(
+      "면접 배지 조회 실패",
+      e
+    );
+
+  }
+
+}
+
+window.addEventListener(
+  "load",
+  loadTodayInterviewBadge
+);
+
+const CONTRACT_API_URL =
+"https://script.google.com/macros/s/AKfycbzCO4TLMRGgt_OY-3T92mw58AAKcOwquq0ubepUEJgPO9YPeMV-hNeP7AHy7lvOPog7oQ/exec";
+
+async function loadContractExpireBadge(){
+
+  const badge =
+    document.getElementById("contractExpireBadge");
+
+  if(!badge) return;
+
+  try{
+
+    const res =
+      await fetch(CONTRACT_API_URL, {
+        method:"POST",
+        body:JSON.stringify({
+          action:"getContractList"
+        })
+      });
+
+    const data =
+      await res.json();
+
+    const list =
+      data.contracts || [];
+
+    const count =
+      list.filter(function(c){
+
+        const type =
+          String(c.contractType || "");
+
+        if(
+          !type.includes("계약직") &&
+          !type.includes("아르바이트") &&
+          !type.includes("용역") &&
+          !type.includes("사업소득")
+        ){
+          return false;
+        }
+
+        const end =
+          parseContractEndDate(c.endDate);
+
+        if(!end) return false;
+
+        const today =
+          new Date();
+
+        today.setHours(0,0,0,0);
+
+        const diff =
+          Math.ceil(
+            (end - today) /
+            (1000 * 60 * 60 * 24)
+          );
+
+        return diff >= 0 && diff <= 30;
+
+      }).length;
+
+    if(count > 0){
+
+      badge.textContent =
+        count > 99 ? "99+" : String(count);
+
+      badge.style.setProperty(
+        "display",
+        "flex",
+        "important"
+      );
+
+    }else{
+
+      badge.style.setProperty(
+        "display",
+        "none",
+        "important"
+      );
+
+    }
+
+  }catch(e){
+
+    console.log("계약만료 배지 조회 실패", e);
+
+  }
+
+}
+
+function parseContractEndDate(value){
+
+  if(!value) return null;
+
+  const text =
+    String(value).trim();
+
+  let m =
+    text.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
+
+  if(m){
+    return new Date(
+      Number(m[1]),
+      Number(m[2]) - 1,
+      Number(m[3])
+    );
+  }
+
+  m =
+    text.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+
+  if(m){
+    return new Date(
+      Number(m[1]),
+      Number(m[2]) - 1,
+      Number(m[3])
+    );
+  }
+
+  const d =
+    new Date(text);
+
+  if(isNaN(d.getTime())) return null;
+
+  d.setHours(0,0,0,0);
+
+  return d;
+}
+
+window.addEventListener(
+  "load",
+  loadContractExpireBadge
+);
+
+
+const HEALTH_CERT_API_URL =
+"https://script.google.com/macros/s/AKfycby-FdNL_GsXFB4klTrk8fM6YB7Fgkoh0-we-D48z9o34d0OUy09PtHuAaCIAfngIqs7/exec";
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadHealthCertBadge();
+});
+
+async function loadHealthCertBadge(){
+
+  try{
+
+    const res =
+      await fetch(
+        HEALTH_CERT_API_URL +
+        "?action=badge"
+      );
+
+    const result =
+      await res.json();
+
+    const count =
+      Number(result.count || 0);
+
+    const badges = [
+      document.getElementById("healthCertBadge"),
+      document.getElementById("healthCertBadgeTop")
+    ];
+
+    badges.forEach(badge => {
+
+      if(!badge) return;
+
+      if(count > 0){
+        badge.textContent = count;
+        badge.style.display = "inline-flex";
+      }else{
+        badge.style.display = "none";
+      }
+
+    });
+
+  }catch(err){
+
+    console.log(
+      "보건증 배지 조회 실패",
+      err
+    );
+
+  }
+
+}
+
+
+    
+</script>
+
+<script>
+function openContractLedger(){
+
+  const pw =
+    prompt("근로계약서 원장조회 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://docs.google.com/spreadsheets/d/1sSKno2C3Gnvx-FwfEru_rsP0QWzliWcVEQIKe9vXFqc/edit?gid=1591232369#gid=1591232369",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
+
+<script>
+function openOvertimePage(url){
+
+  const password =
+    prompt("초과근무관리 비밀번호를 입력하세요.");
+
+  if(password === null) return;
+
+  if(password !== "1234"){
+    alert("비밀번호가 틀렸습니다.");
+    return;
+  }
+
+  window.open(url,"_blank");
+}
+</script>
+
+<script>
+function openOvertimePage(url){
+
+  const password =
+    prompt("초과근무관리 비밀번호를 입력하세요.");
+
+  if(password === null) return;
+
+  if(password !== "1234"){
+    alert("비밀번호가 틀렸습니다.");
+    return;
+  }
+
+  window.open(url, "_blank");
+}
+</script>
+
+
+<script>
+function openHrLedger(){
+
+  const pw =
+    prompt("인사관리대장 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://thebigkorea.github.io/hr-system/hr-list.html",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
+
+<script>
+function openHrSheet(){
+
+  const pw =
+    prompt("인사대장 조회 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://docs.google.com/spreadsheets/d/1sSKno2C3Gnvx-FwfEru_rsP0QWzliWcVEQIKe9vXFqc/edit?gid=0#gid=0",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
+
+
+<script>
+function openApplicantSheet(){
+
+  const pw =
+    prompt("지원자 원장조회 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://docs.google.com/spreadsheets/d/1WgLVb-hTehmz2huM5e-gyds1s8aX-7eBhMCYVZEyFDM/edit?gid=1278172800#gid=1278172800",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
+
+<script>
+function openAttendanceAdmin(){
+
+  const pw =
+    prompt("출퇴근 관리자 조회 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://thebigkorea.github.io/koreahouse-attendance/admin.html",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
+
+<script>
+function openAttendanceManage(){
+
+  const pw =
+    prompt("출퇴근 관리 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://thebigkorea.github.io/koreahouse-attendance/admin.html",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
+
+<script>
+function openStaffList(){
+
+  const pw =
+    prompt("직원 목록 비밀번호를 입력하세요.");
+
+  if(pw === null) return;
+
+  if(pw === "1234"){
+
+    window.open(
+      "https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=422940514#gid=422940514",
+      "_blank"
+    );
+
+  }else{
+
+    alert("비밀번호가 틀렸습니다.");
+
+  }
+}
+</script>
+
+
+</body>
+</html>

@@ -1579,3 +1579,38 @@ document.addEventListener(
 
   }
 );
+function initHorizontalScrollbar(){
+
+    const tableWrap =
+        document.querySelector(".monthly-table-wrap");
+
+    const scrollbar =
+        document.getElementById("horizontalScrollbar");
+
+    const inner =
+        document.getElementById("horizontalScrollbarInner");
+
+    if(!tableWrap || !scrollbar) return;
+
+    inner.style.width =
+        tableWrap.scrollWidth + "px";
+
+    scrollbar.onscroll = function(){
+
+        tableWrap.scrollLeft =
+            scrollbar.scrollLeft;
+
+    };
+
+    tableWrap.onscroll = function(){
+
+        scrollbar.scrollLeft =
+            tableWrap.scrollLeft;
+
+    };
+
+}
+
+window.addEventListener("load", initHorizontalScrollbar);
+
+window.addEventListener("resize", initHorizontalScrollbar);
