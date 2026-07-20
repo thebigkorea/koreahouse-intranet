@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
 
-<title>초과근무관리</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="overtime.css">
+  <title>초과근무관리</title>
+
+  <link
+    rel="stylesheet"
+    href="overtime.css">
 </head>
 
 <body>
@@ -14,140 +19,682 @@
 <div class="wrap">
 
   <div class="header">
+
     <h1>초과근무관리</h1>
+
     <p>
-      초과근무, 미휴게, 특근 내역을 등록합니다.
+      초과근무, 미휴게, 휴무근무와 조퇴 내역을 관리합니다.
     </p>
+
   </div>
 
-  <div class="card">
 
-    <div class="grid">
-
-      <div>
-        <label>근무일자</label>
-        <input type="date" id="workDate">
-      </div>
-
-      <div>
-        <label>직원명</label>
-        <select id="employeeName">
-         <option value="">직원을 선택하세요</option>
-        </select>
-      </div>
-
-      <div>
-        <label>구분</label>
-        <select id="type" onchange="changeUnitLabel()">
-          <option>초과근무</option>
-          <option>미휴게</option>
-          <option>특근</option>
-          <option>휴무근무</option>
-          <option>연차미사용</option>
-          <option>조퇴</option>
-          <option>기타</option>
-        </select>
-      </div>
-
-      <div>
-        <label id="hoursLabel">시간</label>
-         <select id="hours">
-          <option value="0.5">0.5</option>
-          <option value="1">1</option>
-          <option value="1.5">1.5</option>
-          <option value="2">2</option>
-          <option value="2.5">2.5</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
-      </div>
-
-    </div>
-
-    <label>사유</label>
-    <textarea id="reason"></textarea>
-
-    <label>비고</label>
-    <textarea id="memo"></textarea>
-
-    <div class="employee-manage-btns">
+  <!-- 상단 탭 -->
+<div class="page-tabs">
 
   <button
     type="button"
-    class="sub-btn"
-    onclick="toggleEmployeeBox()">
-    직원 등록 / 퇴사 처리
+    id="monthlyTabButton"
+    class="page-tab active"
+    onclick="showOvertimeTab('monthly')">
+    월간입력
+  </button>
+
+  <button
+    type="button"
+    id="employeeTabButton"
+    class="page-tab"
+    onclick="showOvertimeTab('employee')">
+    정규직 직원관리
+  </button>
+
+  <button
+    type="button"
+    id="workTabButton"
+    class="page-tab"
+    onclick="showOvertimeTab('work')">
+    개별입력
   </button>
 
 </div>
 
-<div id="employeeBox" class="employee-box" style="display:none;">
+<!-- ===================================
+     월간 초과근무 입력 화면
+==================================== -->
+<section
+  id="monthlyEntrySection"
+  class="tab-section">
 
-  <h3>직원관리</h3>
+  <div class="card monthly-card">
 
-  <div class="grid">
+    <div class="monthly-toolbar">
 
-    <div>
-      <label>직원명</label>
-      <input type="text" id="newEmployeeName">
+      <div>
+
+        <span class="section-label">
+          MONTHLY OVERTIME
+        </span>
+
+        <h2>월간 초과근무 입력</h2>
+
+        <p>
+          날짜와 직원별 근무내역을 한눈에 확인하고 입력합니다.
+        </p>
+
+      </div>
+
+
+      <div class="month-navigation">
+
+        <button
+          type="button"
+          class="month-move-btn"
+          onclick="moveOvertimeMonth(-1)">
+          ‹
+        </button>
+
+        <input
+          type="month"
+          id="overtimeMonth"
+          onchange="loadMonthlyOvertime()">
+
+        <button
+          type="button"
+          class="month-move-btn"
+          onclick="moveOvertimeMonth(1)">
+          ›
+        </button>
+
+      </div>
+
     </div>
 
-    <div>
-      <label>직무</label>
-      <input type="text" id="newEmployeePosition">
+
+    <div class="monthly-legend">
+
+      <span class="legend-item overtime">
+        초과근무
+      </span>
+
+      <span class="legend-item no-break">
+        미휴게
+      </span>
+
+      <span class="legend-item holiday">
+        휴무근무
+      </span>
+
+      <span class="legend-item early-leave">
+        조퇴
+      </span>
+
+      <span class="legend-item etc">
+        기타
+      </span>
+
     </div>
 
-    <div>
-      <label>재직상태</label>
-      <select id="newEmployeeStatus">
-        <option>재직</option>
-        <option>퇴사</option>
-      </select>
-    </div>
 
-    <div>
-      <label>&nbsp;</label>
-      <button class="sub-btn" onclick="saveEmployee()">
-        직원 저장
-      </button>
+    <div
+      id="monthlyTableWrap"
+      class="monthly-table-wrap">
+
+      <table
+        id="monthlyOvertimeTable"
+        class="monthly-overtime-table">
+
+        <thead id="monthlyOvertimeHead"></thead>
+
+        <tbody id="monthlyOvertimeBody">
+
+          <tr>
+            <td class="empty">
+              월간 내역을 불러오는 중입니다.
+            </td>
+          </tr>
+
+        </tbody>
+
+        <tfoot id="monthlyOvertimeFoot"></tfoot>
+
+      </table>
+
     </div>
 
   </div>
 
-</div>
-
-    <button
-      class="save-btn"
-      onclick="saveOvertime()">
-      저장
-    </button>
-
-  </div>
 
   <div class="list-card">
 
-    <h2>최근 등록내역</h2>
+    <div class="section-title-row">
 
-    <table>
+      <div>
 
-      <thead>
-        <tr>
-          <th>근무일자</th>
-          <th>직원명</th>
-          <th>구분</th>
-          <th>시간</th>
-          <th>사유</th>
-        </tr>
-      </thead>
+        <span class="section-label">
+          MONTHLY SUMMARY
+        </span>
 
-      <tbody id="tbody"></tbody>
+        <h2>직원별 월간 합계</h2>
 
-    </table>
+      </div>
+
+    </div>
+
+
+    <div class="monthly-summary-wrap">
+
+      <table class="monthly-summary-table">
+
+        <thead id="monthlySummaryHead"></thead>
+
+        <tbody id="monthlySummaryBody">
+
+          <tr>
+            <td class="empty">
+              월간 합계를 불러오는 중입니다.
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+  <!-- ===================================
+       정규직 직원관리 화면
+  ==================================== -->
+  <section
+    id="employeeManagementSection"
+    class="tab-section hidden">
+
+    <div class="card">
+
+      <div class="section-title-row">
+
+        <div>
+
+          <span class="section-label">
+            EMPLOYEE REGISTER
+          </span>
+
+          <h2>직원등록·수정</h2>
+
+          <p>
+            정규직 직원의 이름, 직무와 재직상태를 관리합니다.
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="sub-btn"
+          onclick="resetEmployeeForm()">
+          신규등록
+        </button>
+
+      </div>
+
+
+      <div class="grid">
+
+        <div>
+
+          <label>직원명</label>
+
+          <input
+            type="text"
+            id="newEmployeeName"
+            placeholder="직원 이름">
+
+        </div>
+
+
+        <div>
+
+          <label>직무</label>
+
+          <input
+            type="text"
+            id="newEmployeePosition"
+            placeholder="예: 홀 직원">
+
+        </div>
+
+
+        <div>
+
+          <label>재직상태</label>
+
+          <select id="newEmployeeStatus">
+
+            <option value="재직">
+              재직
+            </option>
+
+            <option value="퇴사">
+              퇴사
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <div class="employee-save-row">
+
+        <button
+          type="button"
+          class="save-btn employee-save-btn"
+          onclick="saveEmployee()">
+          직원정보 저장
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="list-card">
+
+      <div class="section-title-row">
+
+        <div>
+
+          <span class="section-label">
+            EMPLOYEE LIST
+          </span>
+
+          <h2>등록 직원목록</h2>
+
+        </div>
+
+        <button
+          type="button"
+          class="sub-btn"
+          onclick="loadEmployeeManagementList()">
+          새로고침
+        </button>
+
+      </div>
+
+
+      <div class="employee-table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>직원명</th>
+              <th>직무</th>
+              <th>상태</th>
+              <th>관리</th>
+              <th>삭제</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="employeeManagementBody">
+
+            <tr>
+
+              <td
+                colspan="4"
+                class="empty">
+                직원목록을 불러오는 중입니다.
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ===================================
+       초과근무 입력 화면
+  ==================================== -->
+  <section
+    id="workEntrySection"
+    class="tab-section hidden">
+
+    <div class="card">
+
+      <div class="section-title-row">
+
+        <div>
+
+          <span class="section-label">
+            OVERTIME REGISTER
+          </span>
+
+          <h2>초과근무 개별입력</h2>
+
+          <p>
+            직원의 초과근무와 기타 근무내역을 등록합니다.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="grid">
+
+        <div>
+
+          <label>근무일자</label>
+
+          <input
+            type="date"
+            id="workDate">
+
+        </div>
+
+
+        <div>
+
+          <label>직원명</label>
+
+          <select id="employeeName">
+
+            <option value="">
+              직원을 선택하세요
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div>
+
+          <label>구분</label>
+
+          <select
+            id="type"
+            onchange="changeUnitLabel()">
+
+            <option>초과근무</option>
+            <option>미휴게</option>            
+            <option>휴무근무</option>            
+            <option>조퇴</option>
+            <option>기타</option>
+
+          </select>
+
+        </div>
+
+
+        <div>
+
+          <label id="hoursLabel">
+            시간
+          </label>
+
+          <select id="hours">
+
+            <option value="0.5">0.5</option>
+            <option value="1">1</option>
+            <option value="1.5">1.5</option>
+            <option value="2">2</option>
+            <option value="2.5">2.5</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <label>사유</label>
+
+      <textarea id="reason"></textarea>
+
+
+      <label>비고</label>
+
+      <textarea id="memo"></textarea>
+
+
+      <button
+        type="button"
+        class="save-btn"
+        onclick="saveOvertime()">
+        저장
+      </button>
+
+    </div>
+
+
+    <div class="list-card">
+
+      <h2>최근 등록내역</h2>
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>근무일자</th>
+            <th>직원명</th>
+            <th>구분</th>
+            <th>시간</th>
+            <th>사유</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="tbody"></tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</div>
+
+<!-- 월간 셀 입력 모달 -->
+<div
+  id="monthlyEntryModal"
+  class="monthly-modal hidden">
+
+  <div
+    class="monthly-modal-backdrop"
+    onclick="closeMonthlyEntryModal()">
+  </div>
+
+
+  <div class="monthly-modal-panel">
+
+    <div class="monthly-modal-header">
+
+      <div>
+
+        <span class="section-label">
+          OVERTIME ENTRY
+        </span>
+
+        <h2 id="monthlyModalTitle">
+          근무내역 입력
+        </h2>
+
+        <p id="monthlyModalSubTitle"></p>
+
+      </div>
+
+      <button
+        type="button"
+        class="monthly-modal-close"
+        onclick="closeMonthlyEntryModal()">
+        ×
+      </button>
+
+    </div>
+
+
+    <input
+      type="hidden"
+      id="monthlyModalDate">
+
+    <input
+      type="hidden"
+      id="monthlyModalEmployee">
+
+
+    <div class="monthly-entry-grid">
+
+      <div class="monthly-entry-item">
+
+        <label>초과근무</label>
+
+        <select id="monthlyOvertimeHours">
+          <option value="0">없음</option>
+          <option value="0.5">0.5시간</option>
+          <option value="1">1시간</option>
+          <option value="1.5">1.5시간</option>
+          <option value="2">2시간</option>
+          <option value="2.5">2.5시간</option>
+          <option value="3">3시간</option>
+          <option value="3.5">3.5시간</option>
+          <option value="4">4시간</option>
+          <option value="4.5">4.5시간</option>
+          <option value="5">5시간</option>
+        </select>
+
+      </div>
+
+
+      <div class="monthly-entry-item">
+
+        <label>미휴게</label>
+
+        <select id="monthlyNoBreakHours">
+          <option value="0">없음</option>
+          <option value="0.5">0.5시간</option>
+          <option value="1">1시간</option>
+          <option value="1.5">1.5시간</option>
+          <option value="2">2시간</option>
+          <option value="2.5">2.5시간</option>
+          <option value="3">3시간</option>
+        </select>
+
+      </div>
+
+
+      <div class="monthly-entry-item">
+
+        <label>휴무근무</label>
+
+        <select id="monthlyHolidayDays">
+          <option value="0">없음</option>
+          <option value="0.5">0.5일</option>
+          <option value="1">1일</option>
+        </select>
+
+      </div>
+
+
+      <div class="monthly-entry-item">
+
+        <label>조퇴</label>
+
+        <select id="monthlyEarlyLeaveHours">
+          <option value="0">없음</option>
+          <option value="0.5">0.5시간</option>
+          <option value="1">1시간</option>
+          <option value="1.5">1.5시간</option>
+          <option value="2">2시간</option>
+          <option value="2.5">2.5시간</option>
+          <option value="3">3시간</option>
+          <option value="3.5">3.5시간</option>
+          <option value="4">4시간</option>
+          <option value="4.5">4.5시간</option>
+          <option value="5">5시간</option>
+          <option value="5.5">5.5시간</option>
+          <option value="6">6시간</option>
+          <option value="6.5">6.5시간</option>
+          <option value="7">7시간</option>
+          <option value="7.5">7.5시간</option>
+          <option value="8">8시간</option>
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <label>기타 시간</label>
+
+    <select id="monthlyEtcHours">
+      <option value="0">없음</option>
+      <option value="0.5">0.5시간</option>
+      <option value="1">1시간</option>
+      <option value="1.5">1.5시간</option>
+      <option value="2">2시간</option>
+      <option value="2.5">2.5시간</option>
+      <option value="3">3시간</option>
+      <option value="4">4시간</option>
+      <option value="5">5시간</option>
+    </select>
+
+
+    <label>사유</label>
+
+    <textarea
+      id="monthlyReason"
+      placeholder="필요한 경우 사유를 입력하세요.">
+    </textarea>
+
+
+    <label>비고</label>
+
+    <textarea
+      id="monthlyMemo"
+      placeholder="추가 메모를 입력하세요.">
+    </textarea>
+
+
+    <div class="monthly-modal-actions">
+
+      <button
+        type="button"
+        class="modal-cancel-btn"
+        onclick="closeMonthlyEntryModal()">
+        취소
+      </button>
+
+      <button
+        type="button"
+        class="modal-save-btn"
+        onclick="saveMonthlyOvertimeCell()">
+        저장
+      </button>
+
+    </div>
 
   </div>
 
 </div>
+
 
 <script src="overtime.js"></script>
 

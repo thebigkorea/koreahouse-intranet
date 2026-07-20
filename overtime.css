@@ -126,42 +126,26 @@ td{
     grid-template-columns:1fr;
   }
 
-  table{
+  #workEntrySection table{
     min-width:700px;
+  }
+
+  #employeeManagementSection table{
+    min-width:520px;
   }
 
   .list-card{
     overflow:auto;
   }
 }
-.employee-manage-btns{
-  margin-top:14px;
-}
 
-.sub-btn{
-  border:0;
-  border-radius:12px;
-  padding:12px 16px;
-  background:#f1e5d6;
-  color:#3b2414;
-  font-weight:900;
-  cursor:pointer;
-}
-
-.employee-box{
-  margin-top:14px;
-  padding:18px;
-  border:1px solid #e4d7c7;
-  border-radius:18px;
-  background:#fffaf4;
-}
 .employee-manage-btns{
   margin-top:14px;
   margin-bottom:14px;
 }
 
 .sub-btn{
-  width:100%;
+  width:auto;
   border:0;
   border-radius:12px;
   padding:13px 16px;
@@ -188,4 +172,467 @@ td{
 .employee-box h3{
   margin:0 0 14px;
   color:#3b2414;
+}
+/* 직원관리 / 초과근무입력 탭 */
+
+.hidden {
+  display: none !important;
+}
+
+.page-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.page-tab {
+  min-height: 50px;
+  border: 1px solid #dfd2c2;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #755538;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.page-tab.active {
+  border-color: #874f20;
+  background: #874f20;
+  color: #ffffff;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.section-title-row h2 {
+  margin: 3px 0 5px;
+}
+
+.section-title-row p {
+  margin: 0;
+  color: #76695c;
+}
+
+.section-label {
+  color: #a36a28;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.employee-save-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.employee-save-btn {
+  width: auto;
+  min-width: 160px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.employee-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.employee-status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #e8f5ed;
+  color: #257344;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.employee-edit-btn {
+  padding: 6px 14px;
+  border: 1px solid #8b5a2b;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #75451e;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+
+  .page-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title-row {
+    flex-direction: column;
+  }
+
+  .employee-save-btn {
+    width: 100%;
+  }
+
+}
+.employee-delete-btn{
+
+  padding:6px 14px;
+
+  border:1px solid #c62828;
+
+  border-radius:8px;
+
+  background:#fff;
+
+  color:#c62828;
+
+  font-weight:700;
+
+  cursor:pointer;
+
+}
+
+.employee-delete-btn:hover{
+
+  background:#c62828;
+
+  color:#fff;
+
+}
+/* ==================================
+   월간 초과근무 입력
+================================== */
+
+.page-tabs{
+  grid-template-columns:repeat(3,1fr);
+}
+
+.monthly-toolbar{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:18px;
+}
+
+.monthly-toolbar h2{
+  margin:3px 0 5px;
+}
+
+.monthly-toolbar p{
+  margin:0;
+  color:#76695c;
+}
+
+.month-navigation{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-shrink:0;
+}
+
+.month-navigation input{
+  width:170px;
+  min-height:46px;
+  font-weight:900;
+  text-align:center;
+}
+
+.month-move-btn{
+  width:46px;
+  height:46px;
+  border:1px solid #d8c8b4;
+  border-radius:12px;
+  background:#fff;
+  color:#75451e;
+  font-size:26px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.month-move-btn:hover{
+  background:#f1e5d6;
+}
+
+.monthly-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:14px;
+}
+
+.legend-item{
+  display:inline-flex;
+  align-items:center;
+  min-height:30px;
+  padding:5px 11px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:900;
+}
+
+.legend-item.overtime,
+.monthly-entry-badge.overtime{
+  background:#e7f0ff;
+  color:#245caa;
+}
+
+.legend-item.no-break,
+.monthly-entry-badge.no-break{
+  background:#fff3cf;
+  color:#886100;
+}
+
+.legend-item.holiday,
+.monthly-entry-badge.holiday{
+  background:#e6f6ea;
+  color:#287443;
+}
+
+.legend-item.early-leave,
+.monthly-entry-badge.early-leave{
+  background:#ffe8e6;
+  color:#b33b35;
+}
+
+.legend-item.etc,
+.monthly-entry-badge.etc{
+  background:#f0e9fa;
+  color:#69429a;
+}
+
+.monthly-table-wrap,
+.monthly-summary-wrap{
+  width:100%;
+  overflow:auto;
+  border:1px solid #e4d7c7;
+  border-radius:14px;
+}
+
+.monthly-overtime-table{
+  width:max-content;
+  min-width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+}
+
+.monthly-overtime-table th,
+.monthly-overtime-table td{
+  min-width:145px;
+  height:74px;
+  padding:7px;
+  border-right:1px solid #eee3d6;
+  border-bottom:1px solid #eee3d6;
+  vertical-align:top;
+}
+
+.monthly-overtime-table th{
+  position:sticky;
+  top:0;
+  z-index:4;
+  height:54px;
+  background:#f1e5d6;
+  text-align:center;
+}
+
+.monthly-overtime-table .date-column{
+  position:sticky;
+  left:0;
+  z-index:3;
+  min-width:74px;
+  width:74px;
+  background:#fffaf4;
+  text-align:center;
+  vertical-align:middle;
+  font-weight:900;
+}
+
+.monthly-overtime-table thead .date-column{
+  z-index:6;
+  background:#ead8c1;
+}
+
+.monthly-overtime-cell{
+  cursor:pointer;
+  background:#fff;
+  transition:.15s;
+}
+
+.monthly-overtime-cell:hover{
+  background:#fffaf4;
+  box-shadow:inset 0 0 0 2px #b98a59;
+}
+
+.monthly-cell-empty{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:55px;
+  color:#c2ad96;
+  font-size:22px;
+  font-weight:900;
+}
+
+.monthly-entry-badge{
+  display:block;
+  width:100%;
+  margin-bottom:4px;
+  padding:4px 7px;
+  border-radius:7px;
+  text-align:left;
+  font-size:12px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.monthly-summary-table{
+  min-width:700px;
+}
+
+.monthly-summary-table th:first-child,
+.monthly-summary-table td:first-child{
+  position:sticky;
+  left:0;
+  z-index:2;
+  min-width:150px;
+  background:#fffaf4;
+  font-weight:900;
+}
+
+.monthly-summary-table thead th:first-child{
+  background:#ead8c1;
+}
+
+.monthly-summary-total td{
+  border-top:2px solid #8a5a2b;
+  background:#fff8ef;
+  font-weight:900;
+}
+
+.monthly-modal{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.monthly-modal-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(35,23,15,.55);
+}
+
+.monthly-modal-panel{
+  position:relative;
+  z-index:1;
+  width:min(650px,100%);
+  max-height:90vh;
+  overflow:auto;
+  padding:24px;
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 25px 70px rgba(35,23,15,.3);
+}
+
+.monthly-modal-header{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:18px;
+}
+
+.monthly-modal-header h2{
+  margin:3px 0 5px;
+}
+
+.monthly-modal-header p{
+  margin:0;
+  color:#76695c;
+}
+
+.monthly-modal-close{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:12px;
+  background:#f1e5d6;
+  color:#3b2414;
+  font-size:27px;
+  cursor:pointer;
+}
+
+.monthly-entry-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.monthly-modal-actions{
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:10px;
+  margin-top:20px;
+}
+
+.modal-cancel-btn,
+.modal-save-btn{
+  min-height:48px;
+  border:0;
+  border-radius:13px;
+  font-size:15px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.modal-cancel-btn{
+  background:#eee5da;
+  color:#5d4939;
+}
+
+.modal-save-btn{
+  background:#7a4a22;
+  color:#fff;
+}
+
+body.modal-open{
+  overflow:hidden;
+}
+
+@media(max-width:700px){
+
+  .page-tabs{
+    grid-template-columns:1fr;
+  }
+
+  .monthly-toolbar{
+    flex-direction:column;
+  }
+
+  .month-navigation{
+    width:100%;
+  }
+
+  .month-navigation input{
+    flex:1;
+    width:auto;
+  }
+
+  .monthly-entry-grid{
+    grid-template-columns:1fr;
+  }
+
+  .monthly-overtime-table th,
+  .monthly-overtime-table td{
+    min-width:125px;
+  }
+
 }
