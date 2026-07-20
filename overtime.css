@@ -8,9 +8,10 @@ body{
 }
 
 .wrap{
-  max-width:1100px;
-  margin:0 auto;
-  padding:20px;
+  width:100%;
+  max-width:none;
+  margin:0;
+  padding:20px 30px;
 }
 
 .header{
@@ -635,4 +636,16 @@ body.modal-open{
     min-width:125px;
   }
 
+}
+.monthly-card,
+.list-card{
+  width:100%;
+}
+
+.monthly-table-wrap{
+  width:100%;
+}
+
+.monthly-overtime-table{
+  min-width:100%;
 }
