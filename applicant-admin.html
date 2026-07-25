@@ -42,9 +42,22 @@ body{
 
 .topbar{
   display:grid;
-  grid-template-columns:1fr 220px;
+  grid-template-columns:1fr 220px auto;
   gap:14px;
   margin-bottom:18px;
+}
+
+.btn.share{
+  min-width:190px;
+  background:#f5c842;
+  color:#2b2100;
+  border:1px solid #d5a900;
+  font-size:14px;
+  white-space:nowrap;
+}
+
+.btn.share:hover{
+  background:#e8b900;
 }
 
 input,select,textarea{
@@ -219,6 +232,11 @@ tr:hover{
     grid-template-columns:1fr;
   }
 
+  .btn.share{
+  width:100%;
+  min-height:48px;
+}
+
   .wrap{
     padding:12px;
   }
@@ -305,6 +323,13 @@ tr:hover{
       <option value="채용">채용</option>
       <option value="불합격">불합격</option>
     </select>
+
+    <button
+  type="button"
+  class="btn share"
+  onclick="shareTodayInterviews()">
+  💬 오늘 면접일정 카톡 공유
+</button>
   </div>
 
   <div class="table-wrap">
@@ -759,6 +784,277 @@ function safeAttr(value){
     .replace(/"/g,"&quot;")
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;");
+}
+function getTodayString(){
+
+  const now = new Date();
+
+  const year = now.getFullYear();
+
+  const month =
+    String(now.getMonth() + 1).padStart(2, "0");
+
+  const day =
+    String(now.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function formatKoreanDate(dateString){
+
+  const parts =
+    String(dateString || "")
+      .split("-")
+      .map(Number);
+
+  if(parts.length !== 3){
+    return dateString;
+  }
+
+  const date =
+    new Date(
+      parts[0],
+      parts[1] - 1,
+      parts[2]
+    );
+
+  const weekdays = [
+    "일",
+    "월",
+    "화",
+    "수",
+    "목",
+    "금",
+    "토"
+  ];
+
+  return (
+    `${parts[0]}년 ` +
+    `${parts[1]}월 ` +
+    `${parts[2]}일 ` +
+    `${weekdays[date.getDay()]}요일`
+  );
+}
+
+function formatInterviewTime(value){
+
+  const time =
+    String(value || "").trim();
+
+  if(!time){
+    return "시간 미정";
+  }
+
+  const parts =
+    time.split(":");
+
+  const hour =
+    Number(parts[0]);
+
+  const minute =
+    parts[1] || "00";
+
+  const period =
+    hour < 12 ? "오전" : "오후";
+
+  const displayHour =
+    hour % 12 || 12;
+
+  return `${period} ${displayHour}:${minute}`;
+}
+
+function formatPhone(value){
+
+  const phone =
+    String(value || "")
+      .replace(/[^0-9]/g, "");
+
+  if(phone.length === 11){
+
+    return (
+      phone.slice(0, 3) + "-" +
+      phone.slice(3, 7) + "-" +
+      phone.slice(7)
+    );
+  }
+
+  if(phone.length === 10){
+
+    return (
+      phone.slice(0, 3) + "-" +
+      phone.slice(3, 6) + "-" +
+      phone.slice(6)
+    );
+  }
+
+  return value || "-";
+}
+
+function makeTodayInterviewMessage(){
+
+  const today =
+    getTodayString();
+
+  const excludedStatuses = [
+    "완료",
+    "불참",
+    "불합격",
+    "채용"
+  ];
+
+  const list =
+    ALL_LIST
+      .filter(item =>
+        item.interviewDate === today &&
+        !excludedStatuses.includes(item.status)
+      )
+      .sort((a, b) =>
+        String(a.interviewTime || "99:99")
+          .localeCompare(
+            String(b.interviewTime || "99:99")
+          )
+      );
+
+  if(!list.length){
+    return "";
+  }
+
+  const lines = [
+    "[오늘의 면접 일정]",
+    formatKoreanDate(today),
+    ""
+  ];
+
+  list.forEach((item, index) => {
+
+    lines.push(
+      `■ ${formatInterviewTime(item.interviewTime)} ` +
+      `${item.name || "이름 미등록"}`
+    );
+
+    lines.push(
+      `- 지원매장: ${item.store || "-"}`
+    );
+
+    lines.push(
+      `- 지원직무: ${item.position || "-"}`
+    );
+
+    lines.push(
+      `- 연락처: ${formatPhone(item.phone)}`
+    );
+
+    lines.push(
+      `- 면접담당자: ${item.interviewer || "미지정"}`
+    );
+
+    lines.push(
+      `- 경력 및 메모: ${item.memo || "등록된 메모 없음"}`
+    );
+
+    if(index < list.length - 1){
+      lines.push("");
+    }
+  });
+
+  return lines.join("\n");
+}
+
+async function shareTodayInterviews(){
+
+  const message =
+    makeTodayInterviewMessage();
+
+  if(!message){
+
+    alert("오늘 예정된 면접 일정이 없습니다.");
+
+    return;
+  }
+
+  const isMobile =
+    navigator.maxTouchPoints > 0 &&
+    window.innerWidth <= 900;
+
+  if(
+    isMobile &&
+    navigator.share
+  ){
+
+    try{
+
+      await navigator.share({
+        title:"오늘의 면접 일정",
+        text:message
+      });
+
+      return;
+
+    }catch(error){
+
+      if(error.name === "AbortError"){
+        return;
+      }
+    }
+  }
+
+  const copied =
+    await copyInterviewMessage(message);
+
+  if(copied){
+
+    alert(
+      "오늘 면접 일정이 복사되었습니다.\n" +
+      "담당자 카카오톡 대화방에 붙여넣으세요."
+    );
+
+  }else{
+
+    prompt(
+      "아래 내용을 복사하여 카카오톡으로 보내세요.",
+      message
+    );
+  }
+}
+
+async function copyInterviewMessage(message){
+
+  try{
+
+    await navigator.clipboard.writeText(message);
+
+    return true;
+
+  }catch(error){
+
+    const textarea =
+      document.createElement("textarea");
+
+    textarea.value = message;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+
+    document.body.appendChild(textarea);
+
+    textarea.focus();
+    textarea.select();
+
+    let copied = false;
+
+    try{
+
+      copied =
+        document.execCommand("copy");
+
+    }catch(copyError){
+
+      copied = false;
+    }
+
+    textarea.remove();
+
+    return copied;
+  }
 }
 </script>
 
