@@ -47,6 +47,24 @@ body{
   margin-bottom:18px;
 }
 
+.share-controls{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.share-controls input{
+  width:155px;
+  min-width:155px;
+  height:100%;
+  background:#fff;
+  font-weight:800;
+}
+
+.btn.share{
+  min-width:210px;
+}
+
 .btn.share{
   min-width:190px;
   background:#f5c842;
@@ -237,6 +255,18 @@ tr:hover{
   min-height:48px;
 }
 
+.share-controls{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+}
+
+.share-controls input{
+  width:100%;
+  min-width:0;
+  min-height:48px;
+}
+
   .wrap{
     padding:12px;
   }
@@ -324,12 +354,21 @@ tr:hover{
       <option value="불합격">불합격</option>
     </select>
 
-    <button
-  type="button"
-  class="btn share"
-  onclick="shareTodayInterviews()">
-  💬 오늘 면접일정 카톡 공유
-</button>
+    <div class="share-controls">
+
+  <input
+    type="date"
+    id="shareDate"
+    title="공유할 면접 날짜 선택">
+
+  <button
+    type="button"
+    class="btn share"
+    onclick="shareSelectedDateInterviews()">
+    💬 선택일 면접일정 카톡 공유
+  </button>
+
+</div>
   </div>
 
   <div class="table-wrap">
@@ -361,7 +400,13 @@ const API_URL =
 
 let ALL_LIST = [];
 
-window.addEventListener("load", loadApplicants);
+window.addEventListener("load", function(){
+
+  document.getElementById("shareDate").value =
+    getTodayString();
+
+  loadApplicants();
+});
 
 async function loadApplicants(){
 
@@ -890,10 +935,17 @@ function formatPhone(value){
   return value || "-";
 }
 
-function makeTodayInterviewMessage(){
+function makeSelectedDateInterviewMessage(){
 
-  const today =
-    getTodayString();
+  const selectedDate =
+    document.getElementById("shareDate").value;
+
+  if(!selectedDate){
+    return {
+      success:false,
+      message:"공유할 면접 날짜를 선택해주세요."
+    };
+  }
 
   const excludedStatuses = [
     "완료",
@@ -905,7 +957,7 @@ function makeTodayInterviewMessage(){
   const list =
     ALL_LIST
       .filter(item =>
-        item.interviewDate === today &&
+        item.interviewDate === selectedDate &&
         !excludedStatuses.includes(item.status)
       )
       .sort((a, b) =>
@@ -916,12 +968,18 @@ function makeTodayInterviewMessage(){
       );
 
   if(!list.length){
-    return "";
+
+    return {
+      success:false,
+      message:
+        formatKoreanDate(selectedDate) +
+        "에 예정된 면접 일정이 없습니다."
+    };
   }
 
   const lines = [
-    "[오늘의 면접 일정]",
-    formatKoreanDate(today),
+    "[면접 일정 안내]",
+    formatKoreanDate(selectedDate),
     ""
   ];
 
@@ -957,20 +1015,29 @@ function makeTodayInterviewMessage(){
     }
   });
 
-  return lines.join("\n");
+  return {
+    success:true,
+    message:lines.join("\n")
+  };
 }
 
-async function shareTodayInterviews(){
+async function shareSelectedDateInterviews(){
 
-  const message =
-    makeTodayInterviewMessage();
+  const result =
+    makeSelectedDateInterviewMessage();
 
-  if(!message){
+  if(!result.success){
 
-    alert("오늘 예정된 면접 일정이 없습니다.");
+    alert(result.message);
 
     return;
   }
+
+  const message =
+    result.message;
+
+  const selectedDate =
+    document.getElementById("shareDate").value;
 
   const isMobile =
     navigator.maxTouchPoints > 0 &&
@@ -984,7 +1051,9 @@ async function shareTodayInterviews(){
     try{
 
       await navigator.share({
-        title:"오늘의 면접 일정",
+        title:
+          formatKoreanDate(selectedDate) +
+          " 면접 일정",
         text:message
       });
 
@@ -1004,7 +1073,8 @@ async function shareTodayInterviews(){
   if(copied){
 
     alert(
-      "오늘 면접 일정이 복사되었습니다.\n" +
+      formatKoreanDate(selectedDate) +
+      " 면접 일정이 복사되었습니다.\n" +
       "담당자 카카오톡 대화방에 붙여넣으세요."
     );
 
