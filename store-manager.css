@@ -1275,3 +1275,32 @@ textarea::placeholder {
     flex-direction: column;
   }
 }
+/* 입력영역 세로 길이 조정 */
+
+#daily textarea {
+  min-height: 88px;
+}
+
+#daily .full-label {
+  margin-top: 13px;
+}
+
+#daily .primary {
+  margin-top: 18px;
+}
+
+/* 넓은 화면에서 입력폼 높이 압축 */
+
+@media (min-width: 1200px) {
+  #daily textarea {
+    min-height: 82px;
+  }
+
+  #daily .panel {
+    padding-bottom: 26px;
+  }
+}
+.header {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
