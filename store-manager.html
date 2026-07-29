@@ -114,13 +114,103 @@
     </section>
 
     <section id="history" class="panel">
+
+  <div class="history-header">
+
+    <div>
       <h2>최근 등록내역</h2>
-      <div class="form-grid">
-        <label>점포 선택<select id="historyStore" onchange="loadRecentLogs()"><option value="">전체</option><option>한국의집 잠실</option><option>고호재</option><option>효종갱</option><option>기타</option></select></label>
-        <label>구분<select id="historyType" onchange="loadRecentLogs()"><option value="">전체</option><option>일일보고</option><option>직원관리</option><option>고객관리</option><option>설비관리</option><option>위생점검</option><option>컴플레인</option></select></label>
-      </div>
-      <div id="recentList" class="recent-list"></div>
-    </section>
+
+      <p class="history-description">
+        본사 확인상태와 처리내용을 함께 확인할 수 있습니다.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="history-refresh-btn"
+      onclick="loadRecentLogs()">
+      ↻ 최근내역 새로고침
+    </button>
+
+  </div>
+
+
+  <div class="form-grid">
+
+    <label>
+      점포 선택
+
+      <select
+        id="historyStore"
+        onchange="loadRecentLogs()">
+
+        <option value="">전체</option>
+        <option>한국의집 잠실</option>
+        <option>고호재</option>
+        <option>효종갱</option>
+        <option>기타</option>
+
+      </select>
+    </label>
+
+
+    <label>
+      구분
+
+      <select
+        id="historyType"
+        onchange="loadRecentLogs()">
+
+        <option value="">전체</option>
+        <option>일일보고</option>
+        <option>직원관리</option>
+        <option>고객관리</option>
+        <option>설비관리</option>
+        <option>위생점검</option>
+        <option>컴플레인</option>
+
+      </select>
+    </label>
+
+  </div>
+
+
+  <div class="history-status-guide">
+
+    <span class="history-guide-item status-pending">
+      본사 미확인
+    </span>
+
+    <span class="history-guide-item status-check">
+      확인사항
+    </span>
+
+    <span class="history-guide-item status-supplement">
+      보완요청
+    </span>
+
+    <span class="history-guide-item status-action">
+      조치필요
+    </span>
+
+    <span class="history-guide-item status-complete">
+      처리완료
+    </span>
+
+  </div>
+
+
+  <div
+    id="recentList"
+    class="recent-list">
+
+    <div class="recent-loading">
+      최근내역을 불러오는 중입니다.
+    </div>
+
+  </div>
+
+</section>
   </main>
 
   <script src="store-manager.js"></script>

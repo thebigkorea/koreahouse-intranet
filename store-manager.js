@@ -76,39 +76,43 @@ function setDefaultDates() {
 }
 
 async function saveLog(payload) {
-  // 1. 한국의집 기존 원장 저장
-  const data = await api({
-    action: "saveStoreDailyLog",
-    ...payload
-  });
-
-  // 2. 본사 매장점검_통합원장에도 저장
   try {
-    await fetch(HQ_API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        storeName: payload.store || "",
-        brand: "한국의집",
-        writer: payload.writer || "",
-        category: payload.type || payload.category || "",
-        priority: payload.urgency || "일반",
-        content:
-          "[구분] " + (payload.category || "") + "\n" +
-          "[제목] " + (payload.title || "") + "\n" +
-          "[내용] " + (payload.content || "") + "\n" +
-          "[요청/전달] " + (payload.request || "") + "\n" +
-          "[추가사항] " + (payload.extra || ""),
-        photo: ""
-      })
+
+    /*
+     * 한국의집 원본 매장운영 원장에 저장합니다.
+     *
+     * 본사 통합 대시보드는 이 원장을 직접 조회하므로
+     * HQ_API_URL로 같은 자료를 한 번 더 보낼 필요가 없습니다.
+     */
+    const data = await api({
+      action: "saveStoreDailyLog",
+      ...payload
     });
+
+    if (data.success === false) {
+      throw new Error(
+        data.message ||
+        "저장에 실패했습니다."
+      );
+    }
+
+    alert(
+      data.message ||
+      "저장되었습니다."
+    );
+
+    await loadDashboard();
+    await loadRecentLogs();
+
   } catch (e) {
-    console.log("본사 통합원장 저장 실패", e);
+
+    console.error(e);
+
+    alert(
+      "저장 중 오류가 발생했습니다.\n" +
+      e.message
+    );
   }
-
-  alert(data.message || "저장되었습니다.");
-
-  loadDashboard();
-  loadRecentLogs();
 }
 
 function saveDailyReport() {
@@ -228,58 +232,459 @@ async function loadDashboard() {
 }
 
 async function loadRecentLogs() {
+  const box =
+    document.getElementById(
+      "recentList"
+    );
+
+  if (!box) {
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="recent-loading">
+      최근내역을 불러오는 중입니다.
+    </div>
+  `;
+
   try {
 
     const data = await api({
       action: "getStoreManagerLogs",
       store: val("historyStore"),
-      type: val("historyType")
+      type: val("historyType"),
+      t: Date.now()
     });
 
-    const logs = data.logs || [];
-    const box = document.getElementById("recentList");
+    if (data.success === false) {
+      throw new Error(
+        data.message ||
+        "최근내역을 불러오지 못했습니다."
+      );
+    }
+
+    const logs =
+      Array.isArray(data.logs)
+        ? data.logs
+        : [];
 
     if (logs.length === 0) {
-      box.innerHTML =
-        "<div class='log-card'>등록된 내역이 없습니다.</div>";
+
+      box.innerHTML = `
+        <div class="recent-loading">
+          등록된 내역이 없습니다.
+        </div>
+      `;
+
       return;
     }
 
-    box.innerHTML = logs.map(log => {
+    box.innerHTML =
+      logs.map(log => {
 
-      const badgeClass =
-        log.urgency === "긴급"
-          ? "urgent"
-          : log.urgency === "중요"
-          ? "important"
-          : "normal";
+        const urgency =
+          String(
+            log.urgency ||
+            log.priority ||
+            "일반"
+          ).trim();
 
-      return `
-        <div class="log-card">
+        const badgeClass =
+          urgency === "긴급"
+            ? "urgent"
+            : urgency === "중요"
+              ? "important"
+              : "normal";
 
-          <div class="log-title">
-            ${log.date || ""} /
-            ${log.store || ""} /
-            ${log.type || ""}
-          </div>
+        const rawStatus =
+          String(
+            log.status ||
+            log.processStatus ||
+            "본사미확인"
+          ).trim();
 
-          <div class="log-meta">
-            구분 : ${log.category || "-"} <br>
-            제목 : ${log.title || "-"} <br>
-            작성/대상 : ${log.writer || "-"} <br>
-            내용 : ${log.content || "-"} <br>
-            상태 : ${log.status || "-"}
-          </div>
+        const normalizedStatus =
+          normalizeStoreStatus(
+            rawStatus,
+            log.hqCheck ||
+            log.confirmed ||
+            log.confirmStatus
+          );
 
-          <span class="badge ${badgeClass}">
-            ${log.urgency || "일반"}
-          </span>
+        const statusClass =
+          getStoreStatusClass(
+            normalizedStatus
+          );
 
-        </div>
-      `;
-    }).join("");
+        /*
+         * 본사 Code.gs는 별도 피드백 열이 없을 경우
+         * 추가사항에 아래 형식으로 기록합니다.
+         *
+         * [본사피드백]
+         * 피드백 내용
+         */
+        const extraText =
+          String(
+            log.extra ||
+            log.additional ||
+            log.note ||
+            ""
+          );
+
+        const directFeedback =
+          String(
+            log.feedback ||
+            log.hqFeedback ||
+            ""
+          ).trim();
+
+        const feedback =
+          directFeedback ||
+          extractHeadOfficeFeedback(
+            extraText
+          );
+
+        const checkedAt =
+          log.checkedAt ||
+          log.confirmedAt ||
+          log.hqCheckedAt ||
+          "";
+
+        const title =
+          log.title ||
+          log.category ||
+          log.type ||
+          "매장 운영기록";
+
+        const content =
+          log.content ||
+          log.memo ||
+          "-";
+
+        const request =
+          log.request ||
+          log.requestText ||
+          "";
+
+        return `
+          <article
+            class="recent-item ${
+              urgency === "긴급"
+                ? "urgent"
+                : ""
+            }">
+
+            <div class="recent-item-header">
+
+              <div>
+
+                <div class="recent-item-title">
+                  ${escapeHtml(title)}
+                </div>
+
+                <div class="recent-item-meta">
+
+                  ${escapeHtml(
+                    log.date ||
+                    log.reportDate ||
+                    ""
+                  )}
+
+                  ${
+                    log.store
+                      ? " · " +
+                        escapeHtml(log.store)
+                      : ""
+                  }
+
+                  ${
+                    log.type
+                      ? " · " +
+                        escapeHtml(log.type)
+                      : ""
+                  }
+
+                  ${
+                    log.writer
+                      ? " · 작성자 " +
+                        escapeHtml(log.writer)
+                      : ""
+                  }
+
+                </div>
+
+              </div>
+
+              <span
+                class="recent-status-badge ${statusClass}">
+
+                ${escapeHtml(
+                  getStoreStatusLabel(
+                    normalizedStatus
+                  )
+                )}
+
+              </span>
+
+            </div>
+
+
+            <div class="recent-content">
+
+              <strong>구분</strong>
+              ${escapeHtml(
+                log.category ||
+                "-"
+              )}
+
+              <br>
+
+              <strong>내용</strong>
+              ${escapeHtml(content)}
+
+              ${
+                request
+                  ? `
+                    <br>
+                    <strong>요청·전달사항</strong>
+                    ${escapeHtml(request)}
+                  `
+                  : ""
+              }
+
+            </div>
+
+
+            <div style="margin-top:12px;">
+
+              <span class="badge ${badgeClass}">
+                ${escapeHtml(urgency)}
+              </span>
+
+            </div>
+
+
+            ${
+              feedback
+                ? `
+                  <div class="head-office-feedback">
+
+                    <div class="head-office-feedback-title">
+                      본사 처리내용
+                    </div>
+
+                    <div class="head-office-feedback-content">
+                      ${escapeHtml(feedback)}
+                    </div>
+
+                    ${
+                      checkedAt
+                        ? `
+                          <div class="head-office-checked-at">
+                            본사 확인일시:
+                            ${escapeHtml(checkedAt)}
+                          </div>
+                        `
+                        : ""
+                    }
+
+                  </div>
+                `
+                : normalizedStatus !== "미확인"
+                  ? `
+                    <div class="head-office-feedback">
+
+                      <div class="head-office-feedback-title">
+                        본사 처리상태
+                      </div>
+
+                      <div class="head-office-feedback-content">
+                        ${escapeHtml(
+                          getStoreStatusLabel(
+                            normalizedStatus
+                          )
+                        )}
+                      </div>
+
+                      ${
+                        checkedAt
+                          ? `
+                            <div class="head-office-checked-at">
+                              본사 확인일시:
+                              ${escapeHtml(checkedAt)}
+                            </div>
+                          `
+                          : ""
+                      }
+
+                    </div>
+                  `
+                  : ""
+            }
+
+          </article>
+        `;
+      }).join("");
 
   } catch (e) {
-    console.log(e);
+
+    console.error(e);
+
+    box.innerHTML = `
+      <div class="recent-loading">
+        최근내역을 불러오지 못했습니다.<br>
+        ${escapeHtml(e.message)}
+      </div>
+    `;
   }
+}
+function normalizeStoreStatus(
+  status,
+  hqCheck
+) {
+  const statusText =
+    String(status || "").trim();
+
+  const checkText =
+    String(hqCheck || "").trim();
+
+  if (
+    statusText === "조치완료"
+  ) {
+    return "조치완료";
+  }
+
+  if (
+    statusText === "확인완료"
+  ) {
+    return "확인완료";
+  }
+
+  if (
+    statusText === "조치필요"
+  ) {
+    return "조치필요";
+  }
+
+  if (
+    statusText === "보완요청" ||
+    statusText === "보완사항"
+  ) {
+    return "보완요청";
+  }
+
+  if (
+    statusText === "확인사항"
+  ) {
+    return "확인사항";
+  }
+
+  if (
+    statusText === "본사미확인" ||
+    statusText === "미확인" ||
+    statusText === ""
+  ) {
+    return "미확인";
+  }
+
+  if (
+    checkText === "Y" ||
+    checkText === "확인완료"
+  ) {
+    return "확인완료";
+  }
+
+  return statusText;
+}
+
+
+function getStoreStatusLabel(status) {
+  const statusText =
+    String(status || "").trim();
+
+  if (statusText === "미확인") {
+    return "본사 미확인";
+  }
+
+  if (statusText === "확인사항") {
+    return "본사 확인사항";
+  }
+
+  if (statusText === "보완요청") {
+    return "본사 보완요청";
+  }
+
+  if (statusText === "조치필요") {
+    return "조치필요";
+  }
+
+  if (statusText === "확인완료") {
+    return "확인완료";
+  }
+
+  if (statusText === "조치완료") {
+    return "조치완료";
+  }
+
+  return statusText || "본사 미확인";
+}
+
+
+function getStoreStatusClass(status) {
+  const statusText =
+    String(status || "").trim();
+
+  if (statusText === "확인사항") {
+    return "status-check";
+  }
+
+  if (statusText === "보완요청") {
+    return "status-supplement";
+  }
+
+  if (statusText === "조치필요") {
+    return "status-action";
+  }
+
+  if (
+    statusText === "확인완료" ||
+    statusText === "조치완료"
+  ) {
+    return "status-complete";
+  }
+
+  return "status-pending";
+}
+
+
+function extractHeadOfficeFeedback(value) {
+  const text =
+    String(value || "");
+
+  const marker =
+    "[본사피드백]";
+
+  const markerIndex =
+    text.lastIndexOf(marker);
+
+  if (markerIndex < 0) {
+    return "";
+  }
+
+  return text
+    .substring(
+      markerIndex +
+      marker.length
+    )
+    .trim();
+}
+
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
