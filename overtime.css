@@ -649,11 +649,11 @@ body.modal-open{
 .monthly-overtime-table{
   min-width:100%;
 }
-/* 월간표 가로 스크롤 */
+/* 월간표 가로·세로 스크롤 */
 .monthly-table-wrap{
   width:100%;
-  overflow-x:auto;
-  overflow-y:hidden;
+  max-height:60vh;
+  overflow:auto;
   border:1px solid #e5e5e5;
   border-radius:12px;
 }
