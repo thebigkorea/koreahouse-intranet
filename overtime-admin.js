@@ -3,32 +3,39 @@ const API_URL =
 
 let ALL_LIST = [];
 
-window.addEventListener("load", () => {
-  setThisMonth();
-  document.getElementById("statusFilter").value = "등록";
-  loadList();
-});
+window.addEventListener(
+  "load",
+  async function(){
+
+    setThisMonth();
+
+    showOvertimePage(
+      "monthly",
+      false
+    );
+
+    await loadMonthlyData();
+
+  }
+);
 
 function setThisMonth(){
 
   const today =
     new Date();
 
-  const y =
+  const year =
     today.getFullYear();
 
-  const m =
+  const month =
     String(
       today.getMonth() + 1
-    ).padStart(2,"0");
+    ).padStart(2, "0");
 
   document.getElementById(
     "searchMonth"
-  ).value = `${y}-${m}`;
-
-  document.getElementById(
-    "statusFilter"
-  ).value = "등록";
+  ).value =
+    `${year}-${month}`;
 }
 
 function getSelectedMonthRange(){
@@ -62,6 +69,102 @@ function getSelectedMonthRange(){
       `${year}-${String(monthNumber).padStart(2,"0")}-` +
       String(lastDay).padStart(2,"0")
   };
+}
+
+async function loadMonthlyData(){
+
+  const range =
+    getSelectedMonthRange();
+
+  if(!range){
+    alert("조회월을 선택하세요.");
+    return;
+  }
+
+  try{
+
+    const listUrl =
+      `${API_URL}?action=list` +
+      `&startDate=${encodeURIComponent(range.startDate)}` +
+      `&endDate=${encodeURIComponent(range.endDate)}` +
+      `&employeeName=` +
+      `&t=${Date.now()}`;
+
+    const monthlyUrl =
+      `${API_URL}?action=monthly` +
+      `&year=${range.year}` +
+      `&month=${range.monthNumber}` +
+      `&t=${Date.now()}`;
+
+    /*
+     * 두 요청을 동시에 실행합니다.
+     */
+    const responses =
+      await Promise.all([
+        fetch(listUrl),
+        fetch(monthlyUrl)
+      ]);
+
+    const results =
+      await Promise.all([
+        responses[0].json(),
+        responses[1].json()
+      ]);
+
+    const listData =
+      results[0];
+
+    const monthlyData =
+      results[1];
+
+    /*
+     * 과거 반려 자료만 제외합니다.
+     * 등록·승인·수정 자료는 모두 사용합니다.
+     */
+    ALL_LIST =
+      (listData.list || [])
+        .filter(item =>
+          item.status !== "반려"
+        );
+
+    renderEmployeeMonthlySummary(
+      ALL_LIST,
+      range
+    );
+
+    if(
+      monthlyData.success &&
+      monthlyData.data
+    ){
+      renderMonthlyReport(
+        monthlyData.data
+      );
+    }
+
+    document.getElementById(
+      "monthlyTitle"
+    ).textContent =
+      `한국의집 롯데월드몰점 ` +
+      `${String(range.year).slice(2)}년 ` +
+      `${String(range.monthNumber).padStart(2,"0")}월 ` +
+      `초과근무 내역`;
+
+    document.getElementById(
+      "employeeMonthlyTitle"
+    ).textContent =
+      `${range.year}년 ` +
+      `${range.monthNumber}월 ` +
+      `직원별 초과근무 상세내역`;
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "월별 초과근무 자료를 불러오지 못했습니다."
+    );
+
+  }
 }
 
 async function loadList(){
@@ -1239,3 +1342,63 @@ document.addEventListener(
 
   }
 );
+
+function showOvertimePage(
+  view,
+  reload = true
+){
+
+  const monthlyView =
+    document.getElementById(
+      "monthlyReportView"
+    );
+
+  const employeeView =
+    document.getElementById(
+      "employeeDetailView"
+    );
+
+  const monthlyButton =
+    document.getElementById(
+      "monthlyReportButton"
+    );
+
+  const employeeButton =
+    document.getElementById(
+      "employeeDetailButton"
+    );
+
+  const isMonthly =
+    view === "monthly";
+
+  monthlyView.classList.toggle(
+    "active",
+    isMonthly
+  );
+
+  employeeView.classList.toggle(
+    "active",
+    !isMonthly
+  );
+
+  monthlyButton.classList.toggle(
+    "active",
+    isMonthly
+  );
+
+  employeeButton.classList.toggle(
+    "active",
+    !isMonthly
+  );
+
+  /*
+   * 버튼을 누를 때마다 서버를 다시 조회하지 않습니다.
+   * 조회월이 변경될 때만 loadMonthlyData()가 실행됩니다.
+   */
+  if(
+    reload &&
+    !ALL_LIST.length
+  ){
+    loadMonthlyData();
+  }
+}

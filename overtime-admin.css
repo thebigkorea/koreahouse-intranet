@@ -613,3 +613,81 @@
   z-index:5;
   background:#fff3cd;
 }
+
+/* =========================================
+   월별 내역 / 직원별 상세 화면
+========================================= */
+
+.overtime-main-search{
+  display:grid;
+  grid-template-columns:
+    minmax(230px,320px)
+    minmax(250px,1fr)
+    minmax(280px,1fr);
+  gap:14px;
+  align-items:end;
+}
+
+.overtime-main-search .main-view-btn{
+  width:100%;
+  height:56px;
+  margin:0;
+  border:1px solid #d8c8b4;
+  border-radius:14px;
+  background:#fff;
+  color:#3b2414;
+  font-size:16px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.overtime-main-search .main-view-btn.active{
+  border-color:#7a4a22;
+  background:#7a4a22;
+  color:#fff;
+}
+
+.overtime-page{
+  display:none;
+  margin-top:18px;
+}
+
+.overtime-page.active{
+  display:block;
+}
+
+.monthly-head p{
+  margin:7px 0 0;
+  color:#75675c;
+  font-size:14px;
+}
+
+/* 직원명 열 고정 */
+#monthlyTable th:first-child,
+#monthlyTable td:first-child{
+  position:sticky;
+  left:0;
+  z-index:4;
+  min-width:115px;
+  width:115px;
+  background:#fffaf2;
+  box-shadow:3px 0 5px rgba(0,0,0,.12);
+}
+
+#monthlyTable thead th:first-child{
+  z-index:6;
+  background:#f1e5d6;
+}
+
+#monthlyTable tfoot td:first-child{
+  z-index:5;
+  background:#fff3cd;
+}
+
+@media(max-width:900px){
+
+  .overtime-main-search{
+    grid-template-columns:1fr;
+  }
+
+}
