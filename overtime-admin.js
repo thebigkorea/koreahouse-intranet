@@ -407,14 +407,14 @@ function renderMonthlyReport(data){
               const hours = Number(e.hours || 0);
 
               if(type === "휴무근무"){
-                offDayTotal += hours;
-                return `<span class="red-text">미휴 ${hours}</span>`;
-              }
+  offDayTotal += 1;
+  return `<span class="red-text">미휴</span>`;
+}
 
               if(type === "연차미사용"){
-                unusedAnnualTotal += hours;
-                return `<span class="red-text">연차 ${hours}</span>`;
-              }
+  unusedAnnualTotal += 1;
+  return `<span class="red-text">연차</span>`;
+}
 
               if(type === "조퇴"){
                 hourTotal -= hours;
@@ -565,13 +565,19 @@ function getMonthlySummaryList_(){
 
 function calculateEmployeeOvertime_(list){
 
+  const offDayDates =
+    new Set();
+
+  const unusedAnnualDates =
+    new Set();
+
   const totals = {
     overtime:0,
     breakTime:0,
-    offDay:0,
-    unusedAnnual:0,
+    offDayCount:0,
+    unusedAnnualCount:0,
     earlyLeave:0,
-    recognized:0,
+    hourTotal:0,
     count:list.length
   };
 
@@ -583,33 +589,45 @@ function calculateEmployeeOvertime_(list){
     const hours =
       Number(item.hours || 0);
 
+    const workDate =
+      String(item.workDate || "").trim();
+
     if(type === "미휴게"){
 
       totals.breakTime += hours;
-      totals.recognized += hours;
+      totals.hourTotal += hours;
 
     }else if(type === "휴무근무"){
 
-      totals.offDay += hours;
-      totals.recognized += hours;
+      if(workDate){
+        offDayDates.add(workDate);
+      }
 
     }else if(type === "연차미사용"){
 
-      totals.unusedAnnual += hours;
+      if(workDate){
+        unusedAnnualDates.add(workDate);
+      }
 
     }else if(type === "조퇴"){
 
       totals.earlyLeave += hours;
-      totals.recognized -= hours;
+      totals.hourTotal -= hours;
 
     }else{
 
       totals.overtime += hours;
-      totals.recognized += hours;
+      totals.hourTotal += hours;
 
     }
 
   });
+
+  totals.offDayCount =
+    offDayDates.size;
+
+  totals.unusedAnnualCount =
+    unusedAnnualDates.size;
 
   return totals;
 }
@@ -709,11 +727,11 @@ function renderEmployeeMonthlySummary(
           </td>
 
           <td>
-            ${formatHours_(totals.offDay)}시간
+            ${totals.offDayCount}일
           </td>
 
           <td>
-            ${formatHours_(totals.unusedAnnual)}시간
+            ${totals.unusedAnnualCount}일
           </td>
 
           <td>
@@ -721,7 +739,7 @@ function renderEmployeeMonthlySummary(
           </td>
 
           <td class="total-hours">
-            ${formatHours_(totals.recognized)}시간
+            ${formatHours_(totals.hourTotal)}시간
           </td>
 
           <td>
@@ -861,17 +879,17 @@ function buildEmployeeDetailHtml_(
       </div>
 
       <div>
-        <span>휴무근무</span>
-        <strong>
-          ${formatHours_(totals.offDay)}
-        </strong>
+        <span>미휴무</span>
+<strong>
+  ${totals.offDayCount}일
+</strong>
       </div>
 
       <div>
         <span>연차미사용</span>
-        <strong>
-          ${formatHours_(totals.unusedAnnual)}
-        </strong>
+<strong>
+  ${totals.unusedAnnualCount}일
+</strong>
       </div>
 
       <div>
@@ -882,10 +900,10 @@ function buildEmployeeDetailHtml_(
       </div>
 
       <div>
-        <span>인정합계</span>
-        <strong>
-          ${formatHours_(totals.recognized)}
-        </strong>
+        <span>시간합계</span>
+<strong>
+  ${formatHours_(totals.hourTotal)}시간
+</strong>
       </div>
 
     </div>
