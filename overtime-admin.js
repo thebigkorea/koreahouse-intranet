@@ -313,11 +313,7 @@ async function loadMonthlyReport(){
 
   try{
 
-    /*
-     * 일반 목록도 선택한 월 기준으로 다시 조회합니다.
-     */
-    await loadList();
-
+    
     const res =
       await fetch(
         `${API_URL}?action=monthly` +
@@ -562,6 +558,7 @@ let OVERTIME_KAKAO_CANVAS = null;
 function getApprovedMonthlyList_(){
 
   return ALL_LIST.filter(item =>
+    item.status === "등록" ||
     item.status === "승인"
   );
 }
@@ -643,9 +640,10 @@ function renderEmployeeMonthlySummary(
   if(!tbody) return;
 
   const approved =
-    sourceList.filter(
-      item => item.status === "승인"
-    );
+  sourceList.filter(item =>
+    item.status === "등록" ||
+    item.status === "승인"
+  );
 
   const employeeMap =
     new Map();

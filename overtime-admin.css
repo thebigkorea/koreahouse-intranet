@@ -590,3 +590,26 @@
     min-width:0;
   }
 }
+/* 월별 초과근무표 직원명 열 고정 */
+#monthlyTable th:first-child,
+#monthlyTable td:first-child{
+  position:sticky;
+  left:0;
+  z-index:4;
+  min-width:115px;
+  width:115px;
+  background:#fffaf2;
+  box-shadow:3px 0 5px rgba(0,0,0,.12);
+}
+
+/* 첫 번째 헤더 셀은 본문보다 위에 표시 */
+#monthlyTable thead th:first-child{
+  z-index:6;
+  background:#f1e5d6;
+}
+
+/* 전체합계 첫 셀 */
+#monthlyTable tfoot td:first-child{
+  z-index:5;
+  background:#fff3cd;
+}
