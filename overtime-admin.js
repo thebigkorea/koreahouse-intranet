@@ -10,49 +10,140 @@ window.addEventListener("load", () => {
 });
 
 function setThisMonth(){
-  const today = new Date();
-  const y = today.getFullYear();
-  const m = String(today.getMonth() + 1).padStart(2,"0");
-  const last = new Date(y, today.getMonth() + 1, 0).getDate();
 
-  document.getElementById("startDate").value = `${y}-${m}-01`;
-  document.getElementById("endDate").value = `${y}-${m}-${String(last).padStart(2,"0")}`;
-  document.getElementById("statusFilter").value = "등록";
+  const today =
+    new Date();
+
+  const y =
+    today.getFullYear();
+
+  const m =
+    String(
+      today.getMonth() + 1
+    ).padStart(2,"0");
+
+  document.getElementById(
+    "searchMonth"
+  ).value = `${y}-${m}`;
+
+  document.getElementById(
+    "statusFilter"
+  ).value = "등록";
+}
+
+function getSelectedMonthRange(){
+
+  const month =
+    document.getElementById(
+      "searchMonth"
+    ).value;
+
+  if(!month){
+    return null;
+  }
+
+  const [year, monthNumber] =
+    month.split("-").map(Number);
+
+  const lastDay =
+    new Date(
+      year,
+      monthNumber,
+      0
+    ).getDate();
+
+  return {
+    month,
+    year,
+    monthNumber,
+    startDate:
+      `${year}-${String(monthNumber).padStart(2,"0")}-01`,
+    endDate:
+      `${year}-${String(monthNumber).padStart(2,"0")}-` +
+      String(lastDay).padStart(2,"0")
+  };
 }
 
 async function loadList(){
-  const startDate = document.getElementById("startDate").value;
-  const endDate = document.getElementById("endDate").value;
-  const employeeName = document.getElementById("employeeName").value.trim();
-  const status = document.getElementById("statusFilter").value;
+
+  const range =
+    getSelectedMonthRange();
+
+  if(!range){
+    alert("조회월을 선택하세요.");
+    return;
+  }
+
+  const employeeName =
+    document.getElementById(
+      "employeeName"
+    ).value.trim();
+
+  const status =
+    document.getElementById(
+      "statusFilter"
+    ).value;
 
   const url =
     `${API_URL}?action=list` +
-    `&startDate=${encodeURIComponent(startDate)}` +
-    `&endDate=${encodeURIComponent(endDate)}` +
+    `&startDate=${encodeURIComponent(range.startDate)}` +
+    `&endDate=${encodeURIComponent(range.endDate)}` +
     `&employeeName=${encodeURIComponent(employeeName)}` +
     `&t=${Date.now()}`;
 
-  const tbody = document.getElementById("tbody");
-  tbody.innerHTML = `<tr><td colspan="9" class="empty">불러오는 중...</td></tr>`;
+  const tbody =
+    document.getElementById("tbody");
+
+  tbody.innerHTML =
+    `<tr>
+      <td colspan="9" class="empty">
+        불러오는 중...
+      </td>
+    </tr>`;
 
   try{
-    const res = await fetch(url);
-    const data = await res.json();
 
-    ALL_LIST = data.list || [];
+    const res =
+      await fetch(url);
 
-    let list = [...ALL_LIST];
+    const data =
+      await res.json();
+
+    ALL_LIST =
+      data.list || [];
+
+    let list =
+      [...ALL_LIST];
 
     if(status){
-      list = list.filter(item => item.status === status);
+      list =
+        list.filter(
+          item => item.status === status
+        );
     }
 
     renderSummary(list);
     renderTable(list);
 
+    /*
+     * 직원별 월간 요약은
+     * 승인된 내역 기준으로 표시합니다.
+     */
+    renderEmployeeMonthlySummary(
+      ALL_LIST,
+      range
+    );
+
   }catch(e){
-    tbody.innerHTML = `<tr><td colspan="9" class="empty">조회 실패</td></tr>`;
+
+    console.error(e);
+
+    tbody.innerHTML =
+      `<tr>
+        <td colspan="9" class="empty">
+          조회 실패
+        </td>
+      </tr>`;
   }
 }
 
@@ -191,47 +282,75 @@ function safe(value){
 
 async function loadMonthlyReport(){
 
-  const startDate =
-    document.getElementById("startDate").value;
+  const range =
+    getSelectedMonthRange();
 
-  if(!startDate){
-    alert("조회 시작일을 선택하세요.");
+  if(!range){
+    alert("조회월을 선택하세요.");
     return;
   }
 
   const year =
-    Number(startDate.substring(0,4));
+    range.year;
 
   const month =
-    Number(startDate.substring(5,7));
+    range.monthNumber;
 
   const title =
-    `한국의집 롯데월드몰점 ${String(year).slice(2)}년 ${String(month).padStart(2,"0")}월 초과근무 내역`;
+    `한국의집 롯데월드몰점 ` +
+    `${String(year).slice(2)}년 ` +
+    `${String(month).padStart(2,"0")}월 ` +
+    `초과근무 내역`;
 
-  document.getElementById("monthlyTitle").textContent =
-    title;
+  document.getElementById(
+    "monthlyTitle"
+  ).textContent = title;
+
+  document.getElementById(
+    "employeeMonthlyTitle"
+  ).textContent =
+    `${year}년 ${month}월 직원별 초과근무 요약`;
 
   try{
 
+    /*
+     * 일반 목록도 선택한 월 기준으로 다시 조회합니다.
+     */
+    await loadList();
+
     const res =
       await fetch(
-        `${API_URL}?action=monthly&year=${year}&month=${month}&t=${Date.now()}`
+        `${API_URL}?action=monthly` +
+        `&year=${year}` +
+        `&month=${month}` +
+        `&t=${Date.now()}`
       );
 
     const data =
       await res.json();
 
     if(!data.success){
-      alert("월별 일지를 불러오지 못했습니다.");
+
+      alert(
+        "월별 일지를 불러오지 못했습니다."
+      );
+
       return;
     }
 
-    renderMonthlyReport(data.data);
+    renderMonthlyReport(
+      data.data
+    );
 
   }catch(e){
-    alert("월별 일지 조회 중 오류가 발생했습니다.");
+
+    console.error(e);
+
+    alert(
+      "월별 일지 조회 중 오류가 발생했습니다."
+    );
   }
-}
+} 
 
 function renderMonthlyReport(data){
 
@@ -432,3 +551,677 @@ async function approveAllPending(){
 document.getElementById("statusFilter").value = "등록";
 loadList();
 }
+/* =========================================
+   직원별 월간 초과근무 요약
+========================================= */
+
+let CURRENT_DETAIL_EMPLOYEE = "";
+let OVERTIME_KAKAO_CANVAS = null;
+
+
+function getApprovedMonthlyList_(){
+
+  return ALL_LIST.filter(item =>
+    item.status === "승인"
+  );
+}
+
+
+function calculateEmployeeOvertime_(list){
+
+  const totals = {
+    overtime:0,
+    breakTime:0,
+    offDay:0,
+    unusedAnnual:0,
+    earlyLeave:0,
+    recognized:0,
+    count:list.length
+  };
+
+  list.forEach(item => {
+
+    const type =
+      String(item.type || "").trim();
+
+    const hours =
+      Number(item.hours || 0);
+
+    if(type === "미휴게"){
+
+      totals.breakTime += hours;
+      totals.recognized += hours;
+
+    }else if(type === "휴무근무"){
+
+      totals.offDay += hours;
+      totals.recognized += hours;
+
+    }else if(type === "연차미사용"){
+
+      totals.unusedAnnual += hours;
+
+    }else if(type === "조퇴"){
+
+      totals.earlyLeave += hours;
+      totals.recognized -= hours;
+
+    }else{
+
+      totals.overtime += hours;
+      totals.recognized += hours;
+
+    }
+
+  });
+
+  return totals;
+}
+
+
+function formatHours_(value){
+
+  const number =
+    Number(value || 0);
+
+  return Number.isInteger(number)
+    ? String(number)
+    : number.toFixed(1);
+}
+
+
+function renderEmployeeMonthlySummary(
+  sourceList,
+  range
+){
+
+  const tbody =
+    document.getElementById(
+      "employeeMonthlyTbody"
+    );
+
+  if(!tbody) return;
+
+  const approved =
+    sourceList.filter(
+      item => item.status === "승인"
+    );
+
+  const employeeMap =
+    new Map();
+
+  approved.forEach(item => {
+
+    const name =
+      String(
+        item.employeeName || ""
+      ).trim();
+
+    if(!name) return;
+
+    if(!employeeMap.has(name)){
+      employeeMap.set(name, []);
+    }
+
+    employeeMap.get(name).push(item);
+
+  });
+
+  const names =
+    Array.from(
+      employeeMap.keys()
+    ).sort((a,b) =>
+      a.localeCompare(b,"ko")
+    );
+
+  if(!names.length){
+
+    tbody.innerHTML =
+      `<tr>
+        <td colspan="9" class="empty">
+          승인된 초과근무 내역이 없습니다.
+        </td>
+      </tr>`;
+
+    return;
+  }
+
+  tbody.innerHTML =
+    names.map(name => {
+
+      const list =
+        employeeMap.get(name);
+
+      const totals =
+        calculateEmployeeOvertime_(list);
+
+      const encodedName =
+        encodeURIComponent(name);
+
+      return `
+        <tr>
+          <td class="employee-name">
+            ${safe(name)}
+          </td>
+
+          <td>
+            ${formatHours_(totals.overtime)}시간
+          </td>
+
+          <td>
+            ${formatHours_(totals.breakTime)}시간
+          </td>
+
+          <td>
+            ${formatHours_(totals.offDay)}시간
+          </td>
+
+          <td>
+            ${formatHours_(totals.unusedAnnual)}시간
+          </td>
+
+          <td>
+            ${formatHours_(totals.earlyLeave)}시간
+          </td>
+
+          <td class="total-hours">
+            ${formatHours_(totals.recognized)}시간
+          </td>
+
+          <td>
+            ${totals.count}건
+          </td>
+
+          <td>
+            <button
+              type="button"
+              class="employee-detail-btn"
+              onclick="openEmployeeDetail(
+                decodeURIComponent('${encodedName}')
+              )">
+              상세보기
+            </button>
+
+            <button
+              type="button"
+              class="employee-kakao-btn"
+              onclick="openEmployeeKakaoImage(
+                decodeURIComponent('${encodedName}')
+              )">
+              카톡 이미지
+            </button>
+          </td>
+        </tr>
+      `;
+
+    }).join("");
+}
+
+
+function getEmployeeApprovedList_(employeeName){
+
+  return getApprovedMonthlyList_()
+    .filter(item =>
+      String(item.employeeName || "").trim() ===
+      employeeName
+    )
+    .sort((a,b) =>
+      String(a.workDate || "")
+        .localeCompare(
+          String(b.workDate || "")
+        )
+    );
+}
+
+
+function buildEmployeeDetailHtml_(
+  employeeName,
+  imageMode = false
+){
+
+  const range =
+    getSelectedMonthRange();
+
+  const list =
+    getEmployeeApprovedList_(
+      employeeName
+    );
+
+  const totals =
+    calculateEmployeeOvertime_(
+      list
+    );
+
+  const titleMonth =
+    range
+      ? `${range.year}년 ${range.monthNumber}월`
+      : "";
+
+  const rows =
+    list.length
+      ? list.map(item => `
+          <tr>
+            <td>${safe(item.workDate)}</td>
+            <td>${safe(item.type)}</td>
+            <td>
+              ${formatHours_(item.hours)}시간
+            </td>
+            <td class="left">
+              ${safe(item.reason)}
+            </td>
+            <td class="left">
+              ${safe(item.memo)}
+            </td>
+          </tr>
+        `).join("")
+      : `
+          <tr>
+            <td colspan="5">
+              승인된 내역이 없습니다.
+            </td>
+          </tr>
+        `;
+
+  return `
+    ${
+      imageMode
+        ? `
+          <div class="overtime-kakao-card-header">
+            <h1>
+              한국의집 롯데월드몰점
+            </h1>
+
+            <h2>
+              ${titleMonth} 초과근무 내역
+            </h2>
+          </div>
+        `
+        : ""
+    }
+
+    <div
+      style="
+        margin-bottom:16px;
+        font-size:21px;
+        font-weight:900;
+      ">
+      직원명: ${safe(employeeName)}
+    </div>
+
+    <div class="employee-detail-summary">
+
+      <div>
+        <span>초과근무</span>
+        <strong>
+          ${formatHours_(totals.overtime)}
+        </strong>
+      </div>
+
+      <div>
+        <span>미휴게</span>
+        <strong>
+          ${formatHours_(totals.breakTime)}
+        </strong>
+      </div>
+
+      <div>
+        <span>휴무근무</span>
+        <strong>
+          ${formatHours_(totals.offDay)}
+        </strong>
+      </div>
+
+      <div>
+        <span>연차미사용</span>
+        <strong>
+          ${formatHours_(totals.unusedAnnual)}
+        </strong>
+      </div>
+
+      <div>
+        <span>조퇴</span>
+        <strong>
+          ${formatHours_(totals.earlyLeave)}
+        </strong>
+      </div>
+
+      <div>
+        <span>인정합계</span>
+        <strong>
+          ${formatHours_(totals.recognized)}
+        </strong>
+      </div>
+
+    </div>
+
+    <table class="employee-detail-table">
+
+      <thead>
+        <tr>
+          <th>근무일자</th>
+          <th>구분</th>
+          <th>시간</th>
+          <th>사유</th>
+          <th>비고</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        ${rows}
+      </tbody>
+
+    </table>
+
+    ${
+      imageMode
+        ? `
+          <div class="overtime-kakao-note">
+            ※ 승인된 초과근무 등록내역 기준입니다.
+          </div>
+        `
+        : ""
+    }
+  `;
+}
+
+
+function openEmployeeDetail(employeeName){
+
+  CURRENT_DETAIL_EMPLOYEE =
+    employeeName;
+
+  const range =
+    getSelectedMonthRange();
+
+  document.getElementById(
+    "employeeDetailTitle"
+  ).textContent =
+    `${employeeName} · ` +
+    `${range.year}년 ${range.monthNumber}월 초과근무 내역`;
+
+  document.getElementById(
+    "employeeDetailContent"
+  ).innerHTML =
+    buildEmployeeDetailHtml_(
+      employeeName,
+      false
+    );
+
+  document.getElementById(
+    "employeeDetailModalBg"
+  ).classList.add("show");
+
+  document.body.style.overflow =
+    "hidden";
+}
+
+
+function closeEmployeeDetailModal(){
+
+  document.getElementById(
+    "employeeDetailModalBg"
+  ).classList.remove("show");
+
+  document.body.style.overflow =
+    "";
+}
+
+
+function closeEmployeeDetailByBg(event){
+
+  if(
+    event.target &&
+    event.target.id ===
+      "employeeDetailModalBg"
+  ){
+    closeEmployeeDetailModal();
+  }
+}
+
+
+function makeCurrentEmployeeKakaoImage(){
+
+  if(!CURRENT_DETAIL_EMPLOYEE){
+    return;
+  }
+
+  openEmployeeKakaoImage(
+    CURRENT_DETAIL_EMPLOYEE
+  );
+}
+
+
+async function openEmployeeKakaoImage(
+  employeeName
+){
+
+  if(typeof html2canvas !== "function"){
+
+    alert(
+      "이미지 생성 프로그램을 불러오지 못했습니다."
+    );
+
+    return;
+  }
+
+  const list =
+    getEmployeeApprovedList_(
+      employeeName
+    );
+
+  if(!list.length){
+
+    alert(
+      "해당 직원의 승인된 내역이 없습니다."
+    );
+
+    return;
+  }
+
+  let captureArea = null;
+
+  try{
+
+    captureArea =
+      document.createElement("div");
+
+    captureArea.className =
+      "overtime-kakao-card";
+
+    captureArea.style.position =
+      "absolute";
+
+    captureArea.style.left =
+      "0";
+
+    captureArea.style.top =
+      "0";
+
+    captureArea.style.zIndex =
+      "-1";
+
+    captureArea.style.pointerEvents =
+      "none";
+
+    captureArea.innerHTML =
+      buildEmployeeDetailHtml_(
+        employeeName,
+        true
+      );
+
+    document.body.appendChild(
+      captureArea
+    );
+
+    await new Promise(resolve => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(resolve);
+      });
+    });
+
+    OVERTIME_KAKAO_CANVAS =
+      await html2canvas(
+        captureArea,
+        {
+          backgroundColor:"#ffffff",
+          scale:2,
+          logging:false,
+          useCORS:true
+        }
+      );
+
+    document.getElementById(
+      "overtimeKakaoPreviewImage"
+    ).src =
+      OVERTIME_KAKAO_CANVAS
+        .toDataURL("image/png");
+
+    document.getElementById(
+      "overtimeKakaoModalBg"
+    ).classList.add("show");
+
+    document.body.style.overflow =
+      "hidden";
+
+    CURRENT_DETAIL_EMPLOYEE =
+      employeeName;
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "카톡 이미지 생성 중 오류가 발생했습니다."
+    );
+
+  }finally{
+
+    if(captureArea){
+      captureArea.remove();
+    }
+  }
+}
+
+
+async function copyOvertimeKakaoImage(){
+
+  if(!OVERTIME_KAKAO_CANVAS){
+
+    alert(
+      "먼저 카톡 이미지를 만들어주세요."
+    );
+
+    return;
+  }
+
+  try{
+
+    const blob =
+      await new Promise(
+        (resolve,reject) => {
+
+          OVERTIME_KAKAO_CANVAS.toBlob(
+            result => {
+
+              if(result){
+                resolve(result);
+              }else{
+                reject(
+                  new Error(
+                    "이미지 변환 실패"
+                  )
+                );
+              }
+
+            },
+            "image/png"
+          );
+
+        }
+      );
+
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        "image/png":blob
+      })
+    ]);
+
+    alert(
+      "이미지가 복사되었습니다.\n" +
+      "카카오톡에서 Ctrl + V를 누르세요."
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "이미지 복사에 실패했습니다.\n" +
+      "PNG 저장 버튼을 이용해주세요."
+    );
+  }
+}
+
+
+function downloadOvertimeKakaoImage(){
+
+  if(!OVERTIME_KAKAO_CANVAS){
+    return;
+  }
+
+  const range =
+    getSelectedMonthRange();
+
+  const link =
+    document.createElement("a");
+
+  link.download =
+    `한국의집_${CURRENT_DETAIL_EMPLOYEE}_` +
+    `${range.month}_초과근무.png`;
+
+  link.href =
+    OVERTIME_KAKAO_CANVAS
+      .toDataURL("image/png");
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  link.remove();
+}
+
+
+function closeOvertimeKakaoModal(){
+
+  document.getElementById(
+    "overtimeKakaoModalBg"
+  ).classList.remove("show");
+
+  document.body.style.overflow =
+    "";
+}
+
+
+function closeOvertimeKakaoByBg(event){
+
+  if(
+    event.target &&
+    event.target.id ===
+      "overtimeKakaoModalBg"
+  ){
+    closeOvertimeKakaoModal();
+  }
+}
+
+
+document.addEventListener(
+  "keydown",
+  function(event){
+
+    if(event.key === "Escape"){
+      closeEmployeeDetailModal();
+      closeOvertimeKakaoModal();
+    }
+
+  }
+);

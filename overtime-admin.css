@@ -1,39 +1,43 @@
-*{box-sizing:border-box}
+  *{box-sizing:border-box}
 
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
-  background:#f5efe6;
-  color:#24170f;
-}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
+    background:#f5efe6;
+    color:#24170f;
+  }
 
-.wrap{
-  max-width:1300px;
-  margin:0 auto;
-  padding:20px;
-}
+  .wrap{
+    max-width:1300px;
+    margin:0 auto;
+    padding:20px;
+  }
 
-.header{
-  background:linear-gradient(135deg,#3b2414,#8a5a2b);
-  color:white;
-  padding:28px;
-  border-radius:24px;
-  margin-bottom:20px;
-}
+  .header{
+    background:linear-gradient(135deg,#3b2414,#8a5a2b);
+    color:white;
+    padding:28px;
+    border-radius:24px;
+    margin-bottom:20px;
+  }
 
-.header h1{
-  margin:0 0 8px;
-  font-size:32px;
-}
+  .header h1{
+    margin:0 0 8px;
+    font-size:32px;
+  }
 
-.header p{
-  margin:0;
-  opacity:.85;
-}
+  .header p{
+    margin:0;
+    opacity:.85;
+  }
 
-.search-card{
+  .search-card{
   display:grid;
-  grid-template-columns:repeat(4,1fr) 120px;
+  grid-template-columns:
+    minmax(180px,1fr)
+    minmax(180px,1fr)
+    minmax(180px,1fr)
+    120px;
   gap:12px;
   background:white;
   border:1px solid #e4d7c7;
@@ -42,210 +46,547 @@ body{
   margin-bottom:16px;
 }
 
-label{
-  display:block;
-  font-weight:900;
-  margin-bottom:6px;
-}
+  label{
+    display:block;
+    font-weight:900;
+    margin-bottom:6px;
+  }
 
-input,select{
-  width:100%;
-  border:1px solid #d8c8b4;
-  border-radius:12px;
-  padding:12px;
-  font-size:14px;
-}
+  input,select{
+    width:100%;
+    border:1px solid #d8c8b4;
+    border-radius:12px;
+    padding:12px;
+    font-size:14px;
+  }
 
-.search-card button{
-  margin-top:25px;
-  height:56px;
- 
+  .search-card button{
+    margin-top:25px;
+    height:56px;
+  
 
-  border:0;
-  border-radius:12px;
+    border:0;
+    border-radius:12px;
 
-  background:#7a4a22;
-  color:white;
+    background:#7a4a22;
+    color:white;
 
-  font-size:16px;
-  font-weight:900;
+    font-size:16px;
+    font-weight:900;
 
-  cursor:pointer;
-}
+    cursor:pointer;
+  }
 
-.summary{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  margin-bottom:16px;
-}
+  .summary{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-bottom:16px;
+  }
 
-.summary div{
-  background:white;
-  border:1px solid #e4d7c7;
-  border-radius:16px;
-  padding:16px;
-  text-align:center;
-  font-weight:800;
-}
+  .summary div{
+    background:white;
+    border:1px solid #e4d7c7;
+    border-radius:16px;
+    padding:16px;
+    text-align:center;
+    font-weight:800;
+  }
 
-.summary strong{
-  color:#7a4a22;
-  font-size:22px;
-}
+  .summary strong{
+    color:#7a4a22;
+    font-size:22px;
+  }
 
-.table-card{
-  overflow:auto;
-  background:white;
+  .table-card{
+    overflow:auto;
+    background:white;
+    border:1px solid #e4d7c7;
+    border-radius:22px;
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1200px;
+  }
+
+  th{
+    background:#f1e5d6;
+    color:#3b2414;
+    padding:13px;
+    font-size:14px;
+  }
+
+  td{
+    border-top:1px solid #eee3d6;
+    padding:12px;
+    font-size:14px;
+    text-align:center;
+    vertical-align:top;
+  }
+
+  .memo{
+    max-width:260px;
+    text-align:left;
+    white-space:pre-wrap;
+  }
+
+  .badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:900;
+  }
+
+  .badge.pending{background:#dbeeff;color:#0f6b8f}
+  .badge.approved{background:#dff4e7;color:#197857}
+  .badge.rejected{background:#ffe2df;color:#c0392b}
+  .badge.edit{background:#fff3cd;color:#8a5a00}
+
+  .btn{
+    border:0;
+    border-radius:10px;
+    padding:8px 10px;
+    font-size:12px;
+    font-weight:900;
+    cursor:pointer;
+    margin:2px;
+  }
+
+  .btn.approve{background:#197857;color:white}
+  .btn.reject{background:#c0392b;color:white}
+  .btn.delete{background:#444;color:white}
+
+  .empty{
+    padding:40px;
+    color:#999;
+  }
+
+  @media(max-width:900px){
+    .search-card{
+      grid-template-columns:1fr;
+    }
+
+    .summary{
+      grid-template-columns:1fr 1fr;
+    }
+
+    .search-card button{
+      margin-top:0;
+      padding:14px;
+    }
+  }
+  .monthly-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding:18px;
+    border-bottom:1px solid #eee3d6;
+  }
+
+  .monthly-head h3{
+    margin:0;
+    color:#7a4a22;
+    font-size:21px;
+    font-weight:900;
+  }
+
+  .month-btn{
+    border:0;
+    border-radius:12px;
+    padding:10px 14px;
+    background:#7a4a22;
+    color:#fff;
+    font-weight:900;
+    cursor:pointer;
+  }
+
+  .month-btn.excel{
+    background:#197857;
+  }
+
+  .monthly-scroll{
+    overflow:auto;
+    padding:12px;
+  }
+
+  #monthlyTable{
+    border-collapse:collapse;
+    min-width:1400px;
+    background:#fff;
+  }
+
+  #monthlyTable th,
+  #monthlyTable td{
+    border:1px solid #333;
+    padding:6px;
+    text-align:center;
+    font-size:12px;
+    white-space:nowrap;
+  }
+
+  #monthlyTable th{
+    background:#f1e5d6;
+    font-weight:900;
+  }
+
+  #monthlyTable .name-cell{
+    min-width:90px;
+    font-weight:900;
+    background:#fffaf2;
+  }
+
+  #monthlyTable .total-cell{
+    background:#fff3cd;
+    font-weight:900;
+  }
+
+  #monthlyTable .red-text{
+    color:#d93025;
+    font-weight:900;
+  }
+  .bulk-btn{
+    height:56px !important;
+    font-size:16px;
+    font-weight:900;
+  }
+  /* =========================================
+   직원별 월간 초과근무 요약
+========================================= */
+
+.employee-monthly-card{
+  margin:0 0 18px;
+  overflow:hidden;
+  background:#fff;
   border:1px solid #e4d7c7;
   border-radius:22px;
 }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:1200px;
-}
-
-th{
-  background:#f1e5d6;
-  color:#3b2414;
-  padding:13px;
-  font-size:14px;
-}
-
-td{
-  border-top:1px solid #eee3d6;
-  padding:12px;
-  font-size:14px;
-  text-align:center;
-  vertical-align:top;
-}
-
-.memo{
-  max-width:260px;
-  text-align:left;
-  white-space:pre-wrap;
-}
-
-.badge{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:900;
-}
-
-.badge.pending{background:#dbeeff;color:#0f6b8f}
-.badge.approved{background:#dff4e7;color:#197857}
-.badge.rejected{background:#ffe2df;color:#c0392b}
-.badge.edit{background:#fff3cd;color:#8a5a00}
-
-.btn{
-  border:0;
-  border-radius:10px;
-  padding:8px 10px;
-  font-size:12px;
-  font-weight:900;
-  cursor:pointer;
-  margin:2px;
-}
-
-.btn.approve{background:#197857;color:white}
-.btn.reject{background:#c0392b;color:white}
-.btn.delete{background:#444;color:white}
-
-.empty{
-  padding:40px;
-  color:#999;
-}
-
-@media(max-width:900px){
-  .search-card{
-    grid-template-columns:1fr;
-  }
-
-  .summary{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .search-card button{
-    margin-top:0;
-    padding:14px;
-  }
-}
-.monthly-head{
+.employee-monthly-head{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:12px;
-  padding:18px;
+  gap:16px;
+  padding:20px;
   border-bottom:1px solid #eee3d6;
 }
 
-.monthly-head h3{
+.employee-monthly-head h3{
   margin:0;
   color:#7a4a22;
-  font-size:21px;
+  font-size:22px;
   font-weight:900;
 }
 
-.month-btn{
+.employee-monthly-head p{
+  margin:7px 0 0;
+  color:#77685d;
+  font-size:14px;
+}
+
+.employee-monthly-scroll{
+  overflow:auto;
+  padding:12px;
+}
+
+.employee-monthly-table{
+  width:100%;
+  min-width:1050px;
+  border-collapse:collapse;
+}
+
+.employee-monthly-table th{
+  padding:14px 10px;
+  background:#f1e5d6;
+  color:#3b2414;
+  font-size:14px;
+}
+
+.employee-monthly-table td{
+  padding:13px 10px;
+  border-top:1px solid #eee3d6;
+  text-align:center;
+  vertical-align:middle;
+}
+
+.employee-monthly-table .employee-name{
+  font-weight:900;
+  color:#3b2414;
+}
+
+.employee-monthly-table .total-hours{
+  background:#fff3cd;
+  color:#7a4a22;
+  font-weight:900;
+}
+
+.employee-detail-btn,
+.employee-kakao-btn{
+  border:0;
+  border-radius:10px;
+  padding:9px 12px;
+  margin:2px;
+  color:#fff;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.employee-detail-btn{
+  background:#7a4a22;
+}
+
+.employee-kakao-btn{
+  background:#2f6b3b;
+}
+
+
+/* =========================================
+   직원 상세·카톡 이미지 팝업
+========================================= */
+
+.overtime-modal-bg{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  padding:24px;
+  background:rgba(0,0,0,.65);
+  align-items:center;
+  justify-content:center;
+}
+
+.overtime-modal-bg.show{
+  display:flex;
+}
+
+.overtime-modal{
+  display:flex;
+  flex-direction:column;
+  width:min(1050px,96vw);
+  max-height:94vh;
+  overflow:hidden;
+  background:#fff;
+  border-radius:22px;
+  box-shadow:0 24px 70px rgba(0,0,0,.3);
+}
+
+.kakao-preview-modal{
+  width:min(1250px,96vw);
+}
+
+.overtime-modal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+  padding:20px 24px;
+  border-bottom:1px solid #eee3d6;
+}
+
+.overtime-modal-head h3{
+  margin:0;
+  color:#3b2414;
+  font-size:23px;
+}
+
+.overtime-modal-head p{
+  margin:7px 0 0;
+  color:#76675b;
+  font-size:14px;
+}
+
+.modal-close-btn{
+  width:42px;
+  height:42px;
+  flex:0 0 auto;
+  border:0;
+  border-radius:50%;
+  background:#f1ebe3;
+  color:#3b2414;
+  font-size:20px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.employee-detail-content{
+  flex:1;
+  overflow:auto;
+  padding:22px;
+  background:#f8f3ec;
+}
+
+.employee-detail-summary{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.employee-detail-summary div{
+  padding:14px 8px;
+  border:1px solid #e4d7c7;
+  border-radius:14px;
+  background:#fff;
+  text-align:center;
+}
+
+.employee-detail-summary span{
+  display:block;
+  margin-bottom:5px;
+  color:#76675b;
+  font-size:12px;
+  font-weight:800;
+}
+
+.employee-detail-summary strong{
+  color:#7a4a22;
+  font-size:20px;
+}
+
+.employee-detail-table{
+  width:100%;
+  min-width:760px;
+  border-collapse:collapse;
+  background:#fff;
+}
+
+.employee-detail-table th{
+  padding:12px;
+  background:#efe2d2;
+}
+
+.employee-detail-table td{
+  padding:11px;
+  border-top:1px solid #eee3d6;
+}
+
+.employee-detail-table .left{
+  text-align:left;
+}
+
+.overtime-modal-actions{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  padding:16px 20px;
+  border-top:1px solid #eee3d6;
+}
+
+.overtime-modal-actions button{
+  min-width:150px;
+  padding:13px 20px;
   border:0;
   border-radius:12px;
-  padding:10px 14px;
-  background:#7a4a22;
   color:#fff;
   font-weight:900;
   cursor:pointer;
 }
 
-.month-btn.excel{
-  background:#197857;
+.kakao-image-btn,
+.kakao-copy-btn{
+  background:#2f6b3b;
 }
 
-.monthly-scroll{
+.kakao-save-btn{
+  background:#7a4a22;
+}
+
+.modal-cancel-btn{
+  background:#8a8178;
+}
+
+.overtime-kakao-preview{
+  flex:1;
   overflow:auto;
-  padding:12px;
-}
-
-#monthlyTable{
-  border-collapse:collapse;
-  min-width:1400px;
-  background:#fff;
-}
-
-#monthlyTable th,
-#monthlyTable td{
-  border:1px solid #333;
-  padding:6px;
+  padding:20px;
+  background:#ece7e0;
   text-align:center;
-  font-size:12px;
-  white-space:nowrap;
 }
 
-#monthlyTable th{
-  background:#f1e5d6;
-  font-weight:900;
+.overtime-kakao-preview img{
+  display:block;
+  max-width:100%;
+  height:auto;
+  margin:0 auto;
+  background:#fff;
+  box-shadow:0 5px 22px rgba(0,0,0,.18);
 }
 
-#monthlyTable .name-cell{
-  min-width:90px;
-  font-weight:900;
-  background:#fffaf2;
+
+/* 카톡 이미지 원본 카드 */
+
+.overtime-kakao-card{
+  width:1100px;
+  padding:38px;
+  background:#fff;
+  color:#24170f;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Noto Sans KR",
+    sans-serif;
 }
 
-#monthlyTable .total-cell{
-  background:#fff3cd;
-  font-weight:900;
+.overtime-kakao-card-header{
+  padding-bottom:20px;
+  margin-bottom:20px;
+  border-bottom:4px solid #7a4a22;
 }
 
-#monthlyTable .red-text{
-  color:#d93025;
-  font-weight:900;
+.overtime-kakao-card-header h1{
+  margin:0;
+  color:#3b2414;
+  font-size:36px;
 }
-.bulk-btn{
-  height:56px !important;
-  font-size:16px;
-  font-weight:900;
+
+.overtime-kakao-card-header h2{
+  margin:10px 0 0;
+  color:#7a4a22;
+  font-size:25px;
+}
+
+.overtime-kakao-card .employee-detail-summary{
+  grid-template-columns:repeat(6,1fr);
+}
+
+.overtime-kakao-card .employee-detail-table{
+  min-width:0;
+}
+
+.overtime-kakao-note{
+  margin-top:20px;
+  color:#76675b;
+  font-size:15px;
+  text-align:right;
+}
+
+
+@media(max-width:900px){
+
+  .employee-detail-summary{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .overtime-modal-bg{
+    padding:8px;
+  }
+
+  .overtime-modal{
+    width:100%;
+    max-height:97vh;
+    border-radius:14px;
+  }
+
+  .overtime-modal-actions{
+    flex-wrap:wrap;
+  }
+
+  .overtime-modal-actions button{
+    flex:1 1 130px;
+    min-width:0;
+  }
 }
