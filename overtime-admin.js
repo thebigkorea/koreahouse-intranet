@@ -555,11 +555,10 @@ let CURRENT_DETAIL_EMPLOYEE = "";
 let OVERTIME_KAKAO_CANVAS = null;
 
 
-function getApprovedMonthlyList_(){
+function getMonthlySummaryList_(){
 
   return ALL_LIST.filter(item =>
-    item.status === "등록" ||
-    item.status === "승인"
+    item.status !== "반려"
   );
 }
 
@@ -639,16 +638,15 @@ function renderEmployeeMonthlySummary(
 
   if(!tbody) return;
 
-  const approved =
+  const monthlyList =
   sourceList.filter(item =>
-    item.status === "등록" ||
-    item.status === "승인"
+    item.status !== "반려"
   );
 
   const employeeMap =
     new Map();
 
-  approved.forEach(item => {
+  monthlyList.forEach(item => {
 
     const name =
       String(
@@ -677,7 +675,7 @@ function renderEmployeeMonthlySummary(
     tbody.innerHTML =
       `<tr>
         <td colspan="9" class="empty">
-          승인된 초과근무 내역이 없습니다.
+          반려를 제외한 초과근무 내역이 없습니다.
         </td>
       </tr>`;
 
@@ -758,7 +756,7 @@ function renderEmployeeMonthlySummary(
 
 function getEmployeeApprovedList_(employeeName){
 
-  return getApprovedMonthlyList_()
+  return getMonthlySummaryList_()
     .filter(item =>
       String(item.employeeName || "").trim() ===
       employeeName
@@ -815,7 +813,7 @@ function buildEmployeeDetailHtml_(
       : `
           <tr>
             <td colspan="5">
-              승인된 내역이 없습니다.
+              반려를 제외한 내역이 없습니다.
             </td>
           </tr>
         `;
@@ -914,7 +912,7 @@ function buildEmployeeDetailHtml_(
       imageMode
         ? `
           <div class="overtime-kakao-note">
-            ※ 승인된 초과근무 등록내역 기준입니다.
+            ※ 등록·승인·수정 내역 기준이며 반려 자료는 제외했습니다.
           </div>
         `
         : ""
@@ -1010,7 +1008,7 @@ async function openEmployeeKakaoImage(
   if(!list.length){
 
     alert(
-      "해당 직원의 승인된 내역이 없습니다."
+      "해당 직원의 반려 제외 내역이 없습니다."
     );
 
     return;
