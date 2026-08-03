@@ -1,30 +1,41 @@
 const API_URL =
   "https://script.google.com/macros/s/AKfycbyIR9zeGZz14r-5RjUeHL0amYXNVu7QaG-oQ6kmusge__3VZ7C94GW-6PT-B_V_asRT/exec";
 
-window.addEventListener("load", () => {
+window.addEventListener(
+  "load",
+  async function(){
 
-  setToday();
-  setCurrentOvertimeMonth();
+    setToday();
+    setCurrentOvertimeMonth();
 
-  loadEmployees();
-  loadEmployeeManagementList();
-  loadList();
+    const typeSelect =
+      document.getElementById("type");
 
-  const typeSelect =
-    document.getElementById("type");
+    if(typeSelect){
 
-  if(typeSelect){
-    typeSelect.addEventListener(
-      "change",
-      changeUnitLabel
+      typeSelect.addEventListener(
+        "change",
+        changeUnitLabel
+      );
+
+      changeUnitLabel();
+    }
+
+    /*
+     * 첫 화면은 월간입력 탭이므로
+     * 필요한 월간 자료만 조회합니다.
+     *
+     * 직원관리와 개별입력 자료는
+     * 해당 탭을 눌렀을 때 조회합니다.
+     */
+    await loadMonthlyOvertime();
+
+    requestAnimationFrame(
+      initHorizontalScrollbar
     );
 
-    changeUnitLabel();
   }
-
-  loadMonthlyOvertime();
-
-});
+);
 
 
 function setToday(){
@@ -596,6 +607,18 @@ async function deleteEmployee(encodedName){
 let monthlyOvertimeEmployees = [];
 let monthlyOvertimeEntries = [];
 
+/*
+ * 월간표 고속 조회용 인덱스
+ *
+ * 셀을 그릴 때마다 전체 데이터를 filter하지 않고
+ * 날짜+직원 키로 바로 찾습니다.
+ */
+let monthlyOvertimeEntryMap =
+  new Map();
+
+let monthlyOvertimeSummaryMap =
+  new Map();
+
 
 function setCurrentOvertimeMonth(){
 
@@ -652,6 +675,74 @@ function moveOvertimeMonth(direction){
 
 }
 
+/*
+ * 월간 내역을 한 번만 순회해서
+ * 셀 조회용 Map과 직원별 합계 Map을 만듭니다.
+ */
+function buildMonthlyOvertimeIndexes_(){
+
+  monthlyOvertimeEntryMap =
+    new Map();
+
+  monthlyOvertimeSummaryMap =
+    new Map();
+
+  monthlyOvertimeEntries.forEach(
+    function(item){
+
+      const workDate =
+        String(item.workDate || "");
+
+      const employeeName =
+        String(item.employeeName || "");
+
+      const type =
+        String(item.type || "");
+
+      const hours =
+        Number(item.hours || 0);
+
+      /*
+       * 날짜 + 직원별 셀 데이터
+       */
+      const cellKey =
+        workDate + "||" + employeeName;
+
+      if(
+        !monthlyOvertimeEntryMap.has(
+          cellKey
+        )
+      ){
+        monthlyOvertimeEntryMap.set(
+          cellKey,
+          []
+        );
+      }
+
+      monthlyOvertimeEntryMap
+        .get(cellKey)
+        .push(item);
+
+      /*
+       * 직원 + 구분별 월 합계
+       */
+      const summaryKey =
+        employeeName + "||" + type;
+
+      const oldTotal =
+        monthlyOvertimeSummaryMap.get(
+          summaryKey
+        ) || 0;
+
+      monthlyOvertimeSummaryMap.set(
+        summaryKey,
+        oldTotal + hours
+      );
+
+    }
+  );
+}
+
 
 async function loadMonthlyOvertime(){
 
@@ -698,63 +789,127 @@ async function loadMonthlyOvertime(){
 
   try{
 
-    const employeeResponse =
-      await fetch(
-        API_URL +
-        "?action=employees&t=" +
-        Date.now()
-      );
+    const parts =
+      monthInput.value.split("-");
+
+    const year =
+      Number(parts[0]);
+
+    const month =
+      Number(parts[1]);
+
+    const lastDay =
+      new Date(
+        year,
+        month,
+        0
+      ).getDate();
+
+    const startDate =
+      `${year}-` +
+      `${String(month).padStart(2,"0")}-01`;
+
+    const endDate =
+      `${year}-` +
+      `${String(month).padStart(2,"0")}-` +
+      `${String(lastDay).padStart(2,"0")}`;
+
+    /*
+     * 직원목록과 선택월 내역을 동시에 요청합니다.
+     *
+     * 기존에는 직원목록을 받은 후
+     * 전체 초과근무 목록을 다시 요청했습니다.
+     */
+    const responses =
+      await Promise.all([
+
+        fetch(
+          API_URL +
+          "?action=employees&t=" +
+          Date.now()
+        ),
+
+        fetch(
+          API_URL +
+          "?action=list" +
+          "&startDate=" +
+          encodeURIComponent(startDate) +
+          "&endDate=" +
+          encodeURIComponent(endDate) +
+          "&t=" +
+          Date.now()
+        )
+
+      ]);
+
+    const results =
+      await Promise.all([
+
+        responses[0].json(),
+
+        responses[1].json()
+
+      ]);
 
     const employeeData =
-      await employeeResponse.json();
-
-    const listResponse =
-      await fetch(
-        API_URL +
-        "?action=list&t=" +
-        Date.now()
-      );
+      results[0];
 
     const listData =
-      await listResponse.json();
+      results[1];
 
     monthlyOvertimeEmployees =
       (employeeData.list || [])
-      .filter(function(employee){
+        .filter(function(employee){
 
-        return (
-          !employee.status ||
-          employee.status === "재직"
-        );
+          return (
+            !employee.status ||
+            employee.status === "재직"
+          );
 
-      });
+        });
 
+    /*
+     * 서버에서 이미 해당 월만 받았기 때문에
+     * 프런트에서 월 필터를 다시 하지 않습니다.
+     */
     monthlyOvertimeEntries =
       (listData.list || [])
-      .filter(function(item){
+        .filter(function(item){
 
-        return String(
-          item.workDate || ""
-        ).slice(0,7) ===
-          monthInput.value;
+          return [
+            "초과근무",
+            "미휴게",
+            "휴무근무",
+            "조퇴",
+            "기타"
+          ].includes(item.type);
 
-      })
-      .filter(function(item){
+        })
+        .filter(function(item){
 
-        return [
-          "초과근무",
-          "미휴게",
-          "휴무근무",
-          "조퇴",
-          "기타"
-        ].includes(item.type);
+          /*
+           * 과거 반려자료만 제외합니다.
+           */
+          return item.status !== "반려";
 
-      });
+        });
+
+    /*
+     * 전체 자료를 한 번만 순회하여
+     * 빠른 조회용 Map을 만듭니다.
+     */
+    buildMonthlyOvertimeIndexes_();
 
     renderMonthlyOvertimeTable();
     renderMonthlyOvertimeSummary();
 
+    requestAnimationFrame(
+      initHorizontalScrollbar
+    );
+
   }catch(error){
+
+    console.error(error);
 
     body.innerHTML = `
       <tr>
@@ -765,9 +920,7 @@ async function loadMonthlyOvertime(){
     `;
 
   }
-
 }
-
 
 function renderMonthlyOvertimeTable(){
 
@@ -908,19 +1061,16 @@ function renderMonthlyCell(
   employeeName
 ){
 
-  const entries =
-    monthlyOvertimeEntries
-    .filter(function(item){
+  const cellKey =
+  String(workDate) +
+  "||" +
+  String(employeeName);
 
-      return (
-        String(item.workDate) ===
-          String(workDate) &&
-        String(item.employeeName) ===
-          String(employeeName)
-      );
-
-    });
-
+const entries =
+  monthlyOvertimeEntryMap.get(
+    cellKey
+  ) || [];
+  
   const totals = {
     "초과근무":0,
     "미휴게":0,
@@ -1188,25 +1338,16 @@ function getEmployeeMonthlyTypeTotal(
   type
 ){
 
-  return monthlyOvertimeEntries
-    .filter(function(item){
+  const summaryKey =
+    String(employeeName) +
+    "||" +
+    String(type);
 
-      return (
-        String(item.employeeName) ===
-          String(employeeName) &&
-        item.type === type
-      );
-
-    })
-    .reduce(function(sum,item){
-
-      return (
-        sum +
-        Number(item.hours || 0)
-      );
-
-    },0);
-
+  return (
+    monthlyOvertimeSummaryMap.get(
+      summaryKey
+    ) || 0
+  );
 }
 
 
@@ -1611,6 +1752,5 @@ function initHorizontalScrollbar(){
 
 }
 
-window.addEventListener("load", initHorizontalScrollbar);
 
 window.addEventListener("resize", initHorizontalScrollbar);
