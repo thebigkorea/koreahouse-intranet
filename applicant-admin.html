@@ -500,7 +500,15 @@ function render(list){
           <small>${safe(item.createdAt)}</small>
         </td>
 
-        <td>${safe(item.phone)}</td>
+        <td>
+  <input
+    type="tel"
+    id="phone_${item.applicantId}"
+    value="${safeAttr(item.phone)}"
+    maxlength="13"
+    placeholder="연락처 미등록"
+    oninput="formatPhoneInput(this)">
+</td>
 
         <td>${safe(item.store)}</td>
 
@@ -748,7 +756,12 @@ async function saveInterview(applicantId){
 
     applicantId:applicantId,
 
-    interviewDate:
+phone:
+  document.getElementById(
+    "phone_" + applicantId
+  ).value.trim(),
+
+interviewDate:
       document.getElementById(
         "date_" + applicantId
       ).value,
@@ -830,6 +843,35 @@ function safeAttr(value){
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;");
 }
+
+function formatPhoneInput(input){
+
+  let value =
+    String(input.value || "")
+      .replace(/[^0-9]/g, "")
+      .slice(0, 11);
+
+  if(value.length <= 3){
+    input.value = value;
+    return;
+  }
+
+  if(value.length <= 7){
+    input.value =
+      value.slice(0, 3) +
+      "-" +
+      value.slice(3);
+    return;
+  }
+
+  input.value =
+    value.slice(0, 3) +
+    "-" +
+    value.slice(3, 7) +
+    "-" +
+    value.slice(7);
+}
+
 function getTodayString(){
 
   const now = new Date();

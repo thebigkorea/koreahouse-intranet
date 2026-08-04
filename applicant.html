@@ -116,14 +116,14 @@ button:hover{background:#3b2414}
       </div>
 
       <div>
-        <label>연락처</label>
-        <input
-         id="phone"
-         inputmode="numeric"
-         maxlength="13"
-         placeholder="예: 01012345678"
-         oninput="formatPhone(this)">
-      </div>
+  <label>연락처</label>
+  <input
+   id="phone"
+   inputmode="numeric"
+   maxlength="13"
+   placeholder="예: 01012345678 · 일부 지원경로는 생략 가능"
+   oninput="formatPhone(this)">
+</div>
 
       <div>
         <label>지원매장</label>
@@ -158,6 +158,7 @@ button:hover{background:#3b2414}
           <option>알바몬</option>
           <option>알바천국</option>
           <option>잡코리아</option>
+          <option>당근</option>
           <option>사람인</option>
           <option>지인소개</option>
           <option>매장방문</option>
@@ -238,10 +239,24 @@ async function saveApplicant(){
     return;
   }
 
-  if(!val("phone")){
-    showMsg("연락처를 입력하세요.", "warn");
-    return;
-  }
+  const phoneOptionalSources = [
+  "알바몬",
+  "알바천국",
+  "잡코리아",
+  "사람인",
+  "당근"
+];
+
+if(
+  !val("phone") &&
+  !phoneOptionalSources.includes(val("source"))
+){
+  showMsg(
+    "연락처를 입력하세요. 알바몬·알바천국·잡코리아·사람인·당근 지원자는 연락처 없이 등록할 수 있습니다.",
+    "warn"
+  );
+  return;
+}
 
   const payload = {
     action:"saveApplicant",
