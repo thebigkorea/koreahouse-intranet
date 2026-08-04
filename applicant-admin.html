@@ -379,130 +379,6 @@ td:nth-child(3),
 td:nth-child(4){
   min-width:85px;
 }
-/* PC 화면에서 표를 한 화면에 맞춤 */
-.wrap{
-  width:100%;
-  max-width:none;
-  padding:20px;
-}
-
-.table-wrap{
-  width:100%;
-  overflow-x:hidden;
-}
-
-table{
-  width:100%;
-  min-width:0;
-  table-layout:fixed;
-}
-
-th,
-td{
-  padding:10px 8px;
-  word-break:keep-all;
-  overflow-wrap:break-word;
-}
-
-/* 각 열 너비 */
-th:nth-child(1),
-td:nth-child(1){
-  width:6%;
-}
-
-th:nth-child(2),
-td:nth-child(2){
-  width:10%;
-}
-
-th:nth-child(3),
-td:nth-child(3){
-  width:7%;
-}
-
-th:nth-child(4),
-td:nth-child(4){
-  width:6%;
-}
-
-th:nth-child(5),
-td:nth-child(5){
-  width:11%;
-}
-
-th:nth-child(6),
-td:nth-child(6){
-  width:8%;
-}
-
-th:nth-child(7),
-td:nth-child(7){
-  width:8%;
-}
-
-th:nth-child(8),
-td:nth-child(8){
-  width:25%;
-}
-
-th:nth-child(9),
-td:nth-child(9){
-  width:25%;
-}
-
-th:nth-child(10),
-td:nth-child(10){
-  width:5%;
-}
-
-/* 기존 최소 너비 해제 */
-.phone-cell,
-.interviewer-cell,
-.register-memo,
-.memo,
-.note-box,
-.note-box textarea{
-  min-width:0;
-  width:100%;
-}
-
-.phone-cell input,
-.interviewer-cell input,
-.status-select{
-  width:100%;
-  min-width:0;
-}
-
-td input,
-td select,
-td textarea{
-  max-width:100%;
-}
-
-/* 저장 버튼 */
-.btn.save{
-  width:100%;
-  padding:10px 4px;
-}
-
-/* 등록비고 문장 줄바꿈 */
-.register-memo-box{
-  white-space:normal;
-  overflow-wrap:anywhere;
-}
-
-/* 작은 화면에서는 다시 가로 스크롤 허용 */
-@media(max-width:1200px){
-
-  .table-wrap{
-    overflow-x:auto;
-  }
-
-  table{
-    min-width:1250px;
-    table-layout:auto;
-  }
-}
 
 </style>
 </head>
@@ -551,8 +427,16 @@ td textarea{
 </div>
   </div>
 
-  <div class="table-wrap">
-  <table id="applicantTable">
+  <div
+  id="tableScrollTop"
+  class="table-scroll-top">
+
+  <div
+    id="tableScrollTopInner"
+    class="table-scroll-top-inner">
+  </div>
+
+</div>
 
 <div
   id="tableWrap"
@@ -569,8 +453,7 @@ td textarea{
           <th>면접관</th>
           <th>상태</th>
           <th>등록비고</th>
-          <th>면접내용 / 최종의견</th>     
-          <th>관리표시</th>     
+          <th>면접내용 / 최종의견</th>          
           <th>저장</th>
         </tr>
       </thead>
@@ -593,7 +476,8 @@ window.addEventListener("load", function(){
     getTodayString();
 
   loadApplicants();
-  
+
+  setupTableHorizontalScroll();
 });
 
 function setupTableHorizontalScroll(){
