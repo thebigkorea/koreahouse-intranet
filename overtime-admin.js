@@ -1393,3 +1393,47 @@ function showOvertimePage(
     loadMonthlyData();
   }
 }
+async function searchSelectedMonth(){
+
+  const button =
+    document.getElementById(
+      "selectedMonthSearchButton"
+    );
+
+  if(!button){
+    return;
+  }
+
+  const range =
+    getSelectedMonthRange();
+
+  if(!range){
+    alert("조회월을 선택하세요.");
+    return;
+  }
+
+  const originalText =
+    button.textContent;
+
+  try{
+
+    button.disabled = true;
+    button.textContent = "조회 중...";
+
+    await loadMonthlyData();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "선택월 자료를 불러오지 못했습니다."
+    );
+
+  }finally{
+
+    button.disabled = false;
+    button.textContent = originalText;
+
+  }
+}

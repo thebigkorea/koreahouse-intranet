@@ -18,13 +18,21 @@
   <!-- 월 선택 및 화면 전환 -->
 <div class="search-card overtime-main-search">
 
-  <div>
-    <label>조회월</label>
+  <div class="month-search-field">
+    <label for="searchMonth">조회월</label>
+
     <input
       type="month"
-      id="searchMonth"
-      onchange="loadMonthlyData()">
+      id="searchMonth">
   </div>
+
+  <button
+    type="button"
+    id="selectedMonthSearchButton"
+    class="selected-month-search-btn"
+    onclick="searchSelectedMonth()">
+    🔍 선택월 조회
+  </button>
 
   <button
     type="button"
