@@ -324,6 +324,16 @@ tr:hover{
   min-width:100px;
 }
 
+.phone-cell{
+  min-width:150px;
+}
+
+.phone-cell input{
+  width:145px;
+  min-width:145px;
+  font-size:14px;
+}
+
 </style>
 </head>
 
@@ -500,13 +510,13 @@ function render(list){
           <small>${safe(item.createdAt)}</small>
         </td>
 
-        <td>
+        <td class="phone-cell">
   <input
     type="tel"
     id="phone_${item.applicantId}"
-    value="${safeAttr(item.phone)}"
+    value="${safeAttr(formatPhone(item.phone))}"
     maxlength="13"
-    placeholder="연락처 미등록"
+    placeholder="연락처 입력"
     oninput="formatPhoneInput(this)">
 </td>
 
