@@ -77,28 +77,69 @@ async function loadMonthlyData(){
     getSelectedMonthRange();
 
   if(!range){
-
     alert("조회월을 선택하세요.");
-
-    return;
+    return false;
   }
+
+  const monthlyUrl =
+    `${API_URL}?action=monthly` +
+    `&year=${range.year}` +
+    `&month=${range.monthNumber}` +
+    `&t=${Date.now()}`;
 
   try{
 
-    /*
-     * list와 monthly를 따로 요청하지 않고
-     * monthly 한 번만 요청합니다.
-     */
-    const monthlyUrl =
-      `${API_URL}?action=monthly` +
-      `&year=${range.year}` +
-      `&month=${range.monthNumber}`;
+    const controller =
+      new AbortController();
+
+    const timeoutId =
+      setTimeout(function(){
+        controller.abort();
+      }, 30000);
 
     const response =
-      await fetch(monthlyUrl);
+      await fetch(
+        monthlyUrl,
+        {
+          method:"GET",
+          cache:"no-store",
+          signal:controller.signal
+        }
+      );
 
-    const monthlyData =
-      await response.json();
+    clearTimeout(timeoutId);
+
+    /*
+     * Apps Script가 JSON 대신 오류 HTML을 반환하는 경우를
+     * 확인하기 위해 먼저 text로 받습니다.
+     */
+    const responseText =
+      await response.text();
+
+    if(!response.ok){
+
+      throw new Error(
+        `서버 응답 오류 ${response.status}: ` +
+        responseText.slice(0, 200)
+      );
+
+    }
+
+    let monthlyData;
+
+    try{
+
+      monthlyData =
+        JSON.parse(responseText);
+
+    }catch(parseError){
+
+      throw new Error(
+        "서버가 JSON이 아닌 내용을 반환했습니다: " +
+        responseText.slice(0, 200)
+      );
+
+    }
 
     if(
       !monthlyData.success ||
@@ -107,29 +148,24 @@ async function loadMonthlyData(){
 
       throw new Error(
         monthlyData.message ||
-        "월별 자료 조회 실패"
+        "월별 자료가 없습니다."
       );
+
     }
 
-    /*
-     * 서버가 월별표와 원본 목록을
-     * 한 번에 반환합니다.
-     */
     ALL_LIST =
       (monthlyData.data.list || [])
         .filter(function(item){
-
           return item.status !== "반려";
-
         });
+
+    renderMonthlyReport(
+      monthlyData.data
+    );
 
     renderEmployeeMonthlySummary(
       ALL_LIST,
       range
-    );
-
-    renderMonthlyReport(
-      monthlyData.data
     );
 
     document.getElementById(
@@ -147,14 +183,32 @@ async function loadMonthlyData(){
       `${range.monthNumber}월 ` +
       `직원별 초과근무 상세내역`;
 
+    return true;
+
   }catch(error){
 
-    console.error(error);
-
-    alert(
-      "월별 초과근무 자료를 불러오지 못했습니다."
+    console.error(
+      "월별 초과근무 조회 오류:",
+      error
     );
 
+    if(error.name === "AbortError"){
+
+      alert(
+        "자료 조회가 30초를 초과해 중단되었습니다.\n" +
+        "Apps Script 배포 상태와 서버 코드를 확인해주세요."
+      );
+
+    }else{
+
+      alert(
+        "월별 초과근무 자료를 불러오지 못했습니다.\n\n" +
+        error.message
+      );
+
+    }
+
+    return false;
   }
 }
 
@@ -1404,36 +1458,22 @@ async function searchSelectedMonth(){
     return;
   }
 
-  const range =
-    getSelectedMonthRange();
-
-  if(!range){
+  if(!getSelectedMonthRange()){
     alert("조회월을 선택하세요.");
     return;
   }
 
-  const originalText =
-    button.textContent;
+  button.disabled = true;
+  button.textContent = "조회 중...";
 
   try{
 
-    button.disabled = true;
-    button.textContent = "조회 중...";
-
     await loadMonthlyData();
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "선택월 자료를 불러오지 못했습니다."
-    );
 
   }finally{
 
     button.disabled = false;
-    button.textContent = originalText;
+    button.textContent = "🔍 선택월 조회";
 
   }
 }
