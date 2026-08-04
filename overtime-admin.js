@@ -560,8 +560,22 @@ function renderMonthlyReport(data){
 }
 
               if(type === "연차미사용"){
+
+  if(
+    !isUnusedAnnualPayEmployee_(
+      row.employeeName
+    )
+  ){
+    return "";
+  }
+
   unusedAnnualTotal += 1;
-  return `<span class="red-text">연차</span>`;
+
+  return `
+    <span class="red-text">
+      연차
+    </span>
+  `;
 }
 
               if(type === "조퇴"){
@@ -701,6 +715,18 @@ loadList();
 
 let CURRENT_DETAIL_EMPLOYEE = "";
 let OVERTIME_KAKAO_CANVAS = null;
+
+/*
+ * 연차미사용 수당 지급 대상 직원
+ */
+function isUnusedAnnualPayEmployee_(
+  employeeName
+){
+
+  return String(
+    employeeName || ""
+  ).trim() === "한경란";
+}
 
 
 function getMonthlySummaryList_(){
@@ -879,8 +905,12 @@ function renderEmployeeMonthlySummary(
           </td>
 
           <td>
-            ${totals.unusedAnnualCount}일
-          </td>
+  ${
+    isUnusedAnnualPayEmployee_(name)
+      ? `${totals.unusedAnnualCount}일`
+      : "-"
+  }
+</td>
 
           <td>
             ${formatHours_(totals.earlyLeave)}시간
@@ -944,15 +974,35 @@ function buildEmployeeDetailHtml_(
   const range =
     getSelectedMonthRange();
 
-  const list =
-    getEmployeeApprovedList_(
+  const originalList =
+  getEmployeeApprovedList_(
+    employeeName
+  );
+
+/*
+ * 한경란 직원만 연차미사용을 표시합니다.
+ * 다른 직원은 상세보기와 카톡 이미지에서 제외합니다.
+ */
+const list =
+  originalList.filter(function(item){
+
+    if(
+      String(item.type || "").trim() !==
+      "연차미사용"
+    ){
+      return true;
+    }
+
+    return isUnusedAnnualPayEmployee_(
       employeeName
     );
 
-  const totals =
-    calculateEmployeeOvertime_(
-      list
-    );
+  });
+
+const totals =
+  calculateEmployeeOvertime_(
+    list
+  );
 
   const titleMonth =
     range
@@ -1033,12 +1083,21 @@ function buildEmployeeDetailHtml_(
 </strong>
       </div>
 
+      ${
+  isUnusedAnnualPayEmployee_(
+    employeeName
+  )
+    ? `
       <div>
         <span>연차미사용</span>
-<strong>
-  ${totals.unusedAnnualCount}일
-</strong>
+
+        <strong>
+          ${totals.unusedAnnualCount}일
+        </strong>
       </div>
+    `
+    : ""
+}
 
       <div>
         <span>조퇴</span>
