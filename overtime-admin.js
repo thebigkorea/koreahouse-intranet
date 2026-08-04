@@ -77,69 +77,60 @@ async function loadMonthlyData(){
     getSelectedMonthRange();
 
   if(!range){
+
     alert("조회월을 선택하세요.");
+
     return;
   }
 
   try{
 
-    const listUrl =
-      `${API_URL}?action=list` +
-      `&startDate=${encodeURIComponent(range.startDate)}` +
-      `&endDate=${encodeURIComponent(range.endDate)}` +
-      `&employeeName=` +
-      `&t=${Date.now()}`;
-
+    /*
+     * list와 monthly를 따로 요청하지 않고
+     * monthly 한 번만 요청합니다.
+     */
     const monthlyUrl =
       `${API_URL}?action=monthly` +
       `&year=${range.year}` +
-      `&month=${range.monthNumber}` +
-      `&t=${Date.now()}`;
+      `&month=${range.monthNumber}`;
 
-    /*
-     * 두 요청을 동시에 실행합니다.
-     */
-    const responses =
-      await Promise.all([
-        fetch(listUrl),
-        fetch(monthlyUrl)
-      ]);
-
-    const results =
-      await Promise.all([
-        responses[0].json(),
-        responses[1].json()
-      ]);
-
-    const listData =
-      results[0];
+    const response =
+      await fetch(monthlyUrl);
 
     const monthlyData =
-      results[1];
+      await response.json();
+
+    if(
+      !monthlyData.success ||
+      !monthlyData.data
+    ){
+
+      throw new Error(
+        monthlyData.message ||
+        "월별 자료 조회 실패"
+      );
+    }
 
     /*
-     * 과거 반려 자료만 제외합니다.
-     * 등록·승인·수정 자료는 모두 사용합니다.
+     * 서버가 월별표와 원본 목록을
+     * 한 번에 반환합니다.
      */
     ALL_LIST =
-      (listData.list || [])
-        .filter(item =>
-          item.status !== "반려"
-        );
+      (monthlyData.data.list || [])
+        .filter(function(item){
+
+          return item.status !== "반려";
+
+        });
 
     renderEmployeeMonthlySummary(
       ALL_LIST,
       range
     );
 
-    if(
-      monthlyData.success &&
+    renderMonthlyReport(
       monthlyData.data
-    ){
-      renderMonthlyReport(
-        monthlyData.data
-      );
-    }
+    );
 
     document.getElementById(
       "monthlyTitle"
