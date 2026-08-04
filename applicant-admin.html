@@ -17,7 +17,8 @@ body{
 }
 
 .wrap{
-  max-width:1400px;
+  width:100%;
+  max-width:none;
   margin:0 auto;
   padding:20px;
 }
@@ -333,6 +334,51 @@ tr:hover{
   min-width:145px;
   font-size:14px;
 }
+/* 표 위쪽 가로 스크롤바 */
+.table-scroll-top{
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  height:18px;
+  margin-bottom:6px;
+  border-radius:9px;
+  background:#eadfce;
+  position:sticky;
+  top:0;
+  z-index:30;
+}
+
+.table-scroll-top-inner{
+  height:1px;
+}
+
+/* 실제 표 영역 */
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+  overflow-y:visible;
+  background:#fff;
+  border-radius:22px;
+  border:1px solid #e4d7c7;
+}
+
+/* PC에서 화면 폭을 충분히 사용 */
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1500px;
+}
+
+/* 매장·직무가 한 글자씩 줄바꿈되는 현상 방지 */
+th,
+td{
+  word-break:keep-all;
+}
+
+td:nth-child(3),
+td:nth-child(4){
+  min-width:85px;
+}
 
 </style>
 </head>
@@ -381,8 +427,22 @@ tr:hover{
 </div>
   </div>
 
-  <div class="table-wrap">
-    <table>
+  <div
+  id="tableScrollTop"
+  class="table-scroll-top">
+
+  <div
+    id="tableScrollTopInner"
+    class="table-scroll-top-inner">
+  </div>
+
+</div>
+
+<div
+  id="tableWrap"
+  class="table-wrap">
+
+  <table id="applicantTable">
       <thead>
         <tr>
           <th>지원자</th>
@@ -416,7 +476,99 @@ window.addEventListener("load", function(){
     getTodayString();
 
   loadApplicants();
+
+  setupTableHorizontalScroll();
 });
+
+function setupTableHorizontalScroll(){
+
+  const topScroll =
+    document.getElementById("tableScrollTop");
+
+  const topScrollInner =
+    document.getElementById("tableScrollTopInner");
+
+  const tableWrap =
+    document.getElementById("tableWrap");
+
+  const table =
+    document.getElementById("applicantTable");
+
+  if(
+    !topScroll ||
+    !topScrollInner ||
+    !tableWrap ||
+    !table
+  ){
+    return;
+  }
+
+  let syncing = false;
+
+  function updateScrollWidth(){
+
+    topScrollInner.style.width =
+      table.scrollWidth + "px";
+
+    topScroll.style.display =
+      table.scrollWidth > tableWrap.clientWidth
+        ? "block"
+        : "none";
+  }
+
+  topScroll.addEventListener(
+    "scroll",
+    function(){
+
+      if(syncing) return;
+
+      syncing = true;
+
+      tableWrap.scrollLeft =
+        topScroll.scrollLeft;
+
+      syncing = false;
+    }
+  );
+
+  tableWrap.addEventListener(
+    "scroll",
+    function(){
+
+      if(syncing) return;
+
+      syncing = true;
+
+      topScroll.scrollLeft =
+        tableWrap.scrollLeft;
+
+      syncing = false;
+    }
+  );
+
+  window.addEventListener(
+    "resize",
+    updateScrollWidth
+  );
+
+  const observer =
+    new MutationObserver(
+      updateScrollWidth
+    );
+
+  observer.observe(
+    table,
+    {
+      childList:true,
+      subtree:true
+    }
+  );
+
+  setTimeout(
+    updateScrollWidth,
+    100
+  );
+}
 
 async function loadApplicants(){
 
