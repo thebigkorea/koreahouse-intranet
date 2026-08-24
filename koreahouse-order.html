@@ -1,17 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>한국의집 통합 발주</title>
-  <link rel="icon"
-      href="./images/order-icon-512.png">
-
-  <link rel="apple-touch-icon"
-      href="./images/order-icon-512.png">
-
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>한국의집 통합 발주</title>
+<link href="./images/order-icon-512.png" rel="icon"/>
+<link href="./images/order-icon-512.png" rel="apple-touch-icon"/>
+<style>
     :root{
       --bg:#f5efe6;
       --card:#fffaf2;
@@ -284,23 +280,17 @@
 }
   </style>
 </head>
-
 <body>
-
-  <main class="wrap">
-
-    <section class="header">
-      <h1>한국의집 통합 발주</h1>
-
-      <p>
+<main class="wrap">
+<section class="header">
+<h1>한국의집 통합 발주</h1>
+<p>
         맥, 서울명성, 마미팜, 롯데칠성, 동부주류, 우리술상회 발주를
         하나의 화면에서 빠르게 진행합니다.
       </p>
-    </section>
-
-    <section class="hall-box">
-      <h2>홀 필요물품</h2>
-
+</section>
+<section class="hall-box">
+<h2>홀 필요물품</h2>
 <div style="
   margin:12px 0 18px;
   padding:14px 18px;
@@ -312,180 +302,126 @@
   line-height:1.7;
   font-weight:600;
 ">
-  📢 주방 직원 안내<br>
-  홀 필요물품에 등록된 품목은 반드시 확인 후 발주해 주시기 바랍니다.<br>
+  📢 주방 직원 안내<br/>
+  홀 필요물품에 등록된 품목은 반드시 확인 후 발주해 주시기 바랍니다.<br/>
   발주가 완료되면 반드시 <b style="color:#2f7d43;">발주완료</b> 버튼을 눌러
   다른 직원들도 처리 여부를 확인할 수 있도록 해주세요.
 </div>
-
 <div class="hall-form">
-        <input type="date" id="hallDate">
-        <input type="text" id="hallItem" placeholder="예: 물티슈, 종이컵, 앞치마">
-        <button onclick="addHallItem()">등록</button>
-      </div>
-
-      <div id="hallList" class="hall-list"></div>
+<input id="hallDate" type="date"/>
+<input id="hallItem" placeholder="예: 물티슈, 종이컵, 앞치마" type="text"/>
+<button onclick="addHallItem()">등록</button>
+</div>
+<div class="hall-list" id="hallList"></div>
 </section>
-    
-    <section class="grid">
-
-      <!-- 맥 -->
-      <div class="card mac">
-
-        <div>
-          <div class="icon">麥</div>
-
-          <h2>맥 발주</h2>
-
-          <p>
-            식자재 및 관련 품목 발주 화면으로 이동합니다.
-          </p>
-        </div>
-
-        <a class="go"
-           href="https://thebigkorea.github.io/mac-order-new/?utm_source=chatgpt.com"
-           target="_blank">
-           발주하기
-        </a>
-
-      </div>
-
-      <!-- 서울명성 -->
-      <div class="card seoul">
-
-        <div>
-          <div class="icon">名</div>
-
-          <h2>서울명성 발주</h2>
-
-          <p>
+<section class="grid">
+<!-- 맥 -->
+<div class="card mac">
+<div>
+<div class="icon">麥</div>
+<h2>한국의집 MAC 재고·발주 자동관리</h2>
+<p>MAC 식자재 재고조사와 자동 발주관리 화면으로 이동합니다.</p>
+</div>
+<a class="go" href="https://thebigkorea.github.io/mac-order-auto/" target="_blank">자동관리 열기</a>
+</div>
+<!-- 서울명성 -->
+<div class="card seoul">
+<div>
+<div class="icon">名</div>
+<h2>서울명성 발주</h2>
+<p>
             서울명성 거래처 발주 화면으로 이동합니다.
           </p>
-        </div>
-
-        <a class="go"
-           href="https://thebigkorea.github.io/seoulmyeongseong-order/"
-           target="_blank">
+</div>
+<a class="go" href="https://thebigkorea.github.io/seoulmyeongseong-order/" target="_blank">
            발주하기
         </a>
-
-      </div>
-
-            <!-- MAC 고기발주 -->
-      <div class="card mac">
-
-        <div>
-          <div class="icon">🥩</div>
-
-          <h2>MAC 고기발주</h2>
-
-          <p>
-            MAC 고기류 발주 화면으로 이동합니다.
-          </p>
-
-        </div>
-
-        <a class="go"
-           href="https://thebigkorea.github.io/mac-meat-order/"
-           target="_blank">
-           발주하기
-        </a>
-
-      </div>
-
-      <!-- 마미팜 -->
-      <div class="card mami">
-
-        <div>
-          <div class="icon">農</div>
-
-          <h2>마미팜 발주</h2>
-
-          <p>
+</div>
+<!-- MAC 고기발주 -->
+<div class="card mac">
+<div>
+<div class="icon">🥩</div>
+<h2>한국의집 MAC 고기 재고·발주 자동관리</h2>
+<p>MAC 고기 재고조사와 자동 발주관리 화면으로 이동합니다.</p>
+</div>
+<a class="go" href="https://thebigkorea.github.io/mac-meat-auto/" target="_blank">자동관리 열기</a>
+</div>
+<!-- 마미팜 -->
+<div class="card mami">
+<div>
+<div class="icon">農</div>
+<h2>마미팜 발주</h2>
+<p>
             농산물 및 식재 품목 발주 화면으로 이동합니다.
           </p>
-        </div>
-
-        <a class="go"
-           href="https://thebigkorea.github.io/mamifarm-order/"
-           target="_blank">
+</div>
+<a class="go" href="https://thebigkorea.github.io/mamifarm-order/" target="_blank">
            발주하기
         </a>
-
-      </div>
-
-      <!-- 롯데칠성 -->
-      <div class="card lotte">
-
-        <div>
-          <div class="icon">七</div>
-
-          <h2>롯데칠성 발주</h2>
-
-          <p>
+</div>
+<!-- 롯데칠성 -->
+<div class="card lotte">
+<div>
+<div class="icon">七</div>
+<h2>롯데칠성 발주</h2>
+<p>
             음료 및 관련 품목 발주 화면으로 이동합니다.
           </p>
-        </div>
-
-        <a class="go"
-           href="https://script.google.com/macros/s/AKfycbz7Ssj0cOjH3xY-KMT25EaZbcrAFLJZ_FFgf5NX4Yk-D-q13y0lLxQiXEl3CtilYtYyoA/exec"
-           target="_blank">
+</div>
+<a class="go" href="https://script.google.com/macros/s/AKfycbz7Ssj0cOjH3xY-KMT25EaZbcrAFLJZ_FFgf5NX4Yk-D-q13y0lLxQiXEl3CtilYtYyoA/exec" target="_blank">
            발주하기
         </a>
-
-      </div>
-
-      <!-- 동부주류 -->
-      <div class="card dongbu">
-
-        <div>
-          <div class="icon">酒</div>
-
-          <h2>동부주류 발주</h2>
-
-          <p>
+</div>
+<!-- 동부주류 -->
+<div class="card dongbu">
+<div>
+<div class="icon">酒</div>
+<h2>동부주류 발주</h2>
+<p>
             주류 품목 발주 화면으로 이동합니다.
           </p>
-        </div>
-
-        <a class="go"
-           href="https://script.google.com/macros/s/AKfycbwtsklmchMj5j8G5lkqNnAAW3wDH3UIFB3qwfGlvuIsNIH4GMFl9uXq9ygOQk-yFCxAZg/exec"
-           target="_blank">
+</div>
+<a class="go" href="https://script.google.com/macros/s/AKfycbwtsklmchMj5j8G5lkqNnAAW3wDH3UIFB3qwfGlvuIsNIH4GMFl9uXq9ygOQk-yFCxAZg/exec" target="_blank">
            발주하기
         </a>
-
-      </div>
-
-      <!-- 우리술상회 -->
-      <div class="card woori">
-
-        <div>
-          <div class="icon">술</div>
-
-          <h2>우리술상회 발주</h2>
-
-          <p>
+</div>
+<!-- 우리술상회 -->
+<div class="card woori">
+<div>
+<div class="icon">술</div>
+<h2>우리술상회 발주</h2>
+<p>
             우리술상회 주류 및 관련 품목 발주 화면으로 이동합니다.
           </p>
-        </div>
-
-        <a class="go"
-           href="https://script.google.com/macros/s/AKfycbwnXiuhYDyhlhncc05gGyWsJaqNauA1TMBybHAwcf4ItvCQri2Qkd0PMQYuTmsVu_3Z/exec"
-           target="_blank">
+</div>
+<a class="go" href="https://script.google.com/macros/s/AKfycbwnXiuhYDyhlhncc05gGyWsJaqNauA1TMBybHAwcf4ItvCQri2Qkd0PMQYuTmsVu_3Z/exec" target="_blank">
            발주하기
         </a>
-
-      </div>
-
-    </section>
-
-    <div class="footer">
+</div><div class="card mac">
+<div>
+<div class="icon">麥</div>
+<h2>맥 발주 (기존)</h2>
+<p>기존 MAC 식자재 발주 화면으로 이동합니다.</p>
+</div>
+<a class="go" href="https://thebigkorea.github.io/mac-order-new/?utm_source=chatgpt.com" target="_blank">
+           발주하기
+        </a>
+</div><div class="card mac">
+<div>
+<div class="icon">🥩</div>
+<h2>MAC 고기발주 (기존)</h2>
+<p>기존 MAC 고기류 발주 화면으로 이동합니다.</p>
+</div>
+<a class="go" href="https://thebigkorea.github.io/mac-meat-order/" target="_blank">
+           발주하기
+        </a>
+</div>
+</section>
+<div class="footer">
       한국의집 통합 발주 시스템 · KOREA HOUSE ORDER SYSTEM
     </div>
-
-  </main>
-
-  <script>
+</main>
+<script>
   const API_URL =
     "https://script.google.com/macros/s/AKfycbzWZGC317IPlIiLj0vbApl0JuedU7ogn9oo9OD67pBD57_Nwyp-5nHMhWV6H1pQNL_1Mw/exec";
 
@@ -680,6 +616,5 @@
     renderHallItems();
   });
 </script>
-
 </body>
 </html>
