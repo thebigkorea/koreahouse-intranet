@@ -504,10 +504,27 @@ function renderMonthlyReport(data){
 
   const days = data.days || [];
 
+  const range = getSelectedMonthRange();
+  const weekendDays = new Set();
+
+  if(range){
+    days.forEach(function(day){
+      const date = new Date(
+        range.year,
+        range.monthNumber - 1,
+        Number(day)
+      );
+
+      if(date.getDay() === 0 || date.getDay() === 6){
+        weekendDays.add(Number(day));
+      }
+    });
+  }
+
   thead.innerHTML =
     `<tr>
       <th>직원명</th>
-      ${days.map(d => `<th>${d}일</th>`).join("")}
+      ${days.map(d => `<th class="${weekendDays.has(Number(d)) ? "weekend" : ""}">${d}일</th>`).join("")}
       <th>시간합계</th>
       <th>미휴일수</th>
       <th>연차미사용</th>
@@ -522,6 +539,21 @@ function renderMonthlyReport(data){
       </tr>`;
 
     tfoot.innerHTML = "";
+
+    const employeeCountEl =
+      document.getElementById("monthlyEmployeeCount");
+    const hourTotalEl =
+      document.getElementById("monthlyHourTotal");
+    const offDayTotalEl =
+      document.getElementById("monthlyOffDayTotal");
+    const unusedAnnualTotalEl =
+      document.getElementById("monthlyUnusedAnnualTotal");
+
+    if(employeeCountEl) employeeCountEl.textContent = "0명";
+    if(hourTotalEl) hourTotalEl.textContent = "0시간";
+    if(offDayTotalEl) offDayTotalEl.textContent = "0일";
+    if(unusedAnnualTotalEl) unusedAnnualTotalEl.textContent = "0일";
+
     return;
   }
 
@@ -545,7 +577,7 @@ function renderMonthlyReport(data){
             : [];
 
           if(!entries.length){
-            return `<td></td>`;
+            return `<td class="${weekendDays.has(Number(day)) ? "weekend" : ""}"></td>`;
           }
 
           const text =
@@ -593,7 +625,7 @@ function renderMonthlyReport(data){
 
             }).join("<br>");
 
-          return `<td>${text}</td>`;
+          return `<td class="${weekendDays.has(Number(day)) ? "weekend" : ""}">${text}</td>`;
 
         }).join("");
 
@@ -612,6 +644,35 @@ function renderMonthlyReport(data){
       `;
 
     }).join("");
+
+  const employeeCountEl =
+    document.getElementById("monthlyEmployeeCount");
+  const hourTotalEl =
+    document.getElementById("monthlyHourTotal");
+  const offDayTotalEl =
+    document.getElementById("monthlyOffDayTotal");
+  const unusedAnnualTotalEl =
+    document.getElementById("monthlyUnusedAnnualTotal");
+
+  if(employeeCountEl){
+    employeeCountEl.textContent =
+      `${data.rows.length}명`;
+  }
+
+  if(hourTotalEl){
+    hourTotalEl.textContent =
+      `${formatHours_(grandHourTotal)}시간`;
+  }
+
+  if(offDayTotalEl){
+    offDayTotalEl.textContent =
+      `${grandOffDayTotal}일`;
+  }
+
+  if(unusedAnnualTotalEl){
+    unusedAnnualTotalEl.textContent =
+      `${grandUnusedAnnualTotal}일`;
+  }
 
   tfoot.innerHTML =
     `<tr>

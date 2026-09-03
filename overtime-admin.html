@@ -4,294 +4,201 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>초과근무 관리자</title>
-<link rel="stylesheet" href="overtime-admin.css">
+<link rel="stylesheet" href="overtime-admin.css?v=20260903-1">
 </head>
 
 <body>
 <div class="wrap">
 
-  <div class="header">
-    <h1>초과근무 관리자</h1>
-    <p>월별 초과근무 내역과 직원별 상세내역을 관리합니다.</p>
-  </div>
+  <header class="page-header">
+    <div>
+      <div class="eyebrow">KOREA HOUSE · ATTENDANCE</div>
+      <h1>초과근무 관리자</h1>
+      <p>월별 초과근무·미휴게·미휴무 내역을 한눈에 확인합니다.</p>
+    </div>
+    <div class="header-chip">한국의집 롯데월드몰점</div>
+  </header>
 
-  <!-- 월 선택 및 화면 전환 -->
-<div class="search-card overtime-main-search">
+  <section class="control-card">
+    <div class="month-search-field">
+      <label for="searchMonth">조회월</label>
+      <input type="month" id="searchMonth">
+    </div>
 
-  <div class="month-search-field">
-    <label for="searchMonth">조회월</label>
+    <button
+      type="button"
+      id="selectedMonthSearchButton"
+      class="selected-month-search-btn"
+      onclick="searchSelectedMonth()">
+      🔍 조회
+    </button>
 
-    <input
-      type="month"
-      id="searchMonth">
-  </div>
+    <div class="view-switch" role="group" aria-label="조회 화면 선택">
+      <button
+        type="button"
+        id="monthlyReportButton"
+        class="main-view-btn active"
+        onclick="showOvertimePage('monthly')">
+        월간 현황표
+      </button>
 
-  <button
-    type="button"
-    id="selectedMonthSearchButton"
-    class="selected-month-search-btn"
-    onclick="searchSelectedMonth()">
-    🔍 선택월 조회
-  </button>
+      <button
+        type="button"
+        id="employeeDetailButton"
+        class="main-view-btn"
+        onclick="showOvertimePage('employee')">
+        직원별 상세
+      </button>
+    </div>
+  </section>
 
-  <button
-    type="button"
-    id="monthlyReportButton"
-    class="main-view-btn active"
-    onclick="showOvertimePage('monthly')">
-    해당월 초과근무 내역
-  </button>
+  <!-- =====================================
+       해당월 초과근무 내역
+  ===================================== -->
+  <section id="monthlyReportView" class="overtime-page active">
 
-  <button
-    type="button"
-    id="employeeDetailButton"
-    class="main-view-btn"
-    onclick="showOvertimePage('employee')">
-    직원별 초과근무 상세내역
-  </button>
-
-</div>
-
-
-<!-- =====================================
-     해당월 초과근무 내역
-===================================== -->
-<section
-  id="monthlyReportView"
-  class="overtime-page active">
-
-  <div class="table-card" id="monthlyBox">
-
-    <div class="monthly-head">
-      <div>
-        <h3 id="monthlyTitle">
-          해당월 초과근무 내역
-        </h3>
-
-        <p>
-          월별 초과근무·미휴게·미휴무 내역을 확인합니다.
-        </p>
+    <div class="summary-grid">
+      <div class="summary-card">
+        <span>대상 직원</span>
+        <strong id="monthlyEmployeeCount">-</strong>
+        <small>반려 제외</small>
+      </div>
+      <div class="summary-card accent">
+        <span>시간 합계</span>
+        <strong id="monthlyHourTotal">-</strong>
+        <small>초과근무 + 미휴게 - 조퇴</small>
+      </div>
+      <div class="summary-card">
+        <span>미휴무</span>
+        <strong id="monthlyOffDayTotal">-</strong>
+        <small>휴무일 근무</small>
+      </div>
+      <div class="summary-card">
+        <span>연차미사용</span>
+        <strong id="monthlyUnusedAnnualTotal">-</strong>
+        <small>수당 대상자 기준</small>
       </div>
     </div>
 
-    <div class="monthly-scroll">
+    <div class="table-card" id="monthlyBox">
+      <div class="monthly-head">
+        <div>
+          <h3 id="monthlyTitle">해당월 초과근무 내역</h3>
+          <p>가로로 이동해 날짜별 내역을 확인하세요. 직원명과 헤더는 고정됩니다.</p>
+        </div>
 
-      <table id="monthlyTable">
+        <div class="legend">
+          <span><i class="legend-dot overtime"></i> 초과근무</span>
+          <span><i class="legend-dot special"></i> 미휴게·미휴무·조퇴</span>
+          <span><i class="legend-dot weekend"></i> 주말</span>
+        </div>
+      </div>
 
-        <thead id="monthlyThead"></thead>
-
-        <tbody id="monthlyTbody">
-          <tr>
-            <td class="empty">
-              자료를 불러오는 중입니다.
-            </td>
-          </tr>
-        </tbody>
-
-        <tfoot id="monthlyTfoot"></tfoot>
-
-      </table>
-
+      <div class="monthly-scroll">
+        <table id="monthlyTable">
+          <thead id="monthlyThead"></thead>
+          <tbody id="monthlyTbody">
+            <tr>
+              <td class="empty">자료를 불러오는 중입니다.</td>
+            </tr>
+          </tbody>
+          <tfoot id="monthlyTfoot"></tfoot>
+        </table>
+      </div>
     </div>
 
-  </div>
-
-</section>
+  </section>
 
 
-<!-- =====================================
-     직원별 초과근무 상세내역
-===================================== -->
-<section
-  id="employeeDetailView"
-  class="overtime-page">
+  <!-- =====================================
+       직원별 초과근무 상세내역
+  ===================================== -->
+  <section id="employeeDetailView" class="overtime-page">
 
-  <div
-    class="employee-monthly-card"
-    id="employeeMonthlyBox">
+    <div class="employee-monthly-card" id="employeeMonthlyBox">
 
-    <div class="employee-monthly-head">
+      <div class="employee-monthly-head">
+        <div>
+          <h3 id="employeeMonthlyTitle">직원별 초과근무 상세내역</h3>
+          <p>직원별 시간합계와 미휴무 일수를 확인하고 상세내역 또는 카톡 이미지를 만들 수 있습니다.</p>
+        </div>
+      </div>
 
-      <div>
-        <h3 id="employeeMonthlyTitle">
-          직원별 초과근무 상세내역
-        </h3>
+      <div class="employee-monthly-scroll">
+        <table class="employee-monthly-table">
+          <thead>
+            <tr>
+              <th>직원명</th>
+              <th>초과근무</th>
+              <th>미휴게</th>
+              <th>미휴무</th>
+              <th>연차미사용</th>
+              <th>조퇴</th>
+              <th>시간합계</th>
+              <th>건수</th>
+              <th>관리</th>
+            </tr>
+          </thead>
 
-        <p>
-          직원별 시간합계와 미휴무 일수를 확인하고
-          카톡 이미지를 만들 수 있습니다.
-        </p>
+          <tbody id="employeeMonthlyTbody">
+            <tr>
+              <td colspan="9" class="empty">조회월 자료를 불러오는 중입니다.</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
     </div>
-
-    <div class="employee-monthly-scroll">
-
-      <table class="employee-monthly-table">
-
-        <thead>
-          <tr>
-            <th>직원명</th>
-            <th>초과근무</th>
-            <th>미휴게</th>
-            <th>미휴무</th>
-            <th>연차미사용</th>
-            <th>조퇴</th>
-            <th>시간합계</th>
-            <th>건수</th>
-            <th>관리</th>
-          </tr>
-        </thead>
-
-        <tbody id="employeeMonthlyTbody">
-
-          <tr>
-            <td colspan="9" class="empty">
-              조회월 자료를 불러오는 중입니다.
-            </td>
-          </tr>
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-</section>
-
-
+  </section>
 
 </div>
 
 <!-- 직원별 상세보기 -->
-<div
-  id="employeeDetailModalBg"
-  class="overtime-modal-bg"
-  onclick="closeEmployeeDetailByBg(event)">
-
+<div id="employeeDetailModalBg" class="overtime-modal-bg" onclick="closeEmployeeDetailByBg(event)">
   <div class="overtime-modal">
-
     <div class="overtime-modal-head">
-
       <div>
-        <h3 id="employeeDetailTitle">
-          직원별 초과근무 내역
-        </h3>
-
-        <p>
-          승인된 내역을 기준으로 표시합니다.
-        </p>
+        <h3 id="employeeDetailTitle">직원별 초과근무 내역</h3>
+        <p>승인된 내역을 기준으로 표시합니다.</p>
       </div>
 
-      <button
-        type="button"
-        class="modal-close-btn"
-        onclick="closeEmployeeDetailModal()">
-        ✕
-      </button>
-
+      <button type="button" class="modal-close-btn" onclick="closeEmployeeDetailModal()">✕</button>
     </div>
 
-    <div
-      id="employeeDetailContent"
-      class="employee-detail-content">
-    </div>
+    <div id="employeeDetailContent" class="employee-detail-content"></div>
 
     <div class="overtime-modal-actions">
-
-      <button
-        type="button"
-        class="kakao-image-btn"
-        onclick="makeCurrentEmployeeKakaoImage()">
-        카톡 이미지 만들기
-      </button>
-
-      <button
-        type="button"
-        class="modal-cancel-btn"
-        onclick="closeEmployeeDetailModal()">
-        닫기
-      </button>
-
+      <button type="button" class="kakao-image-btn" onclick="makeCurrentEmployeeKakaoImage()">카톡 이미지 만들기</button>
+      <button type="button" class="modal-cancel-btn" onclick="closeEmployeeDetailModal()">닫기</button>
     </div>
-
   </div>
-
 </div>
 
-
 <!-- 카톡 이미지 미리보기 -->
-<div
-  id="overtimeKakaoModalBg"
-  class="overtime-modal-bg"
-  onclick="closeOvertimeKakaoByBg(event)">
-
+<div id="overtimeKakaoModalBg" class="overtime-modal-bg" onclick="closeOvertimeKakaoByBg(event)">
   <div class="overtime-modal kakao-preview-modal">
-
     <div class="overtime-modal-head">
-
       <div>
         <h3>카톡용 초과근무 이미지</h3>
-
-        <p>
-          이미지를 복사한 후 카카오톡에 붙여넣으세요.
-        </p>
+        <p>이미지를 복사한 후 카카오톡에 붙여넣으세요.</p>
       </div>
 
-      <button
-        type="button"
-        class="modal-close-btn"
-        onclick="closeOvertimeKakaoModal()">
-        ✕
-      </button>
-
+      <button type="button" class="modal-close-btn" onclick="closeOvertimeKakaoModal()">✕</button>
     </div>
 
     <div class="overtime-kakao-preview">
-
-      <img
-        id="overtimeKakaoPreviewImage"
-        alt="초과근무 이미지 미리보기">
-
+      <img id="overtimeKakaoPreviewImage" alt="초과근무 이미지 미리보기">
     </div>
 
     <div class="overtime-modal-actions">
-
-      <button
-        type="button"
-        class="kakao-copy-btn"
-        onclick="copyOvertimeKakaoImage()">
-        이미지 복사
-      </button>
-
-      <button
-        type="button"
-        class="kakao-save-btn"
-        onclick="downloadOvertimeKakaoImage()">
-        PNG 저장
-      </button>
-
-      <button
-        type="button"
-        class="modal-cancel-btn"
-        onclick="closeOvertimeKakaoModal()">
-        닫기
-      </button>
-
+      <button type="button" class="kakao-copy-btn" onclick="copyOvertimeKakaoImage()">이미지 복사</button>
+      <button type="button" class="kakao-save-btn" onclick="downloadOvertimeKakaoImage()">PNG 저장</button>
+      <button type="button" class="modal-cancel-btn" onclick="closeOvertimeKakaoModal()">닫기</button>
     </div>
-
   </div>
-
 </div>
 
-
-<script
-  src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
-</script>
-
-<script src="overtime-admin.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="overtime-admin.js?v=20260903-1"></script>
 </body>
 </html>

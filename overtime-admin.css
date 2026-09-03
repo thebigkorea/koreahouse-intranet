@@ -1,367 +1,453 @@
-  *{box-sizing:border-box}
+*{box-sizing:border-box}
 
-  body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
-    background:#f5efe6;
-    color:#24170f;
-  }
+:root{
+  --brown:#5b3a21;
+  --brown2:#7b522d;
+  --brown3:#9c7446;
+  --cream:#f7f3ed;
+  --paper:#ffffff;
+  --ink:#25211d;
+  --muted:#7c756d;
+  --line:#e6dfd6;
+  --soft:#f4f1ec;
+  --soft2:#faf8f5;
+  --red:#c8473b;
+  --green:#2f7556;
+  --blue:#3b67a5;
+  --gold:#b98b43;
+  --shadow:0 10px 30px rgba(73,50,29,.07);
+}
 
-  .wrap{
-    max-width:1300px;
-    margin:0 auto;
-    padding:20px;
-  }
+html{scroll-behavior:smooth}
 
-  .header{
-    background:linear-gradient(135deg,#3b2414,#8a5a2b);
-    color:white;
-    padding:28px;
-    border-radius:24px;
-    margin-bottom:20px;
-  }
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
+  background:#f2f3f5;
+  color:var(--ink);
+}
 
-  .header h1{
-    margin:0 0 8px;
-    font-size:32px;
-  }
+button,input{font:inherit}
 
-  .header p{
-    margin:0;
-    opacity:.85;
-  }
+.wrap{
+  max-width:1540px;
+  margin:0 auto;
+  padding:24px;
+}
 
-  .search-card{
-  display:grid;
-  grid-template-columns:
-    minmax(180px,1fr)
-    minmax(180px,1fr)
-    minmax(180px,1fr)
-    120px;
-  gap:12px;
-  background:white;
-  border:1px solid #e4d7c7;
-  border-radius:20px;
-  padding:18px;
+/* ===== 상단 ===== */
+.page-header{
+  min-height:132px;
+  padding:26px 30px;
   margin-bottom:16px;
+  border-radius:20px;
+  color:#fff;
+  background:linear-gradient(125deg,#3d2819 0%,#704927 58%,#8b6234 100%);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  box-shadow:var(--shadow);
 }
 
-  label{
-    display:block;
-    font-weight:900;
-    margin-bottom:6px;
-  }
+.eyebrow{
+  margin-bottom:7px;
+  color:#e4c896;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.15em;
+}
 
-  input,select{
-    width:100%;
-    border:1px solid #d8c8b4;
-    border-radius:12px;
-    padding:12px;
-    font-size:14px;
-  }
+.page-header h1{
+  margin:0;
+  font-size:29px;
+  letter-spacing:-.045em;
+}
 
-  .search-card button{
-    margin-top:25px;
-    height:56px;
-  
+.page-header p{
+  margin:8px 0 0;
+  color:#eadfd4;
+  font-size:13px;
+}
 
-    border:0;
-    border-radius:12px;
+.header-chip{
+  flex:none;
+  padding:10px 15px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:12px;
+  background:rgba(255,255,255,.08);
+  color:#f6ede2;
+  font-size:12px;
+  font-weight:800;
+}
 
-    background:#7a4a22;
-    color:white;
-
-    font-size:16px;
-    font-weight:900;
-
-    cursor:pointer;
-  }
-
-  .summary{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:12px;
-    margin-bottom:16px;
-  }
-
-  .summary div{
-    background:white;
-    border:1px solid #e4d7c7;
-    border-radius:16px;
-    padding:16px;
-    text-align:center;
-    font-weight:800;
-  }
-
-  .summary strong{
-    color:#7a4a22;
-    font-size:22px;
-  }
-
-  .table-card{
-    overflow:auto;
-    background:white;
-    border:1px solid #e4d7c7;
-    border-radius:22px;
-  }
-
-  table{
-    width:100%;
-    border-collapse:collapse;
-    min-width:1200px;
-  }
-
-  th{
-    background:#f1e5d6;
-    color:#3b2414;
-    padding:13px;
-    font-size:14px;
-  }
-
-  td{
-    border-top:1px solid #eee3d6;
-    padding:12px;
-    font-size:14px;
-    text-align:center;
-    vertical-align:top;
-  }
-
-  .memo{
-    max-width:260px;
-    text-align:left;
-    white-space:pre-wrap;
-  }
-
-  .badge{
-    display:inline-block;
-    padding:6px 10px;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:900;
-  }
-
-  .badge.pending{background:#dbeeff;color:#0f6b8f}
-  .badge.approved{background:#dff4e7;color:#197857}
-  .badge.rejected{background:#ffe2df;color:#c0392b}
-  .badge.edit{background:#fff3cd;color:#8a5a00}
-
-  .btn{
-    border:0;
-    border-radius:10px;
-    padding:8px 10px;
-    font-size:12px;
-    font-weight:900;
-    cursor:pointer;
-    margin:2px;
-  }
-
-  .btn.approve{background:#197857;color:white}
-  .btn.reject{background:#c0392b;color:white}
-  .btn.delete{background:#444;color:white}
-
-  .empty{
-    padding:40px;
-    color:#999;
-  }
-
-  @media(max-width:900px){
-    .search-card{
-      grid-template-columns:1fr;
-    }
-
-    .summary{
-      grid-template-columns:1fr 1fr;
-    }
-
-    .search-card button{
-      margin-top:0;
-      padding:14px;
-    }
-  }
-  .monthly-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:12px;
-    padding:18px;
-    border-bottom:1px solid #eee3d6;
-  }
-
-  .monthly-head h3{
-    margin:0;
-    color:#7a4a22;
-    font-size:21px;
-    font-weight:900;
-  }
-
-  .month-btn{
-    border:0;
-    border-radius:12px;
-    padding:10px 14px;
-    background:#7a4a22;
-    color:#fff;
-    font-weight:900;
-    cursor:pointer;
-  }
-
-  .month-btn.excel{
-    background:#197857;
-  }
-
-  .monthly-scroll{
-    overflow:auto;
-    padding:12px;
-  }
-
-  #monthlyTable{
-    border-collapse:collapse;
-    min-width:1400px;
-    background:#fff;
-  }
-
-  #monthlyTable th,
-  #monthlyTable td{
-    border:1px solid #333;
-    padding:6px;
-    text-align:center;
-    font-size:12px;
-    white-space:nowrap;
-  }
-
-  #monthlyTable th{
-    background:#f1e5d6;
-    font-weight:900;
-  }
-
-  #monthlyTable .name-cell{
-    min-width:90px;
-    font-weight:900;
-    background:#fffaf2;
-  }
-
-  #monthlyTable .total-cell{
-    background:#fff3cd;
-    font-weight:900;
-  }
-
-  #monthlyTable .red-text{
-    color:#d93025;
-    font-weight:900;
-  }
-  .bulk-btn{
-    height:56px !important;
-    font-size:16px;
-    font-weight:900;
-  }
-  /* =========================================
-   직원별 월간 초과근무 요약
-========================================= */
-
-.employee-monthly-card{
-  margin:0 0 18px;
-  overflow:hidden;
+/* ===== 조회/탭 ===== */
+.control-card{
+  display:grid;
+  grid-template-columns:260px 120px minmax(360px,1fr);
+  gap:12px;
+  align-items:end;
+  padding:15px;
+  margin-bottom:16px;
+  border:1px solid var(--line);
+  border-radius:16px;
   background:#fff;
-  border:1px solid #e4d7c7;
-  border-radius:22px;
+  box-shadow:0 3px 12px rgba(0,0,0,.025);
 }
 
+.month-search-field label{
+  display:block;
+  margin:0 0 7px 2px;
+  color:#625a52;
+  font-size:12px;
+  font-weight:900;
+}
+
+.month-search-field input{
+  width:100%;
+  height:46px;
+  padding:0 13px;
+  border:1px solid #d8d3cb;
+  border-radius:10px;
+  background:#fff;
+  color:#2d2925;
+  font-size:14px;
+  font-weight:700;
+}
+
+.selected-month-search-btn{
+  height:46px;
+  border:0;
+  border-radius:10px;
+  background:var(--brown);
+  color:#fff;
+  font-size:13px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.selected-month-search-btn:hover{filter:brightness(1.08)}
+.selected-month-search-btn:disabled{opacity:.6;cursor:wait}
+
+.view-switch{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  padding:4px;
+  border-radius:12px;
+  background:#f1eee9;
+}
+
+.main-view-btn{
+  min-height:38px;
+  border:0;
+  border-radius:9px;
+  background:transparent;
+  color:#6d655d;
+  font-size:13px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.main-view-btn.active{
+  background:#fff;
+  color:var(--brown);
+  box-shadow:0 2px 8px rgba(65,42,22,.08);
+}
+
+/* ===== 화면 전환 ===== */
+.overtime-page{display:none}
+.overtime-page.active{display:block}
+
+/* ===== 요약카드 ===== */
+.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.summary-card{
+  min-height:92px;
+  padding:15px 17px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+
+.summary-card span{
+  display:block;
+  color:#81796f;
+  font-size:11px;
+  font-weight:800;
+}
+
+.summary-card strong{
+  display:block;
+  margin-top:9px;
+  color:#2b2723;
+  font-size:23px;
+  line-height:1;
+}
+
+.summary-card small{
+  display:block;
+  margin-top:9px;
+  color:#a09a93;
+  font-size:9px;
+}
+
+.summary-card.accent{
+  border-top:3px solid var(--gold);
+}
+
+/* ===== 월간표 카드 ===== */
+.table-card,
+.employee-monthly-card{
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:17px;
+  background:#fff;
+  box-shadow:0 4px 16px rgba(0,0,0,.025);
+}
+
+.monthly-head,
 .employee-monthly-head{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:16px;
-  padding:20px;
-  border-bottom:1px solid #eee3d6;
+  gap:18px;
+  padding:17px 20px;
+  border-bottom:1px solid var(--line);
 }
 
+.monthly-head h3,
 .employee-monthly-head h3{
   margin:0;
-  color:#7a4a22;
-  font-size:22px;
+  color:#4a3422;
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:-.025em;
+}
+
+.monthly-head p,
+.employee-monthly-head p{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:12px;
+  color:#776f67;
+  font-size:10px;
+  white-space:nowrap;
+}
+
+.legend span{display:flex;align-items:center;gap:5px}
+.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.legend-dot.overtime{background:#5b3a21}
+.legend-dot.special{background:#c8473b}
+.legend-dot.weekend{background:#e9edf2;border:1px solid #ccd2da}
+
+/* ===== 핵심: 월간 가로표 ===== */
+.monthly-scroll{
+  overflow:auto;
+  max-height:calc(100vh - 335px);
+  min-height:360px;
+  scrollbar-color:#bfb7ad #f4f1ed;
+  scrollbar-width:thin;
+}
+
+#monthlyTable{
+  width:max-content;
+  min-width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  table-layout:fixed;
+  background:#fff;
+}
+
+#monthlyTable th,
+#monthlyTable td{
+  min-width:42px;
+  height:46px;
+  padding:5px 4px;
+  border-right:1px solid #dedede;
+  border-bottom:1px solid #dedede;
+  text-align:center;
+  vertical-align:middle;
+  font-size:11px;
+  line-height:1.25;
+  white-space:nowrap;
+}
+
+#monthlyTable thead th{
+  position:sticky;
+  top:0;
+  z-index:5;
+  height:42px;
+  background:#ede7df;
+  color:#4a3728;
+  font-size:10px;
+  font-weight:900;
+  box-shadow:0 1px 0 #d6d0c8;
+}
+
+#monthlyTable tbody tr:nth-child(even) td{
+  background:#fbfaf8;
+}
+
+#monthlyTable tbody tr:hover td{
+  background:#fff7e8;
+}
+
+#monthlyTable .name-cell,
+#monthlyTable th:first-child,
+#monthlyTable td:first-child{
+  position:sticky;
+  left:0;
+  z-index:4;
+  min-width:112px;
+  width:112px;
+  max-width:112px;
+  background:#fff;
+  font-weight:900;
+  color:#2f2924;
+  box-shadow:2px 0 0 #d6d0c8;
+}
+
+#monthlyTable thead th:first-child{
+  z-index:8;
+  background:#e6ded4;
+}
+
+#monthlyTable tbody tr:nth-child(even) td:first-child{
+  background:#f7f5f2;
+}
+
+#monthlyTable tbody tr:hover td:first-child{
+  background:#fff1d9;
+}
+
+#monthlyTable .total-cell{
+  min-width:72px;
+  background:#fff6df !important;
+  color:#69481f;
   font-weight:900;
 }
 
-.employee-monthly-head p{
-  margin:7px 0 0;
-  color:#77685d;
-  font-size:14px;
+#monthlyTable tfoot td{
+  position:sticky;
+  bottom:0;
+  z-index:3;
+  height:43px;
+  background:#f4ead5;
+  color:#563b20;
+  font-weight:900;
+  border-top:2px solid #c8ad7b;
 }
 
+#monthlyTable tfoot td:first-child{
+  z-index:7;
+  background:#eadbbd;
+}
+
+#monthlyTable .red-text{
+  color:var(--red);
+  font-weight:900;
+}
+
+/* JS가 넣어주는 주말 클래스용 */
+#monthlyTable th.weekend,
+#monthlyTable td.weekend{
+  background:#f0f3f6 !important;
+  color:#596574;
+}
+
+.empty{
+  padding:38px !important;
+  color:#999;
+  text-align:center;
+}
+
+/* ===== 직원별 표 ===== */
 .employee-monthly-scroll{
   overflow:auto;
-  padding:12px;
+  max-height:calc(100vh - 260px);
 }
 
 .employee-monthly-table{
   width:100%;
-  min-width:1050px;
-  border-collapse:collapse;
+  min-width:1000px;
+  border-collapse:separate;
+  border-spacing:0;
 }
 
 .employee-monthly-table th{
-  padding:14px 10px;
-  background:#f1e5d6;
-  color:#3b2414;
-  font-size:14px;
+  position:sticky;
+  top:0;
+  z-index:3;
+  padding:12px 10px;
+  border-bottom:1px solid #ddd7cf;
+  background:#eee8e0;
+  color:#49392c;
+  font-size:12px;
 }
 
 .employee-monthly-table td{
-  padding:13px 10px;
-  border-top:1px solid #eee3d6;
+  padding:12px 10px;
+  border-bottom:1px solid #eeeae5;
   text-align:center;
   vertical-align:middle;
+  font-size:12px;
 }
+
+.employee-monthly-table tbody tr:nth-child(even) td{background:#fbfaf8}
+.employee-monthly-table tbody tr:hover td{background:#fff8ed}
 
 .employee-monthly-table .employee-name{
   font-weight:900;
-  color:#3b2414;
+  color:#352b24;
 }
 
 .employee-monthly-table .total-hours{
-  background:#fff3cd;
-  color:#7a4a22;
+  background:#fff4d9 !important;
+  color:#74521f;
   font-weight:900;
 }
 
 .employee-detail-btn,
 .employee-kakao-btn{
   border:0;
-  border-radius:10px;
-  padding:9px 12px;
+  border-radius:8px;
+  padding:8px 10px;
   margin:2px;
   color:#fff;
-  font-size:12px;
+  font-size:10px;
   font-weight:900;
   cursor:pointer;
 }
 
-.employee-detail-btn{
-  background:#7a4a22;
-}
+.employee-detail-btn{background:var(--brown)}
+.employee-kakao-btn{background:var(--green)}
 
-.employee-kakao-btn{
-  background:#2f6b3b;
-}
-
-
-/* =========================================
-   직원 상세·카톡 이미지 팝업
-========================================= */
-
+/* ===== 모달 ===== */
 .overtime-modal-bg{
   display:none;
   position:fixed;
   inset:0;
   z-index:99999;
   padding:24px;
-  background:rgba(0,0,0,.65);
+  background:rgba(18,15,12,.62);
   align-items:center;
   justify-content:center;
 }
 
-.overtime-modal-bg.show{
-  display:flex;
-}
+.overtime-modal-bg.show{display:flex}
 
 .overtime-modal{
   display:flex;
@@ -370,44 +456,42 @@
   max-height:94vh;
   overflow:hidden;
   background:#fff;
-  border-radius:22px;
-  box-shadow:0 24px 70px rgba(0,0,0,.3);
+  border-radius:18px;
+  box-shadow:0 24px 70px rgba(0,0,0,.28);
 }
 
-.kakao-preview-modal{
-  width:min(1250px,96vw);
-}
+.kakao-preview-modal{width:min(1250px,96vw)}
 
 .overtime-modal-head{
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
   gap:20px;
-  padding:20px 24px;
-  border-bottom:1px solid #eee3d6;
+  padding:18px 22px;
+  border-bottom:1px solid var(--line);
 }
 
 .overtime-modal-head h3{
   margin:0;
-  color:#3b2414;
-  font-size:23px;
+  color:#3b2c20;
+  font-size:20px;
 }
 
 .overtime-modal-head p{
-  margin:7px 0 0;
-  color:#76675b;
-  font-size:14px;
+  margin:6px 0 0;
+  color:#7a7169;
+  font-size:12px;
 }
 
 .modal-close-btn{
-  width:42px;
-  height:42px;
+  width:38px;
+  height:38px;
   flex:0 0 auto;
   border:0;
   border-radius:50%;
-  background:#f1ebe3;
-  color:#3b2414;
-  font-size:20px;
+  background:#f1eee9;
+  color:#3b2c20;
+  font-size:18px;
   font-weight:900;
   cursor:pointer;
 }
@@ -415,36 +499,36 @@
 .employee-detail-content{
   flex:1;
   overflow:auto;
-  padding:22px;
-  background:#f8f3ec;
+  padding:20px;
+  background:#f7f5f2;
 }
 
 .employee-detail-summary{
   display:grid;
   grid-template-columns:repeat(6,1fr);
-  gap:10px;
-  margin-bottom:16px;
+  gap:9px;
+  margin-bottom:15px;
 }
 
 .employee-detail-summary div{
-  padding:14px 8px;
-  border:1px solid #e4d7c7;
-  border-radius:14px;
+  padding:12px 8px;
+  border:1px solid var(--line);
+  border-radius:12px;
   background:#fff;
   text-align:center;
 }
 
 .employee-detail-summary span{
   display:block;
-  margin-bottom:5px;
-  color:#76675b;
-  font-size:12px;
+  margin-bottom:4px;
+  color:#7b746c;
+  font-size:10px;
   font-weight:800;
 }
 
 .employee-detail-summary strong{
-  color:#7a4a22;
-  font-size:20px;
+  color:#6a4726;
+  font-size:18px;
 }
 
 .employee-detail-table{
@@ -455,55 +539,48 @@
 }
 
 .employee-detail-table th{
-  padding:12px;
-  background:#efe2d2;
+  padding:11px;
+  background:#eee7df;
+  font-size:11px;
 }
 
 .employee-detail-table td{
-  padding:11px;
-  border-top:1px solid #eee3d6;
+  padding:10px;
+  border-top:1px solid #eee8e1;
+  font-size:11px;
+  text-align:center;
 }
 
-.employee-detail-table .left{
-  text-align:left;
-}
+.employee-detail-table .left{text-align:left}
 
 .overtime-modal-actions{
   display:flex;
   justify-content:center;
-  gap:12px;
-  padding:16px 20px;
-  border-top:1px solid #eee3d6;
+  gap:10px;
+  padding:14px 18px;
+  border-top:1px solid var(--line);
 }
 
 .overtime-modal-actions button{
-  min-width:150px;
-  padding:13px 20px;
+  min-width:140px;
+  padding:11px 18px;
   border:0;
-  border-radius:12px;
+  border-radius:10px;
   color:#fff;
   font-weight:900;
   cursor:pointer;
 }
 
 .kakao-image-btn,
-.kakao-copy-btn{
-  background:#2f6b3b;
-}
-
-.kakao-save-btn{
-  background:#7a4a22;
-}
-
-.modal-cancel-btn{
-  background:#8a8178;
-}
+.kakao-copy-btn{background:var(--green)}
+.kakao-save-btn{background:var(--brown)}
+.modal-cancel-btn{background:#847c74}
 
 .overtime-kakao-preview{
   flex:1;
   overflow:auto;
-  padding:20px;
-  background:#ece7e0;
+  padding:18px;
+  background:#ece8e2;
   text-align:center;
 }
 
@@ -513,22 +590,16 @@
   height:auto;
   margin:0 auto;
   background:#fff;
-  box-shadow:0 5px 22px rgba(0,0,0,.18);
+  box-shadow:0 5px 22px rgba(0,0,0,.16);
 }
 
-
-/* 카톡 이미지 원본 카드 */
-
+/* 카톡 이미지 원본은 기존 레이아웃 유지 */
 .overtime-kakao-card{
   width:1100px;
   padding:38px;
   background:#fff;
   color:#24170f;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Noto Sans KR",
-    sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
 }
 
 .overtime-kakao-card-header{
@@ -553,9 +624,7 @@
   grid-template-columns:repeat(6,1fr);
 }
 
-.overtime-kakao-card .employee-detail-table{
-  min-width:0;
-}
+.overtime-kakao-card .employee-detail-table{min-width:0}
 
 .overtime-kakao-note{
   margin-top:20px;
@@ -564,191 +633,36 @@
   text-align:right;
 }
 
-
-@media(max-width:900px){
-
-  .employee-detail-summary{
+@media(max-width:1000px){
+  .control-card{
+    grid-template-columns:1fr 120px;
+  }
+  .view-switch{
+    grid-column:1 / -1;
+  }
+  .summary-grid{
     grid-template-columns:repeat(2,1fr);
   }
+}
 
-  .overtime-modal-bg{
-    padding:8px;
+@media(max-width:700px){
+  .wrap{padding:12px}
+  .page-header{
+    min-height:118px;
+    padding:20px;
   }
-
-  .overtime-modal{
-    width:100%;
-    max-height:97vh;
-    border-radius:14px;
-  }
-
-  .overtime-modal-actions{
-    flex-wrap:wrap;
-  }
-
-  .overtime-modal-actions button{
-    flex:1 1 130px;
-    min-width:0;
-  }
-}
-/* 월별 초과근무표 직원명 열 고정 */
-#monthlyTable th:first-child,
-#monthlyTable td:first-child{
-  position:sticky;
-  left:0;
-  z-index:4;
-  min-width:115px;
-  width:115px;
-  background:#fffaf2;
-  box-shadow:3px 0 5px rgba(0,0,0,.12);
-}
-
-/* 첫 번째 헤더 셀은 본문보다 위에 표시 */
-#monthlyTable thead th:first-child{
-  z-index:6;
-  background:#f1e5d6;
-}
-
-/* 전체합계 첫 셀 */
-#monthlyTable tfoot td:first-child{
-  z-index:5;
-  background:#fff3cd;
-}
-
-/* =========================================
-   월별 내역 / 직원별 상세 화면
-========================================= */
-
-.overtime-main-search{
-  display:grid;
-  grid-template-columns:
-    minmax(230px,320px)
-    minmax(250px,1fr)
-    minmax(280px,1fr);
-  gap:14px;
-  align-items:end;
-}
-
-.overtime-main-search .main-view-btn{
-  width:100%;
-  height:56px;
-  margin:0;
-  border:1px solid #d8c8b4;
-  border-radius:14px;
-  background:#fff;
-  color:#3b2414;
-  font-size:16px;
-  font-weight:900;
-  cursor:pointer;
-}
-
-.overtime-main-search .main-view-btn.active{
-  border-color:#7a4a22;
-  background:#7a4a22;
-  color:#fff;
-}
-
-.overtime-page{
-  display:none;
-  margin-top:18px;
-}
-
-.overtime-page.active{
-  display:block;
-}
-
-.monthly-head p{
-  margin:7px 0 0;
-  color:#75675c;
-  font-size:14px;
-}
-
-/* 직원명 열 고정 */
-#monthlyTable th:first-child,
-#monthlyTable td:first-child{
-  position:sticky;
-  left:0;
-  z-index:4;
-  min-width:115px;
-  width:115px;
-  background:#fffaf2;
-  box-shadow:3px 0 5px rgba(0,0,0,.12);
-}
-
-#monthlyTable thead th:first-child{
-  z-index:6;
-  background:#f1e5d6;
-}
-
-#monthlyTable tfoot td:first-child{
-  z-index:5;
-  background:#fff3cd;
-}
-
-@media(max-width:900px){
-
-  .overtime-main-search{
-    grid-template-columns:1fr;
-  }
-
-}
-.overtime-main-search{
-  display:grid;
-  grid-template-columns:
-    minmax(260px, 1fr)
-    minmax(170px, .7fr)
-    minmax(300px, 1.35fr)
-    minmax(300px, 1.35fr);
-  gap:14px;
-  align-items:end;
-}
-
-.month-search-field{
-  min-width:0;
-}
-
-.month-search-field label{
-  display:block;
-  margin-bottom:8px;
-  font-size:16px;
-  font-weight:900;
-}
-
-.month-search-field input{
-  width:100%;
-}
-
-.selected-month-search-btn{
-  min-height:60px;
-  border:0;
-  border-radius:18px;
-  background:#4f321f;
-  color:#fff;
-  font-size:17px;
-  font-weight:900;
-  cursor:pointer;
-}
-
-.selected-month-search-btn:hover{
-  filter:brightness(1.08);
-}
-
-.selected-month-search-btn:disabled{
-  opacity:.65;
-  cursor:wait;
-}
-
-@media(max-width:1000px){
-
-  .overtime-main-search{
-    grid-template-columns:1fr 1fr;
-  }
-
-}
-
-@media(max-width:650px){
-
-  .overtime-main-search{
-    grid-template-columns:1fr;
-  }
-
+  .page-header h1{font-size:24px}
+  .header-chip{display:none}
+  .control-card{grid-template-columns:1fr}
+  .selected-month-search-btn{height:44px}
+  .view-switch{grid-column:auto}
+  .summary-grid{grid-template-columns:repeat(2,1fr)}
+  .monthly-head,.employee-monthly-head{align-items:flex-start;flex-direction:column}
+  .legend{justify-content:flex-start}
+  .monthly-scroll{max-height:none}
+  .employee-detail-summary{grid-template-columns:repeat(2,1fr)}
+  .overtime-modal-bg{padding:8px}
+  .overtime-modal{width:100%;max-height:97vh;border-radius:14px}
+  .overtime-modal-actions{flex-wrap:wrap}
+  .overtime-modal-actions button{flex:1 1 130px;min-width:0}
 }
