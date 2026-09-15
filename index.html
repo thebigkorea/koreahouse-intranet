@@ -1,29 +1,419 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
   <title>한국의집 통합 ERP</title>
+  <link rel="stylesheet" href="style.css?v=7">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">韓</div>
+      <div><strong>한국의집</strong><small>통합 ERP</small></div>
+    </div>
 
-  <meta
-    http-equiv="refresh"
-    content="0; url=https://thebigkorea.github.io/koreahouse-erp-intranet/#home"
-  >
+    <div class="side-scroll">
+      <a class="side-home" href="#home"><span class="side-ico">⌂</span>ERP 홈</a>
+
+      <div class="side-section-title">고객 · 근무</div>
+      <a class="side-link" href="#reservation"><span class="side-ico">📅</span>예약 · 고객</a>
+      <a class="side-link" href="#daily"><span class="side-ico">👷</span>일용직 · 알바 등록</a>
+      <a class="side-link" href="#schedule"><span class="side-ico">🗓️</span>근무스케줄</a>
+      <a class="side-link" href="#attendance"><span class="side-ico">🕘</span>근태 · 휴가</a>
+
+      <div class="side-section-title">매장 · 인사</div>
+      <a class="side-link" href="#store"><span class="side-ico">🏠</span>매장관리</a>
+      <a class="side-link" href="#recruit"><span class="side-ico">🧑‍💼</span>채용 · 퇴직</a>
+      <a class="side-link" href="#contract"><span class="side-ico">📝</span>전자계약</a>
+      <a class="side-link" href="#hr"><span class="side-ico">👥</span>통합인사</a>
+
+      <div class="side-section-title">경영 · 자료</div>
+      <a class="side-link" href="#order"><span class="side-ico">📦</span>발주관리</a>
+      <a class="side-link" href="#performance"><span class="side-ico">📈</span>매출실적</a>
+      <a class="side-link" href="#payroll"><span class="side-ico">💳</span>급여관리</a>
+      <a class="side-link" href="#ledger"><span class="side-ico">📚</span>원장 · 자료</a>
+    </div>
+
+    <div class="side-footer">
+      <strong>KOREA HOUSE ERP V1</strong>
+      <span>기존 시스템을 연결하는<br>한국의집 통합 업무 허브</span>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="mobile-toggle" onclick="document.body.classList.toggle('menu-open')">☰</button>
+      <div class="top-title">
+        <h1 id="pageTitle">ERP 홈</h1>
+        <p id="pageDesc">한국의집 매장 운영현황과 주요 업무를 한눈에 확인합니다.</p>
+      </div>
+
+      <div class="top-actions">
+        <div class="month-box">
+          <div class="label">기준월</div>
+          <input class="month-input" type="month" id="baseMonth">
+        </div>
+        <button class="refresh" type="button" onclick="location.reload()">⟳ 새로고침</button>
+        <div class="admin-box">
+          <div class="admin-icon">관</div>
+          <div><strong>관리자</strong><small>한국의집 ERP</small></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page" id="home">
+      <section class="hero home-view">
+        <div>
+          <div class="eyebrow">KOREA HOUSE MANAGEMENT HUB</div>
+          <h2>예약부터 근태, 스케줄, 급여와 매출까지<br>하나의 ERP에서 연결합니다.</h2>
+          <p>기존 한국의집 인트라넷과 각 시스템은 그대로 유지하고, ERP에서 통합 조회·연결하는 구조입니다.</p>
+        </div>
+        <div class="hero-side">
+          <strong>통합현황</strong>
+          <span>예약 · 인사 · 근태 · 급여 · 매출</span>
+        </div>
+      </section>
+
+      <section class="section home-view">
+        <div class="section-head">
+          <div><h3>오늘의 통합 현황</h3><p>현재 연결 가능한 한국의집 업무 현황입니다.</p></div>
+          <span class="version">V1 DESIGN</span>
+        </div>
+
+        <div class="status-grid">
+          <div class="status-card" role="button" tabindex="0"
+               onclick="openStatusDetail('https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec')"
+               onkeydown="openStatusDetailByKey(event,'https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec')"
+               title="오늘 예약 상세내역 보기" style="cursor:pointer">
+            <div class="status-label">오늘 예약</div>
+            <div class="status-value" id="statusReservation">-</div>
+            <div class="status-desc">오늘 취소 · 노쇼 제외 예약</div>
+          </div>
+          <div class="status-card" role="button" tabindex="0"
+               onclick="openStatusDetail('https://thebigkorea.github.io/koreahouse-intranet/applicant-admin.html')"
+               onkeydown="openStatusDetailByKey(event,'https://thebigkorea.github.io/koreahouse-intranet/applicant-admin.html')"
+               title="오늘 면접 상세내역 보기" style="cursor:pointer">
+            <div class="status-label">오늘 면접</div>
+            <div class="status-value" id="statusInterview">-</div>
+            <div class="status-desc">지원자 · 면접 일정</div>
+          </div>
+          <div class="status-card" role="button" tabindex="0"
+               onclick="openStatusDetail('https://thebigkorea.github.io/koreahouse-intranet/health-cert.html')"
+               onkeydown="openStatusDetailByKey(event,'https://thebigkorea.github.io/koreahouse-intranet/health-cert.html')"
+               title="보건증 상세내역 보기" style="cursor:pointer">
+            <div class="status-label">보건증 확인</div>
+            <div class="status-value" id="statusHealth">-</div>
+            <div class="status-desc">만료 · 임박 대상</div>
+          </div>
+          <div class="status-card emphasis" role="button" tabindex="0"
+               onclick="openStatusDetail('https://thebigkorea.github.io/thebigkorea-hq/daily-worker.html')"
+               onkeydown="openStatusDetailByKey(event,'https://thebigkorea.github.io/thebigkorea-hq/daily-worker.html')"
+               title="일용직 미처리 상세내역 보기" style="cursor:pointer">
+            <div class="status-label">일용직 미처리</div>
+            <div class="status-value" id="statusDaily">-</div>
+            <div class="status-desc">미지급 · 미완료 대상</div>
+          </div>
+          <div class="status-card" role="button" tabindex="0"
+               onclick="openStatusDetail('https://thebigkorea.github.io/thebigkorea-hq/contract-admin.html')"
+               onkeydown="openStatusDetailByKey(event,'https://thebigkorea.github.io/thebigkorea-hq/contract-admin.html')"
+               title="계약 만료예정 상세내역 보기" style="cursor:pointer">
+            <div class="status-label">계약 만료예정</div>
+            <div class="status-value" id="statusContract">-</div>
+            <div class="status-desc">30일 이내 계약</div>
+          </div>
+          <div class="status-card emphasis" role="button" tabindex="0"
+               onclick="openStatusDetail('https://thebigkorea.github.io/koreahouse-weekly-schedule/')"
+               onkeydown="openStatusDetailByKey(event,'https://thebigkorea.github.io/koreahouse-weekly-schedule/')"
+               title="오늘 주간 근무표 보기"
+               style="cursor:pointer">
+            <div class="status-label">오늘 출근 예정</div>
+            <div class="status-value" id="statusAttendance">-</div>
+            <div class="status-desc" id="statusAttendanceDesc">주간 근무표 불러오는 중</div>
+          </div>
+        </div>
+
+        <div class="home-lower">
+          <div class="panel">
+            <div class="panel-head">
+              <div><h3>자주 쓰는 업무</h3><p>기존 시스템은 그대로 연결합니다.</p></div>
+            </div>
+            <div class="quick-grid">
+              <a class="quick" target="_blank" href="https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec">
+                <span class="quick-ico">📅</span><span><strong>예약 관리</strong><small>예약 조회 · 처리</small></span>
+              </a>
+              <a class="quick" target="_blank" href="https://script.google.com/macros/s/AKfycbx-QNqhusp57z6cxhKLcTymf0z5gx7mHkt9kOrcLEGIfxN9b-kgNlk8qtZ_VLWv57dA/exec">
+                <span class="quick-ico">📈</span><span><strong>영업실적</strong><small>일일 실적 입력</small></span>
+              </a>
+              <a class="quick" target="_blank" href="https://thebigkorea.github.io/koreahouse-weekly-schedule/">
+                <span class="quick-ico">🗓️</span><span><strong>주간 스케줄</strong><small>근무표 작성 · 조회</small></span>
+              </a>
+              <a class="quick" target="_blank" href="https://thebigkorea.github.io/koreahouse-schedule/">
+                <span class="quick-ico">📆</span><span><strong>월간 스케줄</strong><small>월간 근무표</small></span>
+              </a>
+              <a class="quick" href="#" onclick="openAttendanceManage();return false">
+                <span class="quick-ico">🕘</span><span><strong>출퇴근 관리</strong><small>근태 관리자 조회</small></span>
+              </a>
+              <a class="quick" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/foreign-worker-visa.html">
+                <span class="quick-ico">🌐</span><span><strong>외국인 근로자</strong><small>비자 · 채용 가능 여부</small></span>
+              </a>
+              <a class="quick" target="_blank" href="https://script.google.com/macros/s/AKfycbxvr3itmxIu-yO8yzKkcN0EcBH9TY41f4-E_jVIrCeGn8BxSmuAbmARlV9cXKGAN-aPRA/exec">
+                <span class="quick-ico">👥</span><span><strong>아르바이트 관리</strong><small>직원 · 근로내역</small></span>
+              </a>
+              <a class="quick" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/daily-worker.html">
+                <span class="quick-ico">👷</span><span><strong>일용직 통합관리</strong><small>근무 · 지급 관리</small></span>
+                <span id="koreaDailyUnpaidBadgeTop" class="badge">0</span>
+              </a>
+              <a class="quick" target="_blank" href="https://thebigkorea.github.io/koreahouse-intranet/applicant-admin.html">
+                <span class="quick-ico">👥</span><span><strong>면접 관리</strong><small>지원자 · 일정 확인</small></span>
+                <span id="todayInterviewBadgeTop" class="badge">0</span>
+              </a>
+              <a class="quick" target="_blank" href="https://thebigkorea.github.io/koreahouse-intranet/koreahouse-order.html">
+                <span class="quick-ico">📦</span><span><strong>통합 발주</strong><small>식자재 · 비품 주문</small></span>
+              </a>
+            </div>
+          </div>
+
+          <div class="panel attendance-roster-panel">
+            <div class="panel-head">
+              <div><h3>오늘 출근 예정자</h3><p>주간 스케줄에 저장된 오늘 근무 예정자입니다.</p></div>
+              <strong class="attendance-roster-count" id="attendanceRosterCount">-</strong>
+            </div>
+            <div class="attendance-name-list" id="attendanceNameList">
+              <div class="attendance-empty">오늘 근무 예정자 목록을 불러오는 중입니다.</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="section work-view" id="workArea">
+        <div class="section-head"><div><h3>전체 업무</h3><p>업무 성격별 세부 시스템입니다.</p></div></div>
+        <div class="module-grid">
+
+          <article class="module" id="store">
+            <div class="module-head"><span class="module-icon">🏠</span><div><h4>매장관리</h4><p>한국의집 운영 입력, 보건증 및 매장 원장</p></div></div>
+            <div class="module-body">
+              <div class="task-grid">
+                <a class="task primary" target="_blank" href="https://thebigkorea.github.io/koreahouse-intranet/store-manager.html">매장 운영 입력</a>
+                <a class="task" target="_blank" href="https://docs.google.com/spreadsheets/d/1msk6vf_5zPXcUH9iimGW82BQzeiKXpDyxm2itsq7o1Q/edit?gid=370891861#gid=370891861">매장 원장 조회</a>
+                <a class="task" target="_blank" href="https://drive.worksmobile.com/drive/web/my?resourceKey=MTAwMDAxNTA0NzA1MTQyfDM0NzI2MDA4NDIzMTAyMjcyMDl8RHww&resourceLocation=24101">영업 관련 파일</a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/koreahouse-intranet/health-cert.html">보건증 관리<span id="healthCertBadge" class="badge">0</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="module" id="reservation">
+            <div class="module-head"><span class="module-icon">📅</span><div><h4>예약 · 고객관리</h4><p>예약, 고객 CRM, 문자 발송</p></div></div>
+            <div class="module-body">
+              <div class="task-grid">
+                <a class="task primary" target="_blank" href="https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec">예약 관리</a>
+                <a class="task" target="_blank" href="https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec?page=customer-manager">고객 관리</a>
+                <a class="task" target="_blank" href="https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec?page=sms-manager">문자 관리</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="module" id="order">
+            <div class="module-head"><span class="module-icon">📦</span><div><h4>발주관리</h4><p>식자재 · 비품 발주 및 관련 자료</p></div></div>
+            <div class="module-body">
+              <div class="task-grid">
+                <a class="task primary" target="_blank" href="https://thebigkorea.github.io/koreahouse-intranet/koreahouse-order.html">통합 발주</a>
+                <a class="task" target="_blank" href="https://drive.worksmobile.com/drive/web/my?resourceKey=MTAwMDAxNTA0NzA1MTQyfDM0NzI2MDA4NDIzMTAyMjcyMDl8RHww&resourceLocation=24101">발주 · 영업 관련 파일</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="module" id="schedule">
+            <div class="module-head"><span class="module-icon">🗓️</span><div><h4>근무 스케줄</h4><p>주간 · 월간 근무계획</p></div></div>
+            <div class="module-body">
+              <div class="task-grid">
+                <a class="task primary" target="_blank" href="https://thebigkorea.github.io/koreahouse-weekly-schedule/">주간 스케줄 관리</a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/koreahouse-schedule/">월간 스케줄 관리</a>
+                <a class="task" target="_blank" href="https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=950636545#gid=950636545">스케줄 원장</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="module" id="performance">
+            <div class="module-head"><span class="module-icon">📈</span><div><h4>매출 · 영업실적</h4><p>실적 입력, 조회, 대시보드</p></div></div>
+            <div class="module-body">
+              <div class="task-grid">
+                <a class="task primary" target="_blank" href="https://script.google.com/macros/s/AKfycbx-QNqhusp57z6cxhKLcTymf0z5gx7mHkt9kOrcLEGIfxN9b-kgNlk8qtZ_VLWv57dA/exec">영업실적 입력</a>
+                <a class="task" target="_blank" href="https://script.google.com/macros/s/AKfycbzX4BEypYJv6h-5FZBTCFx1iJfHk-3DPBIHO9yRJfUmdXyy6xATo7vGnjG_T1swabh7XQ/exec">경영 대시보드</a>
+                <a class="task" target="_blank" href="https://docs.google.com/spreadsheets/d/1VXAFKtm7IaK6Ns_QbrRzpP8XnzBHau6e49GXhNe0uQg/edit?gid=949326317#gid=949326317">영업실적 원장</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="module" id="hr">
+            <div class="module-head"><span class="module-icon">👥</span><div><h4>통합 인사</h4><p>직원정보 및 인사대장</p></div></div>
+            <div class="module-body">
+              <div class="task-grid">
+                <a class="task secure" href="#" onclick="openHrLedger();return false">인사관리대장</a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/employee-info.html">직원정보 입력</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="module" id="attendance">
+            <div class="module-head"><span class="module-icon">🕘</span><div><h4>근태 · 휴가</h4><p>출퇴근, 초과근무, 연월차</p></div></div>
+            <div class="module-body">
+              <div class="task-grid">
+                <a class="task primary" target="_blank" href="https://thebigkorea.github.io/koreahouse-attendance/?v=3">출퇴근 등록</a>
+                <a class="task secure" href="#" onclick="openAttendanceAdmin();return false">출퇴근 관리자</a>
+                <a class="task secure" href="#" onclick="openOvertimePage('https://thebigkorea.github.io/koreahouse-intranet/overtime.html');return false">초과근무 입력</a>
+                <a class="task secure" href="#" onclick="openOvertimePage('https://thebigkorea.github.io/koreahouse-intranet/overtime-admin.html');return false">초과근무 조회</a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/koreahouse-leave/">연월차 관리</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="module" id="contract">
+            <div class="module-head"><span class="module-icon">📝</span><div><h4>전자계약</h4><p>근로계약 작성 및 계약서 관리</p></div></div>
+            <div class="module-body">
+              <div class="task-grid">
+                <a class="task primary" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/regular-contract.html">정규직 근로계약서</a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/part-contract.html">아르바이트 근로계약서</a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/service-contract.html">사업소득 · 용역계약서</a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/contract-admin.html">계약서 관리자<span id="contractExpireBadge" class="badge">0</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="module" id="payroll">
+            <div class="module-head"><span class="module-icon">💳</span><div><h4>급여관리</h4><p>급여 조회, 계산, 확정</p></div></div>
+            <div class="module-body">
+              <div class="task-grid">
+                <a class="task primary" target="_blank" href="https://thebigkorea.github.io/thebigkorea-payroll-test/">급여관리</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="module" id="daily">
+            <div class="module-head"><span class="module-icon">👷</span><div><h4>일용직 · 알바 등록</h4><p>근로내역 및 지급 관리</p></div></div>
+            <div class="module-body">
+              <div class="task-grid">
+                <a class="task primary" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/daily-worker.html">일용직 통합관리<span id="koreaDailyUnpaidBadge" class="badge">0</span></a>
+                <a class="task" target="_blank" href="https://script.google.com/macros/s/AKfycbxvr3itmxIu-yO8yzKkcN0EcBH9TY41f4-E_jVIrCeGn8BxSmuAbmARlV9cXKGAN-aPRA/exec">아르바이트 관리</a>
+                <a class="task" target="_blank" href="https://docs.google.com/spreadsheets/d/1df-V4NKqg1rIYCk9hGH39iQZZdNkIfIpwA4DRjhsYcg/edit?gid=0#gid=0">일용직 원장<span id="dailyUnpaidBadgeReport" class="badge">0</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="module" id="recruit">
+            <div class="module-head"><span class="module-icon">🧑‍💼</span><div><h4>채용 · 퇴직</h4><p>지원자, 증명서, 비자 및 퇴직 관리</p></div></div>
+            <div class="module-body">
+              <div class="task-grid">
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/koreahouse-intranet/applicant.html">지원자 등록</a>
+                <a class="task primary" target="_blank" href="https://thebigkorea.github.io/koreahouse-intranet/applicant-admin.html">면접 관리<span id="todayInterviewBadge" class="badge">0</span></a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/foreign-worker-visa.html">외국인 비자 확인</a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/hr-system/certificate.html">재직증명서</a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/hr-system/career.html">경력증명서</a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/hr-system/retirement-admin.html">퇴직서 작성</a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/hr-system/retirement-list.html">퇴직서 관리자</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="module" id="ledger">
+            <div class="module-head"><span class="module-icon">📚</span><div><h4>원장 · 관리자 자료</h4><p>각종 원장 및 관리자 조회</p></div></div>
+            <div class="module-body">
+              <div class="task-grid">
+                <a class="task secure" href="#" onclick="openStaffList();return false">직원 목록</a>
+                <a class="task secure" href="#" onclick="openHrSheet();return false">인사 원장 조회</a>
+                <a class="task secure" href="#" onclick="openApplicantSheet();return false">지원자 원장 조회</a>
+                <a class="task secure" href="#" onclick="openContractLedger();return false">근로계약서 원장</a>
+                <a class="task" target="_blank" href="https://thebigkorea.github.io/hr-system/retirement-auth.html">퇴직서 원장</a>
+              </div>
+              <div class="admin-note">기존 HTML에 깨진 문자열로 들어 있던 일부 관리자 링크는 실제 주소 확인 전까지 제외했습니다.</div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+    </main>
+
+    <footer>한국의집 통합 ERP · THE BIG KOREA / KOREA HOUSE INTERNAL SYSTEM</footer>
+  </div>
+</div>
 
   <script>
-    window.location.replace(
-      "https://thebigkorea.github.io/koreahouse-erp-intranet/#home"
-    );
-  </script>
-</head>
+    function openStatusDetail(url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
 
-<body>
-  <p>
-    한국의집 통합 ERP로 이동하고 있습니다.
-    <a href="https://thebigkorea.github.io/koreahouse-erp-intranet/#home">
-      바로 이동하기
-    </a>
-  </p>
+    function openStatusDetailByKey(event, url) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openStatusDetail(url);
+      }
+    }
+
+    // 왼쪽 메뉴와 동일한 순서로 전체 업무 카드를 배치합니다.
+    const moduleOrder = [
+      'reservation',
+      'daily',
+      'schedule',
+      'attendance',
+      'store',
+      'recruit',
+      'contract',
+      'hr',
+      'order',
+      'performance',
+      'payroll',
+      'ledger'
+    ];
+
+    const moduleGrid = document.querySelector('.module-grid');
+    moduleOrder.forEach((id) => {
+      const module = document.getElementById(id);
+      if (moduleGrid && module) moduleGrid.appendChild(module);
+    });
+  </script>
+  <script src="script.js?v=5"></script>
+  <script>
+    /* ===== 기존 한국의집 업무 포털 주소 기준 강제 보정 ===== */
+    function erpSecureOpen(message, url) {
+      if (typeof secureOpen === 'function') {
+        return secureOpen(message, url);
+      }
+      const pw = prompt(message);
+      if (pw === null) return;
+      if (pw !== '1234') {
+        alert('비밀번호가 올바르지 않습니다.');
+        return;
+      }
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    function openOvertimePage(url) {
+      erpSecureOpen('초과근무 관리 비밀번호를 입력하세요.', url);
+    }
+    function openHrLedger() {
+      erpSecureOpen('인사관리대장 비밀번호를 입력하세요.', 'https://thebigkorea.github.io/thebigkorea-hq/employee-admin.html');
+    }
+    function openHrSheet() {
+      erpSecureOpen('인사 원장조회 비밀번호를 입력하세요.', 'https://docs.google.com/spreadsheets/d/1sSKno2C3Gnvx-FwfEru_rsP0QWzliWcVEQIKe9vXFqc/edit?gid=0#gid=0');
+    }
+    function openApplicantSheet() {
+      erpSecureOpen('지원자 원장조회 비밀번호를 입력하세요.', 'https://docs.google.com/spreadsheets/d/1WgLVb-hTehmz2huM5e-gyds1s8aX-7eBhMCYVZEyFDM/edit?gid=1278172800#gid=1278172800');
+    }
+    function openAttendanceAdmin() {
+      erpSecureOpen('출퇴근 관리자 조회 비밀번호를 입력하세요.', 'https://thebigkorea.github.io/koreahouse-attendance/admin.html');
+    }
+    function openAttendanceManage() {
+      erpSecureOpen('출퇴근 관리 비밀번호를 입력하세요.', 'https://thebigkorea.github.io/koreahouse-attendance/admin.html');
+    }
+    function openStaffList() {
+      erpSecureOpen('직원 목록 비밀번호를 입력하세요.', 'https://docs.google.com/spreadsheets/d/1y1f4noa90DCA_YxZYx9MXe_A523Z5g2raeLU4d4wwb4/edit?gid=422940514#gid=422940514');
+    }
+    function openContractLedger() {
+      erpSecureOpen('근로계약서 원장조회 비밀번호를 입력하세요.', 'https://docs.google.com/spreadsheets/d/1sSKno2C3Gnvx-FwfEru_rsP0QWzliWcVEQIKe9vXFqc/edit?gid=1591232369#gid=1591232369');
+    }
+  </script>
 </body>
 </html>
