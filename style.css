@@ -600,3 +600,12 @@ footer{padding:13px;font-size:8px}
   .quick-grid .quick{min-height:120px !important}
 }
 
+
+
+/* V11 - 자주 쓰는 업무: HTML 아이콘 제거 후 사진 중심 카드 */
+.quick-grid .quick .quick-ico{
+  display:none !important;
+}
+.quick-grid .quick{
+  padding:67px 11px 10px !important;
+}
