@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111827">
   <title>한국의집 통합 ERP</title>
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
 <div class="app">
@@ -65,10 +65,10 @@
     </header>
 
     <main class="page" id="home">
-      <section class="hero home-view">
+      <section class="hero home-view hero-koreahouse">
         <div>
           <div class="eyebrow">KOREA HOUSE MANAGEMENT HUB</div>
-          <h2>예약부터 근태, 스케줄, 급여와 매출까지<br>하나의 ERP에서 연결합니다.</h2>
+          <h2>한국의집의 모든 업무를<br><em>하나의 ERP에서 연결합니다.</em></h2>
           <p>기존 한국의집 인트라넷과 각 시스템은 그대로 유지하고, ERP에서 통합 조회·연결하는 구조입니다.</p>
         </div>
         <div class="hero-side">
@@ -141,36 +141,36 @@
               <div><h3>자주 쓰는 업무</h3><p>기존 시스템은 그대로 연결합니다.</p></div>
             </div>
             <div class="quick-grid">
-              <a class="quick" target="_blank" href="https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec">
+              <a class="quick quick-reservation" target="_blank" href="https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec">
                 <span class="quick-ico">📅</span><span><strong>예약 관리</strong><small>예약 조회 · 처리</small></span>
               </a>
-              <a class="quick" target="_blank" href="https://script.google.com/macros/s/AKfycbx-QNqhusp57z6cxhKLcTymf0z5gx7mHkt9kOrcLEGIfxN9b-kgNlk8qtZ_VLWv57dA/exec">
+              <a class="quick quick-sales" target="_blank" href="https://script.google.com/macros/s/AKfycbx-QNqhusp57z6cxhKLcTymf0z5gx7mHkt9kOrcLEGIfxN9b-kgNlk8qtZ_VLWv57dA/exec">
                 <span class="quick-ico">📈</span><span><strong>영업실적</strong><small>일일 실적 입력</small></span>
               </a>
-              <a class="quick" target="_blank" href="https://thebigkorea.github.io/koreahouse-weekly-schedule/">
+              <a class="quick quick-weekly" target="_blank" href="https://thebigkorea.github.io/koreahouse-weekly-schedule/">
                 <span class="quick-ico">🗓️</span><span><strong>주간 스케줄</strong><small>근무표 작성 · 조회</small></span>
               </a>
-              <a class="quick" target="_blank" href="https://thebigkorea.github.io/koreahouse-schedule/">
+              <a class="quick quick-monthly" target="_blank" href="https://thebigkorea.github.io/koreahouse-schedule/">
                 <span class="quick-ico">📆</span><span><strong>월간 스케줄</strong><small>월간 근무표</small></span>
               </a>
-              <a class="quick" href="#" onclick="openAttendanceManage();return false">
+              <a class="quick quick-attendance" href="#" onclick="openAttendanceManage();return false">
                 <span class="quick-ico">🕘</span><span><strong>출퇴근 관리</strong><small>근태 관리자 조회</small></span>
               </a>
-              <a class="quick" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/foreign-worker-visa.html">
+              <a class="quick quick-foreign" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/foreign-worker-visa.html">
                 <span class="quick-ico">🌐</span><span><strong>외국인 근로자</strong><small>비자 · 채용 가능 여부</small></span>
               </a>
-              <a class="quick" target="_blank" href="https://script.google.com/macros/s/AKfycbxvr3itmxIu-yO8yzKkcN0EcBH9TY41f4-E_jVIrCeGn8BxSmuAbmARlV9cXKGAN-aPRA/exec">
+              <a class="quick quick-parttime" target="_blank" href="https://script.google.com/macros/s/AKfycbxvr3itmxIu-yO8yzKkcN0EcBH9TY41f4-E_jVIrCeGn8BxSmuAbmARlV9cXKGAN-aPRA/exec">
                 <span class="quick-ico">👥</span><span><strong>아르바이트 관리</strong><small>직원 · 근로내역</small></span>
               </a>
-              <a class="quick" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/daily-worker.html">
+              <a class="quick quick-daily" target="_blank" href="https://thebigkorea.github.io/thebigkorea-hq/daily-worker.html">
                 <span class="quick-ico">👷</span><span><strong>일용직 통합관리</strong><small>근무 · 지급 관리</small></span>
                 <span id="koreaDailyUnpaidBadgeTop" class="badge">0</span>
               </a>
-              <a class="quick" target="_blank" href="https://thebigkorea.github.io/koreahouse-intranet/applicant-admin.html">
+              <a class="quick quick-interview" target="_blank" href="https://thebigkorea.github.io/koreahouse-intranet/applicant-admin.html">
                 <span class="quick-ico">👥</span><span><strong>면접 관리</strong><small>지원자 · 일정 확인</small></span>
                 <span id="todayInterviewBadgeTop" class="badge">0</span>
               </a>
-              <a class="quick" target="_blank" href="https://thebigkorea.github.io/koreahouse-intranet/koreahouse-order.html">
+              <a class="quick quick-order" target="_blank" href="https://thebigkorea.github.io/koreahouse-intranet/koreahouse-order.html">
                 <span class="quick-ico">📦</span><span><strong>통합 발주</strong><small>식자재 · 비품 주문</small></span>
               </a>
             </div>
@@ -374,7 +374,7 @@
       if (moduleGrid && module) moduleGrid.appendChild(module);
     });
   </script>
-  <script src="script.js?v=5"></script>
+  <script src="script.js?v=9"></script>
   <script>
     /* ===== 기존 한국의집 업무 포털 주소 기준 강제 보정 ===== */
     function erpSecureOpen(message, url) {
