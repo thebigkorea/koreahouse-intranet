@@ -93,6 +93,10 @@ const HEALTH_CERT_API_URL =
 const WEEKLY_SCHEDULE_API_URL =
   'https://script.google.com/macros/s/AKfycbyxNHxdt7xwXXp1OKib0PHHNc9qS1vXOlzaUCVsUJgqMmdpIcvVQsa2vY0hQgoSE-ab9Q/exec';
 
+// 한국의집 실제 출퇴근 기록 API
+const ATTENDANCE_API_URL =
+  'https://script.google.com/macros/s/AKfycbz6rYVTUixqPOhHhethQcRI4ziwNukl8EcZx9nVvFLw0rV5o4kLD_BExlONS7WPGE54sQ/exec';
+
 function setStatusValue(id, count) {
   const el = document.getElementById(id);
   if (el) el.textContent = Number(count || 0) + '건';
@@ -326,35 +330,52 @@ async function loadTodayAttendanceSummary() {
     wash: '설거지'
   };
 
+  // 이름 비교 시 공백 차이 때문에 누락되지 않도록 정규화
+  function nameKey_(name) {
+    return String(name || '').replace(/\s+/g, '').trim();
+  }
+
+  // HH:mm:ss -> HH:mm
+  function shortTime_(value) {
+    const s = String(value || '').trim();
+    if (!s) return '';
+    const m = s.match(/(\d{1,2}):(\d{2})/);
+    return m ? String(m[1]).padStart(2, '0') + ':' + m[2] : s;
+  }
+
   try {
-    const response = await fetch(
-      WEEKLY_SCHEDULE_API_URL +
-        '?action=getWeeklyScheduleBundle&monday=' +
-        encodeURIComponent(monday) +
-        '&t=' +
-        Date.now(),
-      { cache: 'no-store' }
-    );
+    // 주간 예정표 + 실제 출퇴근 기록을 동시에 조회
+    const [scheduleResponse, attendanceResponse] = await Promise.all([
+      fetch(
+        WEEKLY_SCHEDULE_API_URL +
+          '?action=getWeeklyScheduleBundle&monday=' +
+          encodeURIComponent(monday) +
+          '&t=' +
+          Date.now(),
+        { cache: 'no-store' }
+      ),
+      fetch(
+        ATTENDANCE_API_URL +
+          '?action=getTodayAttendanceSummary&t=' +
+          Date.now(),
+        { cache: 'no-store' }
+      )
+    ]);
 
-    if (!response.ok) throw new Error('HTTP ' + response.status);
+    if (!scheduleResponse.ok) throw new Error('주간 스케줄 HTTP ' + scheduleResponse.status);
+    if (!attendanceResponse.ok) throw new Error('출퇴근 HTTP ' + attendanceResponse.status);
 
-    const result = await response.json();
+    const result = await scheduleResponse.json();
+    const attendanceResult = await attendanceResponse.json();
+
     if (!result.ok) throw new Error(result.message || '주간 근무표 조회 실패');
+    if (!attendanceResult.success) throw new Error(attendanceResult.message || '출퇴근 기록 조회 실패');
 
     const saved = result.data && result.data.schedule ? result.data.schedule : {};
-    if (!saved.found) {
-      if (valueEl) valueEl.textContent = '0명';
-      if (descEl) descEl.textContent = '이번주 저장된 근무표 없음';
-      if (countEl) countEl.textContent = '0명';
-      if (listEl) {
-        listEl.innerHTML = '<div class="attendance-empty">이번주 저장된 근무표가 없습니다.</div>';
-      }
-      return;
-    }
-
-    const schedule = saved.schedule || {};
+    const schedule = saved.found ? (saved.schedule || {}) : {};
     const todaySchedule = schedule[String(dayIndex)] || schedule[dayIndex] || {};
     const roles = ['hall', 'kitchen', 'prep', 'exit', 'wash'];
+
     const employees = [];
     const seenNames = new Set();
     const roleCounts = {};
@@ -365,15 +386,33 @@ async function loadTodayAttendanceSummary() {
 
       items.forEach(function(item) {
         const name = String((item && item.name) || '').trim();
-        if (!name || seenNames.has(name)) return;
+        const key = nameKey_(name);
+        if (!name || seenNames.has(key)) return;
 
-        seenNames.add(name);
+        seenNames.add(key);
         roleCounts[role] += 1;
         employees.push({
           name: name,
           time: String((item && item.time) || '').trim(),
           role: role
         });
+      });
+    });
+
+    // 실제 출퇴근 기록을 이름 기준으로 맵 구성
+    const actualEmployees = Array.isArray(attendanceResult.employees)
+      ? attendanceResult.employees
+      : [];
+
+    const actualMap = new Map();
+    actualEmployees.forEach(function(item) {
+      const key = nameKey_(item.name);
+      if (!key) return;
+      actualMap.set(key, {
+        name: String(item.name || '').trim(),
+        checkIn: shortTime_(item.checkIn),
+        checkOut: shortTime_(item.checkOut),
+        status: String(item.status || '').trim()
       });
     });
 
@@ -395,28 +434,100 @@ async function loadTodayAttendanceSummary() {
     if (listEl) {
       listEl.replaceChildren();
 
-      if (!employees.length) {
+      if (!employees.length && !actualEmployees.length) {
         const empty = document.createElement('div');
         empty.className = 'attendance-empty';
-        empty.textContent = '오늘 근무 예정자가 없습니다.';
+        empty.textContent = saved.found
+          ? '오늘 근무 예정자가 없습니다.'
+          : '이번주 저장된 근무표가 없습니다.';
         listEl.appendChild(empty);
-      } else {
-        employees.forEach(function(employee) {
+      }
+
+      // ① 예정자 목록: 예정시간 + 실제 출근/퇴근시간 표시
+      employees.forEach(function(employee) {
+        const actual = actualMap.get(nameKey_(employee.name));
+
+        const row = document.createElement('div');
+        row.className = 'attendance-person';
+
+        const info = document.createElement('div');
+        info.className = 'attendance-person-info';
+
+        const name = document.createElement('strong');
+        name.textContent = employee.name;
+
+        const time = document.createElement('small');
+        const scheduleText = employee.time ? '예정 ' + employee.time : '근무시간 미입력';
+
+        if (actual && actual.checkOut) {
+          time.textContent =
+            scheduleText +
+            ' · 출근 ' + (actual.checkIn || '-') +
+            ' · 퇴근 ' + actual.checkOut;
+        } else if (actual && actual.checkIn) {
+          time.textContent = scheduleText + ' · 출근 ' + actual.checkIn;
+        } else {
+          time.textContent = scheduleText + ' · 미출근';
+        }
+
+        const state = document.createElement('span');
+
+        if (actual && actual.checkOut) {
+          state.className = 'attendance-state';
+          state.textContent = '퇴근';
+          state.style.background = '#eef2ff';
+          state.style.color = '#4055a8';
+        } else if (actual && actual.checkIn) {
+          state.className = 'attendance-state working';
+          state.textContent = '출근';
+        } else {
+          state.className = 'attendance-state';
+          state.textContent = roleLabels[employee.role] || '예정';
+        }
+
+        info.append(name, time);
+        row.append(info, state);
+        listEl.appendChild(row);
+
+        // 예정자와 매칭된 실제 출근자는 "예정 외 출근" 대상에서 제외
+        if (actual) actualMap.delete(nameKey_(employee.name));
+      });
+
+      // ② 근무표에는 없지만 실제 출근한 사람을 별도 경고 영역으로 표시
+      const unexpected = Array.from(actualMap.values()).filter(function(item) {
+        return !!item.checkIn;
+      });
+
+      if (unexpected.length) {
+        const warningTitle = document.createElement('div');
+        warningTitle.textContent = '⚠ 예정 외 출근 ' + unexpected.length + '명';
+        warningTitle.style.cssText =
+          'margin:10px 0 6px;padding:8px 10px;border-radius:9px;' +
+          'background:#fff1f0;color:#b42318;font-size:12px;font-weight:900;';
+        listEl.appendChild(warningTitle);
+
+        unexpected.forEach(function(actual) {
           const row = document.createElement('div');
           row.className = 'attendance-person';
+          row.style.borderColor = '#f4b7b2';
+          row.style.background = '#fff8f7';
 
           const info = document.createElement('div');
           info.className = 'attendance-person-info';
 
           const name = document.createElement('strong');
-          name.textContent = employee.name;
+          name.textContent = actual.name;
 
           const time = document.createElement('small');
-          time.textContent = employee.time ? '예정 ' + employee.time : '근무시간 미입력';
+          time.textContent = actual.checkOut
+            ? '출근 ' + actual.checkIn + ' · 퇴근 ' + actual.checkOut
+            : '출근 ' + actual.checkIn + ' · 근무표 미등록';
 
           const state = document.createElement('span');
-          state.className = 'attendance-state working';
-          state.textContent = roleLabels[employee.role] || '근무';
+          state.className = 'attendance-state';
+          state.textContent = '예정 외';
+          state.style.background = '#fee4e2';
+          state.style.color = '#b42318';
 
           info.append(name, time);
           row.append(info, state);
@@ -426,12 +537,13 @@ async function loadTodayAttendanceSummary() {
     }
   } catch (error) {
     if (valueEl) valueEl.textContent = '-';
-    if (descEl) descEl.textContent = '주간 스케줄 연결 확인 필요';
+    if (descEl) descEl.textContent = '주간 스케줄·출퇴근 연결 확인 필요';
     if (countEl) countEl.textContent = '-';
     if (listEl) {
-      listEl.innerHTML = '<div class="attendance-empty">오늘 근무 예정자 목록을 불러오지 못했습니다.</div>';
+      listEl.innerHTML =
+        '<div class="attendance-empty">오늘 근무 예정자/실제 출근 기록을 불러오지 못했습니다.</div>';
     }
-    console.log('오늘 근무 예정자 조회 실패', error);
+    console.log('오늘 근무 예정자/실제 출근 조회 실패', error);
   }
 }
 
