@@ -926,3 +926,14 @@ footer{padding:13px;font-size:8px}
     font-size:11px;
   }
 }
+/* ===== 더큰코리아 경영대시보드 카드 이미지 ===== */
+.quick-management-dashboard{
+  background-image:
+    linear-gradient(180deg, rgba(8,20,40,.06) 0%, rgba(8,20,40,.18) 100%),
+    url("https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=82");
+  background-size: cover;
+  background-position: center;
+}
+.quick-management-dashboard::before{
+  content:"📊";
+}
