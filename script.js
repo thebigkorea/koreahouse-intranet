@@ -453,6 +453,13 @@ async function loadTodayAttendanceSummary() {
         const info = document.createElement('div');
         info.className = 'attendance-person-info';
 
+        const personMain = document.createElement('div');
+        personMain.className = 'attendance-person-main';
+
+        const avatar = document.createElement('span');
+        avatar.className = 'attendance-avatar role-' + employee.role;
+        avatar.textContent = employee.name ? employee.name.charAt(0) : '직';
+
         const name = document.createElement('strong');
         name.textContent = employee.name;
 
@@ -486,7 +493,8 @@ async function loadTodayAttendanceSummary() {
         }
 
         info.append(name, time);
-        row.append(info, state);
+        personMain.append(avatar, info);
+        row.append(personMain, state);
         listEl.appendChild(row);
 
         // 예정자와 매칭된 실제 출근자는 "예정 외 출근" 대상에서 제외
@@ -515,6 +523,13 @@ async function loadTodayAttendanceSummary() {
           const info = document.createElement('div');
           info.className = 'attendance-person-info';
 
+          const personMain = document.createElement('div');
+          personMain.className = 'attendance-person-main';
+
+          const avatar = document.createElement('span');
+          avatar.className = 'attendance-avatar unexpected';
+          avatar.textContent = actual.name ? actual.name.charAt(0) : '직';
+
           const name = document.createElement('strong');
           name.textContent = actual.name;
 
@@ -530,7 +545,8 @@ async function loadTodayAttendanceSummary() {
           state.style.color = '#b42318';
 
           info.append(name, time);
-          row.append(info, state);
+          personMain.append(avatar, info);
+          row.append(personMain, state);
           listEl.appendChild(row);
         });
       }

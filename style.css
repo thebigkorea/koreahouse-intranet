@@ -853,3 +853,76 @@ footer{padding:13px;font-size:8px}
     padding:6px 9px !important;
   }
 }
+
+
+/* =========================================================
+   V14 STATUS + ATTENDANCE ICONS - 2026-09-17
+   통합현황 카드 아이콘 / 출근예정자 원형 이니셜 아이콘
+   ========================================================= */
+.status-card{
+  padding-left:66px !important;
+}
+.status-icon{
+  position:absolute;
+  left:15px;
+  top:17px;
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  font-size:21px;
+  line-height:1;
+  background:rgba(255,255,255,.72);
+  box-shadow:0 3px 10px rgba(17,24,39,.06);
+}
+.status-grid .status-card:nth-child(1) .status-icon{background:#ffdedd}
+.status-grid .status-card:nth-child(2) .status-icon{background:#dceaff}
+.status-grid .status-card:nth-child(3) .status-icon{background:#d8f4e6}
+.status-grid .status-card:nth-child(4) .status-icon{background:#ffebbd}
+.status-grid .status-card:nth-child(5) .status-icon{background:#e9dcff}
+.status-grid .status-card:nth-child(6) .status-icon{background:#ffdeda}
+
+.attendance-person-main{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:1 1 auto;
+}
+.attendance-avatar{
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-size:12px;
+  font-weight:900;
+  color:#fff;
+  box-shadow:0 2px 7px rgba(17,24,39,.10);
+}
+.attendance-avatar.role-hall{background:#79c96b}
+.attendance-avatar.role-kitchen{background:#27c5bd}
+.attendance-avatar.role-prep{background:#3788e8}
+.attendance-avatar.role-exit{background:#7758df}
+.attendance-avatar.role-wash{background:#4056c7}
+.attendance-avatar.unexpected{background:#d45a52}
+
+@media(max-width:650px){
+  .status-card{padding:13px 11px 13px 54px !important}
+  .status-icon{
+    left:10px;
+    top:13px;
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    font-size:18px;
+  }
+  .attendance-avatar{
+    width:31px;
+    height:31px;
+    flex-basis:31px;
+    font-size:11px;
+  }
+}
