@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111827">
   <title>한국의집 통합 ERP</title>
-  <link rel="stylesheet" href="style.css?v=13">
+  <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
 <div class="app">
@@ -88,6 +88,7 @@
                onclick="openStatusDetail('https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec')"
                onkeydown="openStatusDetailByKey(event,'https://script.google.com/macros/s/AKfycbztW1jBJBIF9QxsXhJMmXfb24w1bPZCQbIormWPiEyiRIx2stbS3YmUABpbc4PtWnZ8/exec')"
                title="오늘 예약 상세내역 보기" style="cursor:pointer">
+            <div class="status-icon" aria-hidden="true">📅</div>
             <div class="status-label">오늘 예약</div>
             <div class="status-value" id="statusReservation">-</div>
             <div class="status-desc">오늘 취소 · 노쇼 제외 예약</div>
@@ -96,6 +97,7 @@
                onclick="openStatusDetail('https://thebigkorea.github.io/koreahouse-intranet/applicant-admin.html')"
                onkeydown="openStatusDetailByKey(event,'https://thebigkorea.github.io/koreahouse-intranet/applicant-admin.html')"
                title="오늘 면접 상세내역 보기" style="cursor:pointer">
+            <div class="status-icon" aria-hidden="true">👥</div>
             <div class="status-label">오늘 면접</div>
             <div class="status-value" id="statusInterview">-</div>
             <div class="status-desc">지원자 · 면접 일정</div>
@@ -104,6 +106,7 @@
                onclick="openStatusDetail('https://thebigkorea.github.io/koreahouse-intranet/health-cert.html')"
                onkeydown="openStatusDetailByKey(event,'https://thebigkorea.github.io/koreahouse-intranet/health-cert.html')"
                title="보건증 상세내역 보기" style="cursor:pointer">
+            <div class="status-icon" aria-hidden="true">📄</div>
             <div class="status-label">보건증 확인</div>
             <div class="status-value" id="statusHealth">-</div>
             <div class="status-desc">만료 · 임박 대상</div>
@@ -112,6 +115,7 @@
                onclick="openStatusDetail('https://thebigkorea.github.io/thebigkorea-hq/daily-worker.html')"
                onkeydown="openStatusDetailByKey(event,'https://thebigkorea.github.io/thebigkorea-hq/daily-worker.html')"
                title="일용직 미처리 상세내역 보기" style="cursor:pointer">
+            <div class="status-icon" aria-hidden="true">👤</div>
             <div class="status-label">일용직 미처리</div>
             <div class="status-value" id="statusDaily">-</div>
             <div class="status-desc">미지급 · 미완료 대상</div>
@@ -120,6 +124,7 @@
                onclick="openStatusDetail('https://thebigkorea.github.io/thebigkorea-hq/contract-admin.html')"
                onkeydown="openStatusDetailByKey(event,'https://thebigkorea.github.io/thebigkorea-hq/contract-admin.html')"
                title="계약 만료예정 상세내역 보기" style="cursor:pointer">
+            <div class="status-icon" aria-hidden="true">📑</div>
             <div class="status-label">계약 만료예정</div>
             <div class="status-value" id="statusContract">-</div>
             <div class="status-desc">30일 이내 계약</div>
@@ -129,6 +134,7 @@
                onkeydown="openStatusDetailByKey(event,'https://thebigkorea.github.io/koreahouse-weekly-schedule/')"
                title="오늘 주간 근무표 보기"
                style="cursor:pointer">
+            <div class="status-icon" aria-hidden="true">👥</div>
             <div class="status-label">오늘 출근 예정</div>
             <div class="status-value" id="statusAttendance">-</div>
             <div class="status-desc" id="statusAttendanceDesc">주간 근무표 불러오는 중</div>
