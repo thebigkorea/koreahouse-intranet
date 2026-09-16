@@ -609,3 +609,138 @@ footer{padding:13px;font-size:8px}
 .quick-grid .quick{
   padding:67px 11px 10px !important;
 }
+
+
+/* =========================================================
+   V12 MOBILE HARD FIX - 2026-09-16
+   휴대폰에서 데스크톱 폭/카드 찌그러짐/가로 넘침 방지
+   ========================================================= */
+@media (max-width: 650px) {
+  html, body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  body { min-width: 0 !important; }
+  .app, .main, .page, .home-view, .section, .panel, .home-lower,
+  .status-grid, .quick-grid, .attendance-roster-panel {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .topbar {
+    height: 64px !important;
+    padding: 0 12px !important;
+    gap: 8px !important;
+  }
+  .mobile-toggle {
+    display: grid !important;
+    flex: 0 0 40px !important;
+    margin-right: 2px !important;
+  }
+  .top-title { min-width: 0 !important; }
+  .top-title h1 { font-size: 17px !important; white-space: nowrap; }
+  .top-title p { display: none !important; }
+  .top-actions { margin-left: auto !important; gap: 0 !important; }
+  .top-actions .month-box,
+  .top-actions .refresh { display: none !important; }
+  .top-actions .admin-box {
+    display: flex !important;
+    width: auto !important;
+    height: 42px !important;
+    padding: 0 8px !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+  .admin-box small { display: none !important; }
+
+  .page {
+    margin: 0 !important;
+    padding: 12px !important;
+  }
+  .hero-koreahouse {
+    width: 100% !important;
+    min-height: 150px !important;
+    border-radius: 14px !important;
+    background-size: cover !important;
+    background-position: center !important;
+  }
+
+  .section { margin-top: 14px !important; }
+  .section-head { align-items: center !important; gap: 8px !important; }
+  .section-head h3 { font-size: 17px !important; }
+  .section-head p { font-size: 10px !important; }
+  .version { display: none !important; }
+
+  .status-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .status-card {
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 116px !important;
+    padding: 13px !important;
+    overflow: hidden !important;
+  }
+  .status-label, .status-value, .status-desc {
+    overflow-wrap: anywhere !important;
+    word-break: keep-all !important;
+  }
+  .status-value { font-size: 22px !important; }
+
+  .home-lower {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    margin-top: 10px !important;
+  }
+  .panel {
+    padding: 12px !important;
+    overflow: hidden !important;
+  }
+  .quick-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .quick-grid .quick {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 122px !important;
+    padding: 68px 10px 10px !important;
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+  }
+  .quick-grid .quick > span,
+  .quick-grid .quick strong,
+  .quick-grid .quick small {
+    width: auto !important;
+    min-width: 0 !important;
+    writing-mode: horizontal-tb !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+  }
+  .quick-grid .quick strong { font-size: 12px !important; }
+  .quick-grid .quick small { font-size: 9px !important; }
+
+  .attendance-name-list { max-height: none !important; }
+  .work-view .module { width: 100% !important; min-width: 0 !important; }
+  .work-view .module-head, .work-view .module-body { padding: 14px !important; }
+  .work-view .task-grid, .task-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+  .task { width: 100% !important; min-width: 0 !important; }
+}
+
+@media (max-width: 380px) {
+  .page { padding: 9px !important; }
+  .status-grid, .quick-grid { gap: 7px !important; }
+  .status-card { padding: 11px !important; }
+}
