@@ -744,3 +744,112 @@ footer{padding:13px;font-size:8px}
   .status-grid, .quick-grid { gap: 7px !important; }
   .status-card { padding: 11px !important; }
 }
+
+/* =========================================================
+   V13 HOME LARGE CARDS - 2026-09-17
+   자주 쓰는 업무 + 오늘 출근 예정자 확대 / 배지 가독성 강화
+   ========================================================= */
+@media (min-width: 981px) {
+  .home-lower{
+    grid-template-columns:minmax(0,2.35fr) minmax(390px,1fr) !important;
+    gap:16px !important;
+    align-items:stretch !important;
+  }
+
+  .home-lower > .panel{
+    padding:18px !important;
+    border-radius:16px !important;
+  }
+
+  .quick-grid{
+    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    gap:11px !important;
+  }
+
+  .quick-grid .quick{
+    min-height:154px !important;
+    padding:91px 13px 13px !important;
+    border-radius:12px !important;
+    overflow:visible !important;
+  }
+
+  .quick-grid .quick::before{
+    height:82px !important;
+    border-radius:12px 12px 0 0 !important;
+  }
+
+  .quick-grid .quick strong{
+    font-size:14px !important;
+    line-height:1.3 !important;
+  }
+
+  .quick-grid .quick small{
+    font-size:10px !important;
+    margin-top:4px !important;
+  }
+
+  .quick-grid .quick::after{
+    right:10px !important;
+    bottom:18px !important;
+    font-size:18px !important;
+  }
+
+  /* 일용직/면접 등 숫자 배지가 카드 밖에서도 확실히 보이게 */
+  .quick-grid .quick .badge{
+    z-index:20 !important;
+    min-width:25px !important;
+    height:25px !important;
+    padding:0 7px !important;
+    right:-8px !important;
+    top:-9px !important;
+    border:2px solid #fff !important;
+    border-radius:999px !important;
+    font-size:11px !important;
+    font-weight:900 !important;
+    box-shadow:0 4px 10px rgba(185,28,28,.28) !important;
+  }
+
+  .attendance-roster-panel{
+    min-height:360px !important;
+    display:flex !important;
+    flex-direction:column !important;
+  }
+
+  .attendance-roster-panel .panel-head h3{
+    font-size:20px !important;
+  }
+
+  .attendance-roster-panel .panel-head p{
+    font-size:11px !important;
+  }
+
+  .attendance-roster-count{
+    font-size:20px !important;
+  }
+
+  .attendance-name-list{
+    max-height:310px !important;
+    gap:8px !important;
+    flex:1 1 auto !important;
+  }
+
+  .attendance-person{
+    min-height:52px !important;
+    padding:9px 11px !important;
+    border-radius:11px !important;
+  }
+
+  .attendance-person-info strong{
+    font-size:13px !important;
+  }
+
+  .attendance-person-info small{
+    font-size:10px !important;
+    margin-top:3px !important;
+  }
+
+  .attendance-state{
+    font-size:10px !important;
+    padding:6px 9px !important;
+  }
+}
