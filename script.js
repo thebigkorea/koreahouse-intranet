@@ -261,9 +261,58 @@ function parseContractDate(value) {
   return isNaN(date.getTime()) ? null : date;
 }
 
+let CONTRACT_EXPIRE_ITEMS = [];
+
+function normalizeContractText_(value) {
+  return String(value || '').replace(/\s+/g, '').trim().toLowerCase();
+}
+
+function getContractName_(contract) {
+  return contract.employeeName || contract.empName || contract.name || '';
+}
+
+function getContractStore_(contract) {
+  return contract.store || contract.workplace || contract.workPlace || contract.department || '';
+}
+
+function getContractEndValue_(contract) {
+  return contract.endDate || contract.contractEndDate || contract.periodEnd || '';
+}
+
+function getContractType_(contract) {
+  return contract.contractType || contract.type || '근로계약';
+}
+
+function getContractLink_(contract, source) {
+  if (contract.workerLink) return contract.workerLink;
+  if (contract.contractUrl) return contract.contractUrl;
+  if (contract.url) return contract.url;
+
+  const id = contract.contractId || contract.contractNo || '';
+  if (!id) return '';
+
+  if (source === 'REG') {
+    const type = getContractType_(contract);
+    let page = 'regular-contract.html';
+    if (type.includes('계약직') || type.includes('아르바이트')) page = 'part-contract.html';
+    if (type.includes('용역') || type.includes('사업소득')) page = 'service-contract.html';
+    return 'https://thebigkorea.github.io/hr-system/' + page + '?id=' + encodeURIComponent(id);
+  }
+
+  return 'https://thebigkorea.github.io/thebigkorea-hq/contract-view.html?id=' + encodeURIComponent(id);
+}
+
+function formatContractDate_(date) {
+  if (!date) return '-';
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0')
+  ].join('-');
+}
+
 async function loadContractExpireBadge() {
   try {
-    // 기존 한국의집 REG 계약 + 신규 더큰코리아 통합계약을 동시에 조회
     const [legacyResponse, newResponse] = await Promise.all([
       fetch(LEGACY_CONTRACT_API_URL, {
         method: 'POST',
@@ -292,86 +341,167 @@ async function loadContractExpireBadge() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    function normalizeText_(value) {
-      return String(value || '').replace(/\s+/g, '').trim().toLowerCase();
-    }
+    const candidates = [];
 
-    function getName_(contract) {
-      return contract.employeeName ||
-        contract.empName ||
-        contract.name ||
-        '';
-    }
+    legacyContracts.forEach(function(contract) {
+      candidates.push({ contract: contract, source: 'REG' });
+    });
 
-    function getStore_(contract) {
-      return contract.store ||
-        contract.workplace ||
-        contract.workPlace ||
-        contract.department ||
-        '';
-    }
+    newContracts.forEach(function(contract) {
+      candidates.push({ contract: contract, source: 'NEW' });
+    });
 
-    function getEndDateValue_(contract) {
-      return contract.endDate ||
-        contract.contractEndDate ||
-        contract.periodEnd ||
-        '';
-    }
+    const unique = new Map();
 
-    function isExpiring_(contract) {
-      const end = parseContractDate(getEndDateValue_(contract));
-      if (!end) return false;
+    candidates.forEach(function(item) {
+      const contract = item.contract;
+      const end = parseContractDate(getContractEndValue_(contract));
+      if (!end) return;
 
       end.setHours(0, 0, 0, 0);
       const days = Math.ceil((end - today) / 86400000);
-      return days >= 0 && days <= 30;
-    }
+      if (days < 0 || days > 30) return;
 
-    // 먼저 30일 이내 만료 계약만 추림
-    const expiringContracts = legacyContracts
-      .concat(newContracts)
-      .filter(isExpiring_);
+      const name = getContractName_(contract);
+      const store = getContractStore_(contract);
+      const endKey = formatContractDate_(end);
 
-    // 동일 직원·동일 소속·동일 종료일은 한 건으로 처리
-    const unique = new Map();
-
-    expiringContracts.forEach(function (contract) {
-      const end = parseContractDate(getEndDateValue_(contract));
-      const endKey = end
-        ? [
-            end.getFullYear(),
-            String(end.getMonth() + 1).padStart(2, '0'),
-            String(end.getDate()).padStart(2, '0')
-          ].join('-')
-        : '';
-
-      const nameKey = normalizeText_(getName_(contract));
-      const storeKey = normalizeText_(getStore_(contract));
-
-      // 이름이 있는 계약은 직원+소속+종료일로 중복 제거.
-      // 이름이 없는 경우에는 계약번호를 사용해 서로 다른 계약이 합쳐지지 않도록 함.
-      const fallbackId =
-        contract.contractId ||
-        contract.contractNo ||
-        Math.random().toString(36);
-
-      const key = nameKey
-        ? nameKey + '|' + storeKey + '|' + endKey
-        : String(fallbackId) + '|' + endKey;
+      const id = contract.contractId || contract.contractNo || '';
+      const key = name
+        ? normalizeContractText_(name) + '|' + normalizeContractText_(store) + '|' + endKey
+        : String(id) + '|' + endKey + '|' + item.source;
 
       if (!unique.has(key)) {
-        unique.set(key, contract);
+        unique.set(key, {
+          id: id,
+          name: name || '직원명 미등록',
+          store: store || '소속 미등록',
+          contractType: getContractType_(contract),
+          endDate: endKey,
+          days: days,
+          source: item.source,
+          sourceLabel: item.source === 'REG' ? '기존 REG 계약' : '신규 통합계약',
+          link: getContractLink_(contract, item.source)
+        });
       }
     });
 
-    const count = unique.size;
+    CONTRACT_EXPIRE_ITEMS = Array.from(unique.values()).sort(function(a, b) {
+      return a.days - b.days || a.name.localeCompare(b.name, 'ko');
+    });
 
+    const count = CONTRACT_EXPIRE_ITEMS.length;
     showBadge(['contractExpireBadge'], count);
     setStatusValue('statusContract', count);
+    renderContractExpireModal_();
   } catch (error) {
+    CONTRACT_EXPIRE_ITEMS = [];
+    renderContractExpireModal_('계약 만료 정보를 불러오지 못했습니다.');
     console.log('통합 계약 만료 배지 조회 실패', error);
   }
 }
+
+function renderContractExpireModal_(errorMessage) {
+  const list = document.getElementById('contractExpireList');
+  const countEl = document.getElementById('contractExpireModalCount');
+  if (countEl) countEl.textContent = CONTRACT_EXPIRE_ITEMS.length + '건';
+  if (!list) return;
+
+  list.replaceChildren();
+
+  if (errorMessage) {
+    const empty = document.createElement('div');
+    empty.className = 'contract-expire-empty';
+    empty.textContent = errorMessage;
+    list.appendChild(empty);
+    return;
+  }
+
+  if (!CONTRACT_EXPIRE_ITEMS.length) {
+    const empty = document.createElement('div');
+    empty.className = 'contract-expire-empty';
+    empty.textContent = '30일 이내 만료예정 계약이 없습니다.';
+    list.appendChild(empty);
+    return;
+  }
+
+  CONTRACT_EXPIRE_ITEMS.forEach(function(item) {
+    const row = document.createElement('div');
+    row.className = 'contract-expire-item';
+
+    const main = document.createElement('div');
+    main.className = 'contract-expire-main';
+
+    const top = document.createElement('div');
+    top.className = 'contract-expire-name-row';
+
+    const name = document.createElement('strong');
+    name.textContent = item.name;
+
+    const source = document.createElement('span');
+    source.className = 'contract-source ' + (item.source === 'REG' ? 'legacy' : 'new');
+    source.textContent = item.sourceLabel;
+
+    top.append(name, source);
+
+    const meta = document.createElement('div');
+    meta.className = 'contract-expire-meta';
+    meta.textContent = item.store + ' · ' + item.contractType;
+
+    const date = document.createElement('div');
+    date.className = 'contract-expire-date';
+    date.textContent = '계약종료 ' + item.endDate;
+
+    main.append(top, meta, date);
+
+    const side = document.createElement('div');
+    side.className = 'contract-expire-side';
+
+    const dday = document.createElement('strong');
+    dday.className = 'contract-dday';
+    dday.textContent = item.days === 0 ? 'D-DAY' : 'D-' + item.days;
+    side.appendChild(dday);
+
+    if (item.link) {
+      const link = document.createElement('a');
+      link.className = 'contract-expire-link';
+      link.href = item.link;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = '계약서 보기';
+      side.appendChild(link);
+    }
+
+    row.append(main, side);
+    list.appendChild(row);
+  });
+}
+
+function openContractExpireModal() {
+  const modal = document.getElementById('contractExpireModal');
+  if (!modal) return;
+  renderContractExpireModal_();
+  modal.hidden = false;
+  document.body.classList.add('contract-modal-open');
+}
+
+function closeContractExpireModal() {
+  const modal = document.getElementById('contractExpireModal');
+  if (!modal) return;
+  modal.hidden = true;
+  document.body.classList.remove('contract-modal-open');
+}
+
+function openContractExpireModalByKey(event) {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    openContractExpireModal();
+  }
+}
+
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') closeContractExpireModal();
+});
 
 async function loadHealthCertBadge() {
   try {

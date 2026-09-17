@@ -934,3 +934,85 @@ footer{padding:13px;font-size:8px}
   background-size:cover !important;
   background-repeat:no-repeat !important;
 }
+
+
+/* ===== 계약 만료예정 상세 팝업 V17 ===== */
+body.contract-modal-open{overflow:hidden}
+.contract-expire-modal{
+  position:fixed;inset:0;z-index:2000;
+  display:grid;place-items:center;padding:22px;
+}
+.contract-expire-modal[hidden]{display:none !important}
+.contract-expire-backdrop{
+  position:absolute;inset:0;background:rgba(15,23,42,.52);
+  backdrop-filter:blur(3px);
+}
+.contract-expire-dialog{
+  position:relative;z-index:1;width:min(760px,100%);
+  max-height:min(760px,88vh);overflow:hidden;
+  background:#fff;border-radius:20px;
+  box-shadow:0 28px 80px rgba(15,23,42,.28);
+  display:flex;flex-direction:column;
+}
+.contract-expire-head{
+  display:flex;justify-content:space-between;gap:20px;
+  padding:24px 26px 18px;border-bottom:1px solid #e7eaf0;
+}
+.contract-expire-kicker{
+  display:block;margin-bottom:7px;color:#9a7539;
+  font-size:10px;font-weight:900;letter-spacing:.12em;
+}
+.contract-expire-head h3{margin:0;font-size:23px;letter-spacing:-.04em}
+.contract-expire-head p{margin:7px 0 0;color:#8992a1;font-size:11px;line-height:1.5}
+.contract-expire-close{
+  flex:0 0 auto;width:38px;height:38px;border:0;border-radius:10px;
+  background:#f1f3f6;color:#596273;font-size:25px;line-height:1;cursor:pointer;
+}
+.contract-expire-summary{
+  display:flex;align-items:baseline;gap:9px;
+  padding:16px 26px;background:#faf7f1;border-bottom:1px solid #eee7da;
+}
+.contract-expire-summary strong{font-size:24px;color:#9a6e27}
+.contract-expire-summary span{font-size:11px;color:#8a7350;font-weight:800}
+.contract-expire-list{
+  overflow:auto;padding:14px 18px 20px;
+  display:flex;flex-direction:column;gap:9px;
+}
+.contract-expire-item{
+  min-height:94px;padding:15px 16px;border:1px solid #e5e8ed;
+  border-radius:14px;background:#fff;
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+}
+.contract-expire-name-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.contract-expire-name-row strong{font-size:15px}
+.contract-source{
+  display:inline-flex;align-items:center;min-height:22px;padding:0 8px;
+  border-radius:999px;font-size:9px;font-weight:900;
+}
+.contract-source.legacy{background:#f4eee2;color:#8b672d}
+.contract-source.new{background:#eaf0ff;color:#4b60b8}
+.contract-expire-meta{margin-top:7px;color:#6f7887;font-size:11px}
+.contract-expire-date{margin-top:5px;color:#343d4d;font-size:11px;font-weight:800}
+.contract-expire-side{
+  flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:8px;
+}
+.contract-dday{font-size:17px;color:#c04f4f}
+.contract-expire-link{
+  padding:7px 10px;border-radius:8px;background:#192233;color:#fff;
+  font-size:10px;font-weight:800;
+}
+.contract-expire-empty{
+  min-height:150px;border:1px dashed #d8dde5;border-radius:14px;
+  display:grid;place-items:center;text-align:center;padding:22px;
+  color:#8992a1;font-size:12px;background:#fafbfc;
+}
+@media(max-width:650px){
+  .contract-expire-modal{padding:12px}
+  .contract-expire-dialog{max-height:90vh;border-radius:16px}
+  .contract-expire-head{padding:19px 18px 15px}
+  .contract-expire-head h3{font-size:20px}
+  .contract-expire-summary{padding:13px 18px}
+  .contract-expire-list{padding:11px 12px 15px}
+  .contract-expire-item{align-items:flex-start;padding:13px}
+  .contract-expire-side{gap:7px}
+}

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111827">
   <title>한국의집 통합 ERP</title>
-  <link rel="stylesheet" href="style.css?v=16">
+  <link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
 <div class="app">
@@ -121,8 +121,8 @@
             <div class="status-desc">미지급 · 미완료 대상</div>
           </div>
           <div class="status-card" role="button" tabindex="0"
-               onclick="openStatusDetail('https://thebigkorea.github.io/thebigkorea-hq/contract-admin.html')"
-               onkeydown="openStatusDetailByKey(event,'https://thebigkorea.github.io/thebigkorea-hq/contract-admin.html')"
+               onclick="openContractExpireModal()"
+               onkeydown="openContractExpireModalByKey(event)"
                title="계약 만료예정 상세내역 보기" style="cursor:pointer">
             <div class="status-icon" aria-hidden="true">📑</div>
             <div class="status-label">계약 만료예정</div>
@@ -332,6 +332,28 @@
       </section>
     </main>
 
+      <!-- 계약 만료예정 상세 팝업 -->
+      <div class="contract-expire-modal" id="contractExpireModal" hidden>
+        <div class="contract-expire-backdrop" onclick="closeContractExpireModal()"></div>
+        <section class="contract-expire-dialog" role="dialog" aria-modal="true" aria-labelledby="contractExpireModalTitle">
+          <div class="contract-expire-head">
+            <div>
+              <span class="contract-expire-kicker">CONTRACT ALERT</span>
+              <h3 id="contractExpireModalTitle">계약 만료예정</h3>
+              <p>오늘부터 30일 이내 종료되는 기존 REG 계약과 신규 통합계약입니다.</p>
+            </div>
+            <button type="button" class="contract-expire-close" onclick="closeContractExpireModal()" aria-label="닫기">×</button>
+          </div>
+          <div class="contract-expire-summary">
+            <strong id="contractExpireModalCount">0건</strong>
+            <span>30일 이내 만료</span>
+          </div>
+          <div class="contract-expire-list" id="contractExpireList">
+            <div class="contract-expire-empty">계약 정보를 불러오는 중입니다.</div>
+          </div>
+        </section>
+      </div>
+
     <footer>한국의집 통합 ERP · THE BIG KOREA / KOREA HOUSE INTERNAL SYSTEM</footer>
   </div>
 </div>
@@ -370,7 +392,7 @@
       if (moduleGrid && module) moduleGrid.appendChild(module);
     });
   </script>
-  <script src="script.js?v=10"></script>
+  <script src="script.js?v=11"></script>
   <script>
     /* ===== 기존 한국의집 업무 포털 주소 기준 강제 보정 ===== */
     function erpSecureOpen(message, url) {
