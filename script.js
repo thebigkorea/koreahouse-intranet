@@ -263,39 +263,113 @@ function parseContractDate(value) {
 
 async function loadContractExpireBadge() {
   try {
-    // 3단계: 우선 기존 한국의집 REG 계약대장만 조회
-    const response = await fetch(LEGACY_CONTRACT_API_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'getContractList' })
-    });
+    // 기존 한국의집 REG 계약 + 신규 더큰코리아 통합계약을 동시에 조회
+    const [legacyResponse, newResponse] = await Promise.all([
+      fetch(LEGACY_CONTRACT_API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'getContractList' })
+      }),
+      fetch(CONTRACT_API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'getContractList' })
+      })
+    ]);
 
-    if (!response.ok) {
-      throw new Error('HTTP ' + response.status);
-    }
+    if (!legacyResponse.ok) throw new Error('기존 REG 계약 API HTTP ' + legacyResponse.status);
+    if (!newResponse.ok) throw new Error('신규 통합계약 API HTTP ' + newResponse.status);
 
-    const data = await response.json();
+    const legacyData = await legacyResponse.json();
+    const newData = await newResponse.json();
+
+    const legacyContracts = Array.isArray(legacyData.contracts)
+      ? legacyData.contracts
+      : (Array.isArray(legacyData.rows) ? legacyData.rows : []);
+
+    const newContracts = Array.isArray(newData.contracts)
+      ? newData.contracts
+      : (Array.isArray(newData.rows) ? newData.rows : []);
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const contracts = Array.isArray(data.contracts) ? data.contracts : [];
+    function normalizeText_(value) {
+      return String(value || '').replace(/\s+/g, '').trim().toLowerCase();
+    }
 
-    const count = contracts.filter(function (contract) {
-      const end = parseContractDate(contract.endDate);
+    function getName_(contract) {
+      return contract.employeeName ||
+        contract.empName ||
+        contract.name ||
+        '';
+    }
+
+    function getStore_(contract) {
+      return contract.store ||
+        contract.workplace ||
+        contract.workPlace ||
+        contract.department ||
+        '';
+    }
+
+    function getEndDateValue_(contract) {
+      return contract.endDate ||
+        contract.contractEndDate ||
+        contract.periodEnd ||
+        '';
+    }
+
+    function isExpiring_(contract) {
+      const end = parseContractDate(getEndDateValue_(contract));
       if (!end) return false;
 
       end.setHours(0, 0, 0, 0);
       const days = Math.ceil((end - today) / 86400000);
-
-      // 오늘 만료 ~ 30일 이내 만료
       return days >= 0 && days <= 30;
-    }).length;
+    }
+
+    // 먼저 30일 이내 만료 계약만 추림
+    const expiringContracts = legacyContracts
+      .concat(newContracts)
+      .filter(isExpiring_);
+
+    // 동일 직원·동일 소속·동일 종료일은 한 건으로 처리
+    const unique = new Map();
+
+    expiringContracts.forEach(function (contract) {
+      const end = parseContractDate(getEndDateValue_(contract));
+      const endKey = end
+        ? [
+            end.getFullYear(),
+            String(end.getMonth() + 1).padStart(2, '0'),
+            String(end.getDate()).padStart(2, '0')
+          ].join('-')
+        : '';
+
+      const nameKey = normalizeText_(getName_(contract));
+      const storeKey = normalizeText_(getStore_(contract));
+
+      // 이름이 있는 계약은 직원+소속+종료일로 중복 제거.
+      // 이름이 없는 경우에는 계약번호를 사용해 서로 다른 계약이 합쳐지지 않도록 함.
+      const fallbackId =
+        contract.contractId ||
+        contract.contractNo ||
+        Math.random().toString(36);
+
+      const key = nameKey
+        ? nameKey + '|' + storeKey + '|' + endKey
+        : String(fallbackId) + '|' + endKey;
+
+      if (!unique.has(key)) {
+        unique.set(key, contract);
+      }
+    });
+
+    const count = unique.size;
 
     showBadge(['contractExpireBadge'], count);
     setStatusValue('statusContract', count);
   } catch (error) {
-    setStatusValue('statusContract', 0);
-    showBadge(['contractExpireBadge'], 0);
-    console.log('기존 한국의집 REG 계약 만료 배지 조회 실패', error);
+    console.log('통합 계약 만료 배지 조회 실패', error);
   }
 }
 
