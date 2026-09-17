@@ -84,8 +84,13 @@ const KOREA_DAILY_WORKER_API_URL =
 const APPLICANT_API_URL =
   'https://script.google.com/macros/s/AKfycbwNqmreZsa_YpzlTQxL4HzkklxxI1wie-ujq-BLeLgtUqPt-_ti4_W1MdbJ0Qf-eIaWJA/exec';
 
+// 신규 더큰코리아 통합 전자계약 API
 const CONTRACT_API_URL =
   'https://script.google.com/macros/s/AKfycbwRGQcXgYhfkTUiklPrHs4uFe7oHpgn8D_jM2jJPpU74tXr3D_h6vGMq72CHXU0EnAb/exec';
+
+// 기존 한국의집 REG 전자근로계약 API
+const LEGACY_CONTRACT_API_URL =
+  'https://script.google.com/macros/s/AKfycbzCO4TLMRGgt_OY-3T92mw58AAKcOwquq0ubepUEJgPO9YPeMV-hNeP7AHy7lvOPog7oQ/exec';
 
 const HEALTH_CERT_API_URL =
   'https://script.google.com/macros/s/AKfycby-FdNL_GsXFB4klTrk8fM6YB7Fgkoh0-we-D48z9o34d0OUy09PtHuAaCIAfngIqs7/exec';
@@ -258,28 +263,39 @@ function parseContractDate(value) {
 
 async function loadContractExpireBadge() {
   try {
-    const response = await fetch(CONTRACT_API_URL, {
+    // 3단계: 우선 기존 한국의집 REG 계약대장만 조회
+    const response = await fetch(LEGACY_CONTRACT_API_URL, {
       method: 'POST',
       body: JSON.stringify({ action: 'getContractList' })
     });
+
+    if (!response.ok) {
+      throw new Error('HTTP ' + response.status);
+    }
 
     const data = await response.json();
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const count = (data.contracts || []).filter(function (contract) {
+    const contracts = Array.isArray(data.contracts) ? data.contracts : [];
+
+    const count = contracts.filter(function (contract) {
       const end = parseContractDate(contract.endDate);
       if (!end) return false;
 
       end.setHours(0, 0, 0, 0);
       const days = Math.ceil((end - today) / 86400000);
+
+      // 오늘 만료 ~ 30일 이내 만료
       return days >= 0 && days <= 30;
     }).length;
 
     showBadge(['contractExpireBadge'], count);
     setStatusValue('statusContract', count);
   } catch (error) {
-    console.log('계약 만료 배지 조회 실패', error);
+    setStatusValue('statusContract', 0);
+    showBadge(['contractExpireBadge'], 0);
+    console.log('기존 한국의집 REG 계약 만료 배지 조회 실패', error);
   }
 }
 
