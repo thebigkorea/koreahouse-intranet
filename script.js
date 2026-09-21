@@ -5,18 +5,8 @@ if (todayEl) {
   }).format(new Date());
 }
 
-const PASSWORD = '1234';
-
 function secureOpen(message, url) {
-  const pw = prompt(message);
-  if (pw === null) return;
-
-  if (pw !== PASSWORD) {
-    alert('비밀번호가 올바르지 않습니다.');
-    return;
-  }
-
-  window.open(url, '_blank');
+  window.open(url, '_blank', 'noopener,noreferrer');
 }
 
 function openContractLedger() {

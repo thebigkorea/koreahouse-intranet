@@ -204,8 +204,7 @@
   <footer class="footer">한국의집 임직원 전용 업무 포털 · THE BIG KOREA / KOREA HOUSE INTERNAL SYSTEM</footer>
   <script>
     document.getElementById('today').textContent=new Intl.DateTimeFormat('ko-KR',{dateStyle:'full'}).format(new Date());
-    const PASSWORD='1234';
-    function secureOpen(message,url){const pw=prompt(message);if(pw===null)return;if(pw!==PASSWORD){alert('비밀번호가 올바르지 않습니다.');return}window.open(url,'_blank')}
+    function secureOpen(message,url){window.open(url,'_blank','noopener,noreferrer')}
     function openContractLedger(){secureOpen('근로계약서 원장조회 비밀번호를 입력하세요.','https://docs.google.com/spreadsheets/d/1sSKno2C3Gnvx-FwfEru_rsP0QWzliWcVEQIKe9vXFqc/edit?gid=1591232369#gid=1591232369')}
     function openOvertimePage(url){secureOpen('초과근무 관리 비밀번호를 입력하세요.',url)}
     function openHrLedger(){secureOpen('인사관리대장 비밀번호를 입력하세요.','https://thebigkorea.github.io/hr-system/hr-list.html')}
