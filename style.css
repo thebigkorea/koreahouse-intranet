@@ -1016,3 +1016,21 @@ body.contract-modal-open{overflow:hidden}
   .contract-expire-item{align-items:flex-start;padding:13px}
   .contract-expire-side{gap:7px}
 }
+
+
+/* ===== V18 한국의집 ERP 로그아웃 버튼 ===== */
+.kh-logout-btn{
+  height:42px;padding:0 14px;border:1px solid #d9e0e6;border-radius:12px;
+  background:#fff;color:#24333c;font:800 12px/1 inherit;white-space:nowrap;cursor:pointer;
+}
+.kh-logout-btn:hover{background:#f5f7f8;}
+@media(max-width:650px){
+  .top-actions{display:flex!important;align-items:center!important;gap:6px!important;}
+  .top-actions .admin-box{padding:0 5px!important;}
+  .kh-logout-btn{display:inline-flex!important;align-items:center;justify-content:center;height:40px!important;padding:0 10px!important;font-size:11px!important;border-radius:10px!important;}
+}
+@media(max-width:380px){
+  .admin-box>div:last-child{display:none!important;}
+  .kh-logout-btn{padding:0 8px!important;}
+}
+\n\n/* ===== V19 관리자 카드 내부 로그아웃 - PC/MOBILE 확실한 표시 ===== */\n.top-actions .admin-box.admin-box-with-logout{\n  display:flex!important;align-items:center!important;gap:9px!important;\n  padding:0 8px 0 10px!important;min-width:190px!important;\n}\n.admin-box-with-logout .admin-user-copy{min-width:64px;}\n.admin-box-with-logout .kh-logout-btn{\n  display:inline-flex!important;align-items:center!important;justify-content:center!important;\n  height:34px!important;margin-left:auto!important;padding:0 11px!important;\n  border:1px solid #d8dee7!important;border-radius:9px!important;\n  background:#f6f8fb!important;color:#263445!important;font-size:11px!important;font-weight:900!important;\n  white-space:nowrap!important;cursor:pointer!important;flex:0 0 auto!important;\n}\n.admin-box-with-logout .kh-logout-btn:hover{background:#edf1f5!important;}\n@media(max-width:650px){\n  .top-actions .admin-box.admin-box-with-logout{\n    min-width:0!important;width:auto!important;height:44px!important;padding:0 5px!important;gap:5px!important;\n    border:0!important;background:transparent!important;\n  }\n  .admin-box-with-logout .admin-icon{width:34px!important;height:34px!important;flex:0 0 34px!important;}\n  .admin-box-with-logout .admin-user-copy{display:none!important;}\n  .admin-box-with-logout .kh-logout-btn{height:36px!important;padding:0 9px!important;font-size:11px!important;}\n}\n
